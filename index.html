@@ -74,13 +74,36 @@
 
 <section>
     <h2>Featured Station of the Week</h2>
-    <p>🎧 <span class="highlight"><section>
-    <h2>Live Radio Stream</h2>
-    <audio controls autoplay>
+    <section style="text-align:center; margin-top:40px;">
+    <h2 style="
+        color:#00e0ff;
+        text-shadow:0 0 10px #00e0ff;
+        border-bottom:none;
+        font-size:32px;
+    ">
+        Live Radio Stream
+    </h2>
+
+    <audio id="radioPlayer" preload="none" style="width:80%; max-width:400px; margin-top:20px;" controls>
         <source src="https://stream.zeno.fm/axipqkdhsiitv" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
+
+    <p style="color:#ff0077; margin-top:10px; opacity:0.8;">
+        Broadcasting now — press play to listen
+    </p>
 </section>
+
+<script>
+    // Ensures fast response when pressing Play
+    const player = document.getElementById('radioPlayer');
+    player.addEventListener('play', () => {
+        if (player.src !== player.querySelector('source').src) {
+            player.src = player.querySelector('source').src;
+        }
+    });
+</script>
+
        
         Coming soon</span> — Other services offered at JAMEXUS.</p>
 </section>
