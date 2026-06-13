@@ -75,97 +75,131 @@
 <section>
     <h2>Featured Station of the Week</h2>
 <div style="
-    max-width: 420px;
-    margin: 40px auto;
-    padding: 20px;
-    background: #111;
-    border-radius: 14px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.7);
-    text-align: center;
-    border: 2px solid #009b3a;
-    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 40px;
 ">
 
-    <h2 style="
-        font-size: 30px;
-        margin-bottom: 15px;
-        font-weight: bold;
-        color: #fdda24;
-        text-shadow: 0 0 8px #fdda24;
-    ">
-        🇯🇲 JAWI Radio Live
-    </h2>
-
-    <!-- 3D Spinning Vinyl -->
-    <div id="vinyl" style="
-        width: 220px;
-        height: 220px;
-        margin: 0 auto 20px auto;
-        border-radius: 50%;
-        background: radial-gradient(circle at 30% 30%, #333 0%, #111 40%, #000 70%);
-        border: 6px solid #000;
-        position: relative;
-        animation: spin 4s linear infinite;
-        animation-play-state: paused;
-        box-shadow:
-            inset 0 0 20px rgba(0,0,0,0.8),
-            0 10px 20px rgba(0,0,0,0.6);
-        transform: perspective(600px) rotateX(18deg);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    <!-- LEFT: 3D Vinyl Player -->
+    <div style="
+        width: 380px;
+        padding: 20px;
+        background: #111;
+        border-radius: 14px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.7);
+        border: 2px solid #009b3a;
+        text-align: center;
+        font-family: 'Segoe UI', sans-serif;
     ">
 
-        <!-- Grooves -->
-        <div style="
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: repeating-radial-gradient(
-                circle,
-                rgba(255,255,255,0.05) 0px,
-                rgba(255,255,255,0.05) 2px,
-                rgba(0,0,0,0.2) 3px,
-                rgba(0,0,0,0.2) 6px
-            );
-            pointer-events: none;
-        "></div>
-
-        <!-- Center Play/Pause Button -->
-        <button id="playBtn" style="
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: none;
-            background: radial-gradient(circle at 30% 30%, #fdda24, #009b3a, #da291c);
-            color: #000;
+        <h2 style="
             font-size: 26px;
+            margin-bottom: 15px;
             font-weight: bold;
-            cursor: pointer;
-            box-shadow:
-                inset 0 0 10px rgba(0,0,0,0.5),
-                0 0 12px rgba(255,255,255,0.4);
-            z-index: 10;
+            color: #fdda24;
+            text-shadow: 0 0 8px #fdda24;
         ">
-            ▶
-        </button>
+            Infin8Radio
+        </h2>
+
+        <!-- 3D Spinning Vinyl -->
+        <div id="vinyl" style="
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 20px auto;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #333 0%, #111 40%, #000 70%);
+            border: 6px solid #000;
+            position: relative;
+            animation: spin 4s linear infinite;
+            animation-play-state: paused;
+            box-shadow:
+                inset 0 0 20px rgba(0,0,0,0.8),
+                0 10px 20px rgba(0,0,0,0.6);
+            transform: perspective(600px) rotateX(18deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        ">
+
+            <!-- Grooves -->
+            <div style="
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                background: repeating-radial-gradient(
+                    circle,
+                    rgba(255,255,255,0.05) 0px,
+                    rgba(255,255,255,0.05) 2px,
+                    rgba(0,0,0,0.2) 3px,
+                    rgba(0,0,0,0.2) 6px
+                );
+                pointer-events: none;
+            "></div>
+
+            <!-- Center Play/Pause Button -->
+            <button id="playBtn" style="
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                border: none;
+                background: radial-gradient(circle at 30% 30%, #fdda24, #009b3a, #da291c);
+                color: #000;
+                font-size: 26px;
+                font-weight: bold;
+                cursor: pointer;
+                box-shadow:
+                    inset 0 0 10px rgba(0,0,0,0.5),
+                    0 0 12px rgba(255,255,255,0.4);
+                z-index: 10;
+            ">
+                ▶
+            </button>
+
+        </div>
+
+        <!-- Audio Element -->
+        <audio id="audioPlayer" crossorigin="anonymous" playsinline>
+            <source src="https://stream.zeno.fm/axipqkdhsiitv" type="audio/mpeg">
+        </audio>
 
     </div>
 
-    <!-- Audio Element (moved outside 3D container) -->
-    <audio id="audioPlayer" crossorigin="anonymous" playsinline>
-        <source src="https://stream.zeno.fm/axipqkdhsiitv" type="audio/mpeg">
-    </audio>
-
-    <!-- Rasta Accent Bar -->
+    <!-- RIGHT: Chat Room -->
     <div style="
-        height: 6px;
-        width: 100%;
-        background: linear-gradient(to right, #009b3a, #fdda24, #da291c);
-        border-radius: 4px;
-        margin-top: 15px;
-    "></div>
+        width: 380px;
+        padding: 15px;
+        background: #111;
+        border-radius: 14px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.7);
+        border: 2px solid #009b3a;
+        font-family: 'Segoe UI', sans-serif;
+        text-align: center;
+    ">
+
+        <h2 style="
+            font-size: 26px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #fdda24;
+            text-shadow: 0 0 8px #fdda24;
+        ">
+            💬 JAWI Radio Chat Room
+        </h2>
+
+        <iframe 
+            src="https://minnit.chat/Infin8Radio?embed&wix"
+            width="100%" 
+            height="500" 
+            frameborder="0"
+            style="border-radius: 10px; border: 1px solid #da291c;">
+        </iframe>
+
+    </div>
 
 </div>
 
@@ -195,8 +229,6 @@ playBtn.addEventListener('click', () => {
     }
 });
 </script>
-
-
 
        
         Coming soon</span> — Other services offered at JAMEXUS.</p>
