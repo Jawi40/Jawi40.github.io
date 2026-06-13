@@ -93,7 +93,7 @@
         color: #fdda24;
         text-shadow: 0 0 8px #fdda24;
     ">
-         Infin8Radio
+        🇯🇲 JAWI Radio Live
     </h2>
 
     <!-- 3D Spinning Vinyl -->
@@ -132,7 +132,7 @@
             pointer-events: none;
         "></div>
 
-        <!-- Center Label + Play Button -->
+        <!-- Center Play/Pause Button -->
         <button id="playBtn" style="
             width: 80px;
             height: 80px;
@@ -153,7 +153,49 @@
 
     </div>
 
-    <!-- Audio Element -->
+    <!-- Audio Element (moved outside 3D container) -->
+    <audio id="audioPlayer" crossorigin="anonymous" playsinline>
+        <source src="https://stream.zeno.fm/axipqkdhsiitv" type="audio/mpeg">
+    </audio>
+
+    <!-- Rasta Accent Bar -->
+    <div style="
+        height: 6px;
+        width: 100%;
+        background: linear-gradient(to right, #009b3a, #fdda24, #da291c);
+        border-radius: 4px;
+        margin-top: 15px;
+    "></div>
+
+</div>
+
+<!-- Spin Animation -->
+<style>
+@keyframes spin {
+    from { transform: perspective(600px) rotateX(18deg) rotate(0deg); }
+    to   { transform: perspective(600px) rotateX(18deg) rotate(360deg); }
+}
+</style>
+
+<!-- Player Logic -->
+<script>
+const audio = document.getElementById('audioPlayer');
+const vinyl = document.getElementById('vinyl');
+const playBtn = document.getElementById('playBtn');
+
+playBtn.addEventListener('click', () => {
+    if (audio.paused) {
+        audio.play();
+        vinyl.style.animationPlayState = 'running';
+        playBtn.textContent = '⏸';
+    } else {
+        audio.pause();
+        vinyl.style.animationPlayState = 'paused';
+        playBtn.textContent = '▶';
+    }
+});
+</script>
+
 
 
        
