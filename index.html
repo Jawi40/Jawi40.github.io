@@ -74,8 +74,7 @@
 
 <section>
     <h2>Featured Station of the Week</h2>
-    <!-- Vinyl Record Player Container -->
-<div style="
+ <div style="
     max-width: 420px;
     margin: 40px auto;
     padding: 20px;
@@ -98,7 +97,7 @@
     </h2>
 
     <!-- Spinning Vinyl Record -->
-    <div style="
+    <div id="vinyl" style="
         width: 180px;
         height: 180px;
         margin: 0 auto 20px auto;
@@ -107,6 +106,7 @@
         border: 4px solid #da291c;
         position: relative;
         animation: spin 4s linear infinite;
+        animation-play-state: paused;
     ">
         <!-- Center Label -->
         <div style="
@@ -122,16 +122,24 @@
         "></div>
     </div>
 
-    <!-- Zeno Player -->
-    <iframe 
-        src="https://zeno.fm/player/axipqkdhsiitv" 
-        width="100%" 
-        height="190" 
-        scrolling="no" 
-        frameborder="0"
-        allow="autoplay"
-        style="border-radius: 10px; border: 1px solid #fdda24;">
-    </iframe>
+    <!-- Custom Play/Pause Button -->
+    <button id="playBtn" style="
+        background: #009b3a;
+        color: #fff;
+        border: none;
+        padding: 12px 25px;
+        font-size: 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 0 10px #009b3a;
+    ">
+        ▶ Play
+    </button>
+
+    <!-- Audio Element -->
+    <audio id="audioPlayer">
+        <source src="https://stream.zeno.fm/axipqkdhsiitv" type="audio/mpeg">
+    </audio>
 
     <!-- Rasta Accent Bar -->
     <div style="
@@ -144,13 +152,37 @@
 
 </div>
 
-<!-- Vinyl Spin Animation -->
+<!-- Spin Animation -->
 <style>
 @keyframes spin {
     from { transform: rotate(0deg); }
     to   { transform: rotate(360deg); }
 }
 </style>
+
+<!-- Player Logic -->
+<script>
+const audio = document.getElementById('audioPlayer');
+const vinyl = document.getElementById('vinyl');
+const playBtn = document.getElementById('playBtn');
+
+playBtn.addEventListener('click', () => {
+    if (audio.paused) {
+        audio.play();
+        vinyl.style.animationPlayState = 'running';
+        playBtn.textContent = '⏸ Pause';
+        playBtn.style.background = '#da291c';
+        playBtn.style.boxShadow = '0 0 10px #da291c';
+    } else {
+        audio.pause();
+        vinyl.style.animationPlayState = 'paused';
+        playBtn.textContent = '▶ Play';
+        playBtn.style.background = '#009b3a';
+        playBtn.style.boxShadow = '0 0 10px #009b3a';
+    }
+});
+</script>
+
        
         Coming soon</span> — Other services offered at JAMEXUS.</p>
 </section>
