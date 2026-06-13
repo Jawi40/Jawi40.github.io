@@ -74,36 +74,83 @@
 
 <section>
     <h2>Featured Station of the Week</h2>
-    <section style="text-align:center; margin-top:40px;">
+    <!-- Vinyl Record Player Container -->
+<div style="
+    max-width: 420px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #111;
+    border-radius: 14px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.6);
+    text-align: center;
+    border: 2px solid #009b3a;
+    font-family: 'Segoe UI', sans-serif;
+">
+
     <h2 style="
-        color:#00e0ff;
-        text-shadow:0 0 10px #00e0ff;
-        border-bottom:none;
-        font-size:32px;
+        font-size: 30px;
+        margin-bottom: 15px;
+        font-weight: bold;
+        color: #fdda24;
+        text-shadow: 0 0 8px #fdda24;
     ">
-        Live Radio Stream
+        🇯🇲 JAWI Radio Live
     </h2>
 
-    <audio id="radioPlayer" preload="none" style="width:80%; max-width:400px; margin-top:20px;" controls>
-        <source src="https://stream.zeno.fm/axipqkdhsiitv" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+    <!-- Spinning Vinyl Record -->
+    <div style="
+        width: 180px;
+        height: 180px;
+        margin: 0 auto 20px auto;
+        border-radius: 50%;
+        background: radial-gradient(circle, #000 40%, #222 60%, #000 100%);
+        border: 4px solid #da291c;
+        position: relative;
+        animation: spin 4s linear infinite;
+    ">
+        <!-- Center Label -->
+        <div style="
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #009b3a, #fdda24, #da291c);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px rgba(255,255,255,0.3);
+        "></div>
+    </div>
 
-    <p style="color:#ff0077; margin-top:10px; opacity:0.8;">
-        Broadcasting now — press play to listen
-    </p>
-</section>
+    <!-- Zeno Player -->
+    <iframe 
+        src="https://zeno.fm/player/axipqkdhsiitv" 
+        width="100%" 
+        height="190" 
+        scrolling="no" 
+        frameborder="0"
+        allow="autoplay"
+        style="border-radius: 10px; border: 1px solid #fdda24;">
+    </iframe>
 
-<script>
-    // Ensures fast response when pressing Play
-    const player = document.getElementById('radioPlayer');
-    player.addEventListener('play', () => {
-        if (player.src !== player.querySelector('source').src) {
-            player.src = player.querySelector('source').src;
-        }
-    });
-</script>
+    <!-- Rasta Accent Bar -->
+    <div style="
+        height: 6px;
+        width: 100%;
+        background: linear-gradient(to right, #009b3a, #fdda24, #da291c);
+        border-radius: 4px;
+        margin-top: 15px;
+    "></div>
 
+</div>
+
+<!-- Vinyl Spin Animation -->
+<style>
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+</style>
        
         Coming soon</span> — Other services offered at JAMEXUS.</p>
 </section>
