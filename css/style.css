@@ -230,8 +230,13 @@ section h2 {
     }
 
     .player-box,
-    .chat-box {
-        width: 100% !important;
-        max-width: 420px;
-    }
+   .chat-box {
+    height: auto;
+}
+
+.chat-frame {
+    min-height: 650px;
+    height: 100%;
+}
+
 }
