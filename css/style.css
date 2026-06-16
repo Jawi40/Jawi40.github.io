@@ -112,10 +112,10 @@ section h2 {
 }
 
 /* ===========================
-   PLAYER BOX (SMALLER ONLY)
+   PLAYER BOX (SMALLER)
    =========================== */
 .player-box {
-    width: 240px; /* smaller player */
+    width: 240px;
     background: #111;
     padding: 10px;
     border-radius: 14px;
@@ -167,7 +167,7 @@ section h2 {
     background: radial-gradient(circle, #fdda24, #009b3a, #da291c);
 }
 
-/* PLAY BUTTON (SCALED) */
+/* PLAY BUTTON */
 .play-btn {
     position: absolute;
     width: 60px;
@@ -184,72 +184,4 @@ section h2 {
 }
 
 /* ===========================
-   TONEARM + NEEDLE (SCALED)
-   =========================== */
-.tonearm {
-    position: absolute;
-    width: 120px;
-    height: 10px;
-    background: #ccc;
-    top: 30px;
-    right: -18px;
-    border-radius: 6px;
-    transform-origin: left center;
-    transform: rotate(0deg);
-    transition: transform 0.4s ease;
-    z-index: 4;
-}
-
-.needle {
-    position: absolute;
-    width: 16px;
-    height: 32px;
-    background: #222;
-    top: -12px;
-    right: -8px;
-    border-radius: 4px;
-    transform-origin: top center;
-    transform: rotate(0deg);
-    transition: transform 0.4s ease;
-    z-index: 5;
-}
-
-
-
-
-/* ===========================
-   MOBILE STACKING
-   =========================== */
-@media (max-width: 700px) {
-
-    .flex-row {
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 100% !important;
-    }
-
-    .chat-box {
-    width: 380px;
-    background: #111;
-    padding: 20px;
-    border-radius: 14px;
-    border: 2px solid #009b3a;
-    text-align: center;
-    box-sizing: border-box;
-    overflow: hidden;
-
-    height: auto;        /* allow it to grow */
-    min-height: 500px;   /* ensures full chat visibility */
-}
-
-
-.chat-frame {
-    width: 150%;
-    height: 500px;  /* visible height */
-    border: none;
-    border-radius: 10px;
-    display: block;
-}
-
-}
+   TONE
