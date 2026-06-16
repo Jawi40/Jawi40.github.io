@@ -135,62 +135,67 @@ section h2 {
 }
 
 /* ===========================
-   VINYL + NEEDLE
+   VINYL PLAYER (3D RESTORED)
    =========================== */
 .vinyl-wrapper {
     position: relative;
-    width: 200px;
+    width: 260px;
+    height: 260px;
     margin: 0 auto 25px auto;
+    transform: perspective(700px) rotateX(18deg);
 }
 
+/* TONEARM */
 .tonearm {
     position: absolute;
-    right: -10px;
-    top: 42px;
-    width: 75px;
-    height: 10px;
-    background: linear-gradient(90deg, #bbb, #555, #222);
-    border-radius: 6px;
+    right: -35px;
+    top: 65px;
+    width: 120px;
+    height: 14px;
+    background: linear-gradient(90deg, #ccc, #777, #333);
+    border-radius: 8px;
     transform-origin: left center;
     transform: rotate(0deg);
     transition: transform 0.8s ease;
     z-index: 5;
 }
 
+/* NEEDLE HEAD */
 .needle {
     position: absolute;
-    right: -10px;
-    top: 42px;
-    width: 18px;
-    height: 28px;
-    background: #0a0a0a;
-    border-radius: 4px;
-    border: 2px solid #666;
+    right: -35px;
+    top: 65px;
+    width: 26px;
+    height: 40px;
+    background: #111;
+    border-radius: 6px;
+    border: 3px solid #555;
     transform-origin: top center;
     transform: rotate(0deg);
     transition: transform 0.8s ease;
     z-index: 6;
 }
 
+/* VINYL DISC */
 .vinyl {
-    width: 200px;
-    height: 200px;
+    width: 260px;
+    height: 260px;
     border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #777 0%, #222 40%, #000 80%);
-    border: 6px solid #000;
+    background: radial-gradient(circle at 30% 30%, #666 0%, #222 40%, #000 80%);
+    border: 8px solid #000;
     animation: spin 4s linear infinite;
     animation-play-state: paused;
-    transform: perspective(700px) rotateX(18deg);
     box-shadow:
-        inset 0 0 30px rgba(0,0,0,1),
-        0 15px 25px rgba(0,0,0,0.9),
-        0 0 25px rgba(0,255,120,0.35);
+        inset 0 0 40px rgba(0,0,0,1),
+        0 20px 30px rgba(0,0,0,0.9),
+        0 0 30px rgba(0,255,120,0.35);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto;
+    position: relative;
 }
 
+/* VINYL GROOVES */
 .vinyl-lines {
     position: absolute;
     width: 100%;
@@ -198,37 +203,45 @@ section h2 {
     border-radius: 50%;
     background: repeating-radial-gradient(
         circle,
-        rgba(255,255,255,0.06) 0px,
-        rgba(255,255,255,0.06) 2px,
-        rgba(0,0,0,0.35) 3px,
-        rgba(0,0,0,0.35) 6px
+        rgba(255,255,255,0.05) 0px,
+        rgba(255,255,255,0.05) 2px,
+        rgba(0,0,0,0.4) 3px,
+        rgba(0,0,0,0.4) 6px
     );
     pointer-events: none;
 }
 
+/* CENTER LABEL */
 .vinyl-center {
-    width: 70px;
-    height: 70px;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
     background: radial-gradient(circle at 30% 30%, #fdda24, #009b3a, #da291c);
     box-shadow:
-        inset 0 0 12px rgba(0,0,0,0.7),
-        0 0 18px rgba(253,218,36,0.5);
+        inset 0 0 15px rgba(0,0,0,0.7),
+        0 0 20px rgba(253,218,36,0.5);
+    z-index: 3;
 }
 
 /* PLAY BUTTON */
 .play-btn {
     position: absolute;
-    width: 65px;
-    height: 65px;
+    width: 75px;
+    height: 75px;
     border-radius: 50%;
     border: none;
     background: radial-gradient(circle at 30% 30%, #fdda24, #009b3a, #da291c);
     color: #000;
-    font-size: 26px;
+    font-size: 32px;
     font-weight: bold;
     cursor: pointer;
     z-index: 10;
+}
+
+/* SPIN ANIMATION */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
 }
 
 /* LISTENER COUNT */
@@ -242,7 +255,7 @@ section h2 {
 }
 
 /* ===========================
-   CHAT BOX
+   CHAT BOX (FIXED SIZING)
    =========================== */
 .chat-box {
     width: 380px;
@@ -251,6 +264,7 @@ section h2 {
     border-radius: 14px;
     border: 2px solid #009b3a;
     text-align: center;
+    box-sizing: border-box;
 }
 
 .chat-title {
@@ -260,8 +274,13 @@ section h2 {
 }
 
 .chat-frame {
+    width: 100%;
+    height: 500px;
+    border: none;
     border-radius: 10px;
-    border: 1px solid #da291c;
+    display: block;
+    margin: 0;
+    padding: 0;
 }
 
 /* ===========================
@@ -271,12 +290,4 @@ section h2 {
     color: #fdda24;
     font-weight: bold;
     text-shadow: 0 0 8px #fdda24;
-}
-
-/* ===========================
-   VINYL SPIN ANIMATION
-   =========================== */
-@keyframes spin {
-    from { transform: perspective(700px) rotateX(18deg) rotate(0deg); }
-    to   { transform: perspective(700px) rotateX(18deg) rotate(360deg); }
 }
