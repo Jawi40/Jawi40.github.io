@@ -4,66 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JAMEXUS SERVICES</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #0d0d0d;
-            color: #fdda24;
-        }
-        header {
-            background: linear-gradient(135deg, #111, #1a1a1a, #111);
-            color: #fdda24;
-            padding: 5px 2px;
-            text-align: center;
-            border-bottom: 3px solid #00e0ff;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 52px;
-            letter-spacing: 3px;
-            text-shadow: 0 0 10px #00e0ff;
-        }
-        header p {
-            font-size: 18px;
-            margin-top: 12px;
-            opacity: 0.9;
-        }
-        section {
-            max-width: 900px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
-        h2 {
-            color: #ff0077;
-            border-bottom: 2px solid #ff0077;
-            padding-bottom: 5px;
-            text-shadow: 0 0 8px #ff0077;
-        }
-        ul li {
-            margin: 10px 0;
-        }
-        .highlight {
-            color: #fdda24;
-            font-weight: bold;
-        }
-        @keyframes spin {
-            from { transform: perspective(600px) rotateX(18deg) rotate(0deg); }
-            to   { transform: perspective(600px) rotateX(18deg) rotate(360deg); }
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-   
-    <div id="header"></div>
+
+<div id="header"></div>
 <script>
   fetch("partials/header.html")
-    .then(response => response.text())
-    .then(data => document.getElementById("header").innerHTML = data);
+    .then(r => r.text())
+    .then(t => document.getElementById("header").innerHTML = t);
 </script>
+
 
 <section>
     <h2>Welcome</h2>
