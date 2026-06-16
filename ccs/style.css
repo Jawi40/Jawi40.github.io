@@ -1,4 +1,4 @@
-/* ====== GLOBAL PAGE STYLES ====== */
+/* ===== GLOBAL ===== */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -7,7 +7,7 @@ body {
     color: #fdda24;
 }
 
-/* ====== HEADER STYLING ====== */
+/* ===== HEADER ===== */
 header {
     background: linear-gradient(135deg, #111, #1a1a1a, #111);
     color: #fdda24;
@@ -29,21 +29,21 @@ header p {
     opacity: 0.9;
 }
 
-/* ====== NAVIGATION BAR (MATCHES HEADER) ====== */
+/* ===== NAVIGATION (MATCHES HEADER) ===== */
 nav {
     display: flex;
     justify-content: center;
-    gap: 40px;
+    gap: 35px;
     padding: 15px 0;
     background: linear-gradient(135deg, #111, #1a1a1a, #111);
     border-bottom: 3px solid #00e0ff;
-    box-shadow: 0 0 15px #00e0ff;
+    box-shadow: 0 0 12px #00e0ff;
 }
 
 nav a {
     color: #fdda24;
     text-decoration: none;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: bold;
     letter-spacing: 1px;
     text-shadow: 0 0 8px #00e0ff;
@@ -56,4 +56,25 @@ nav a:hover {
     transform: scale(1.08);
 }
 
-/* ====== SECTION DIVIDERS ======
+/* ===== SECTIONS ===== */
+section {
+    padding: 20px;
+    max-width: 900px;
+    margin: auto;
+}
+
+/* ===== SECTION DIVIDER (MATCHES YOUR THEME) ===== */
+.section-divider {
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #009b3a, #da291c);
+    box-shadow: 0 0 12px #009b3a, 0 0 12px #da291c;
+    margin: 40px 0;
+}
+
+/* ===== HIGHLIGHT TEXT ===== */
+.highlight {
+    color: #fdda24;
+    text-shadow: 0 0 8px #fdda24;
+    font-weight: bold;
+}
