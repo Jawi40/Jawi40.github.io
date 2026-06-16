@@ -380,3 +380,21 @@ section h2 {
         font-size: 18px;
     }
 }
+
+/* FORCE STACKING ON ALL MOBILE DEVICES */
+@media (max-width: 700px) {
+
+    .flex-row {
+        display: flex;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+    }
+
+    .player-box,
+    .chat-box {
+        width: 100% !important;
+        max-width: 420px;
+    }
+}
