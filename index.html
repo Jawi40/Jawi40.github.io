@@ -81,6 +81,7 @@
 <section>
     <h2>Featured Station of the Week</h2>
 
+<!-- ⭐ FLEX CONTAINER (PLAYER + CHAT SIDE BY SIDE) -->
 <div style="
     display: flex;
     justify-content: center;
@@ -90,7 +91,7 @@
     margin-top: 40px;
 ">
 
-    <!-- LEFT: Player Column -->
+    <!-- ⭐ LEFT: PLAYER COLUMN -->
     <div style="
         width: 380px;
         padding: 20px;
@@ -99,7 +100,6 @@
         box-shadow: 0 0 20px rgba(0,0,0,0.7);
         border: 2px solid #009b3a;
         text-align: center;
-        font-family: 'Segoe UI', sans-serif;
     ">
 
         <h2 style="
@@ -108,9 +108,7 @@
             font-weight: bold;
             color: #fdda24;
             text-shadow: 0 0 8px #fdda24;
-        ">
-            Infin8Radio
-        </h2>
+        ">Infin8Radio</h2>
 
         <!-- NOW PLAYING BAR -->
         <div id="nowPlaying" style="
@@ -124,12 +122,9 @@
             color: #fdda24;
             border: 2px solid #009b3a;
             text-shadow: 0 0 8px #009b3a, 0 0 12px #da291c;
-            box-shadow: 0 0 15px rgba(0,0,0,0.6);
-        ">
-            🎵 Loading current track...
-        </div>
+        ">🎵 Loading current track...</div>
 
-        <!-- FIXED 3D VINYL + NEEDLE -->
+        <!-- ⭐ VINYL + NEEDLE -->
         <div style="position: relative; width: 220px; margin: 0 auto 30px auto;">
 
             <!-- Tonearm -->
@@ -163,22 +158,17 @@
                 z-index: 6;
             "></div>
 
-            <!-- Vinyl Record -->
+            <!-- Vinyl -->
             <div id="vinyl" style="
                 width: 220px;
                 height: 220px;
                 border-radius: 50%;
-                margin: 0 auto;
                 background: radial-gradient(circle at 30% 30%, #666 0%, #222 40%, #000 80%);
                 border: 6px solid #000;
-                position: relative;
                 animation: spin 4s linear infinite;
                 animation-play-state: paused;
                 transform: perspective(700px) rotateX(18deg);
-                box-shadow:
-                    inset 0 0 30px rgba(0,0,0,1),
-                    0 15px 25px rgba(0,0,0,0.9),
-                    0 0 35px rgba(0,255,120,0.25);
+                box-shadow: inset 0 0 30px rgba(0,0,0,1);
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -190,15 +180,12 @@
                     width: 100%;
                     height: 100%;
                     border-radius: 50%;
-                    background: repeating-radial-gradient(
-                        circle,
+                    background: repeating-radial-gradient(circle,
                         rgba(255,255,255,0.05) 0px,
                         rgba(255,255,255,0.05) 2px,
                         rgba(0,0,0,0.3) 3px,
                         rgba(0,0,0,0.3) 6px
                     );
-                    pointer-events: none;
-                    z-index: 2;
                 "></div>
 
                 <!-- Center Label -->
@@ -207,13 +194,112 @@
                     height: 75px;
                     border-radius: 50%;
                     background: radial-gradient(circle at 30% 30%, #fdda24, #009b3a, #da291c);
-                    box-shadow:
-                        inset 0 0 12px rgba(0,0,0,0.7),
-                        0 0 18px rgba(253,218,36,0.4);
-                    z-index: 3;
                 "></div>
 
                 <!-- Play Button -->
                 <button id="playBtn" style="
                     position: absolute;
                     width: 70px;
+                    height: 70px;
+                    border-radius: 50%;
+                    border: none;
+                    background: radial-gradient(circle at 30% 30%, #fdda24, #009b3a, #da291c);
+                    font-size: 26px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    z-index: 10;
+                ">▶</button>
+
+            </div>
+        </div>
+
+        <!-- AUDIO -->
+        <audio id="audioPlayer" crossorigin="anonymous" playsinline>
+            <source src="https://stream.zeno.fm/axipqkdhsiitv" type="audio/mpeg">
+        </audio>
+
+    </div>
+
+    <!-- ⭐ RIGHT: CHAT ROOM -->
+    <div style="
+        width: 380px;
+        padding: 15px;
+        background: #111;
+        border-radius: 14px;
+        border: 2px solid #009b3a;
+        text-align: center;
+    ">
+
+        <h2 style="
+            font-size: 26px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #fdda24;
+        ">💬 Music Vibes Chat Room</h2>
+
+        <iframe 
+            src="https://minnit.chat/Infin8Radio?embed&wix"
+            width="100%" 
+            height="500" 
+            frameborder="0"
+            style="border-radius: 10px; border: 1px solid #da291c;">
+        </iframe>
+
+    </div>
+
+</div>
+</section>
+
+<section>
+    <h2>Why Internet Radio?</h2>
+    <p>Internet radio is one of the most open, creative, and global forms of broadcasting. Anyone can create. Anyone can listen. I’m here to explore that world and help others dive in.</p>
+</section>
+
+<section>
+    <h2>Connect</h2>
+    <p>Email: uc5521@gmail.com</p>
+</section>
+
+<script>
+const audio = document.getElementById('audioPlayer');
+const vinyl = document.getElementById('vinyl');
+const playBtn = document.getElementById('playBtn');
+
+playBtn.addEventListener('click', () => {
+    if (audio.paused) {
+        audio.play();
+        vinyl.style.animationPlayState = 'running';
+        playBtn.textContent = '⏸';
+    } else {
+        audio.pause();
+        vinyl.style.animationPlayState = 'paused';
+        playBtn.textContent = '▶';
+    }
+});
+</script>
+
+<script>
+async function updateNowPlaying() {
+    try {
+        const response = await fetch("https://jawi40.github.io/nowplaying.txt?cache=" + Date.now());
+        const text = await response.text();
+
+        const nowPlayingBar = document.getElementById("nowPlaying");
+
+        if (text.trim() !== "") {
+            nowPlayingBar.textContent = "🎵 Now Playing: " + text.trim();
+        } else {
+            nowPlayingBar.textContent = "🎵 Live on I8R Radio";
+        }
+
+    } catch (e) {
+        document.getElementById("nowPlaying").textContent = "🎵 Live on I8R Radio";
+    }
+}
+
+updateNowPlaying();
+setInterval(updateNowPlaying, 10000);
+</script>
+
+</body>
+</html>
