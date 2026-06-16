@@ -267,19 +267,31 @@
 const audio = document.getElementById('audioPlayer');
 const vinyl = document.getElementById('vinyl');
 const playBtn = document.getElementById('playBtn');
+const tonearm = document.getElementById('tonearm');
+const needle = document.getElementById('needleHead');
 
 playBtn.addEventListener('click', () => {
     if (audio.paused) {
         audio.play();
         vinyl.style.animationPlayState = 'running';
         playBtn.textContent = '⏸';
+
+        // Move needle onto record
+        tonearm.style.transform = 'rotate(22deg)';
+        needle.style.transform = 'rotate(22deg)';
+
     } else {
         audio.pause();
         vinyl.style.animationPlayState = 'paused';
         playBtn.textContent = '▶';
+
+        // Lift needle off record
+        tonearm.style.transform = 'rotate(0deg)';
+        needle.style.transform = 'rotate(0deg)';
     }
 });
 </script>
+
 
 <script>
 async function updateNowPlaying() {
