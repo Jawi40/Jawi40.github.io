@@ -14,91 +14,9 @@ body {
    PAGE WRAPPER
    =========================== */
 .page-wrapper {
-    max-width: 1100px;
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* ===========================
-   HEADER
-   =========================== */
-header {
-    background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
-    padding: 25px 10px;
-    text-align: center;
-    border-bottom: 3px solid #00e0ff;
-    box-shadow: 0 0 18px #00e0ff;
-}
-
-header h1 {
-    margin: 0;
-    font-size: 56px;
-    font-weight: bold;
-    letter-spacing: 2px;
-    color: #fdda24;
-    text-shadow: 0 0 12px #00e0ff;
-}
-
-header p {
-    margin-top: 8px;
-    font-size: 20px;
-    opacity: 0.9;
-}
-
-/* ===========================
-   NAVIGATION
-   =========================== */
-nav {
-    display: flex;
-    justify-content: center;
-    gap: 45px;
-    padding: 18px 0;
-    background: #111;
-    border-bottom: 3px solid #00e0ff;
-    box-shadow: 0 0 12px #00e0ff;
-    position: relative;
-    z-index: 1000;
-}
-
-nav a {
-    color: #fdda24;
-    text-decoration: none;
-    font-size: 20px;
-    font-weight: bold;
-    text-shadow: 0 0 8px #00e0ff;
-    transition: 0.25s ease;
-}
-
-nav a:hover {
-    color: #00e0ff;
-    transform: scale(1.1);
-}
-
-/* ===========================
-   SECTIONS
-   =========================== */
-section {
-    max-width: 900px;
-    margin: 50px auto;
-    padding: 0 20px;
-}
-
-section h2 {
-    font-size: 32px;
-    margin-bottom: 15px;
-    color: #fdda24;
-    text-shadow: 0 0 8px #fdda24;
-}
-
-/* ===========================
-   SECTION DIVIDER
-   =========================== */
-.section-divider {
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, #009b3a, #da291c);
-    box-shadow: 0 0 14px #009b3a, 0 0 14px #da291c;
-    margin: 60px 0;
+    padding: 0 10px;
 }
 
 /* ===========================
@@ -107,46 +25,45 @@ section h2 {
 .flex-row {
     display: flex;
     justify-content: center;
-    gap: 30px;
+    gap: 20px;
     flex-wrap: wrap;
 }
 
 /* ===========================
-   PLAYER BOX (SMALLER)
+   PLAYER BOX (COMPACT)
    =========================== */
 .player-box {
-    width: 240px;
+    width: 180px;
     background: #111;
     padding: 10px;
-    border-radius: 14px;
+    border-radius: 12px;
     border: 2px solid #009b3a;
     text-align: center;
     box-sizing: border-box;
 }
 
 /* ===========================
-   VINYL PLAYER (SCALED DOWN)
+   VINYL PLAYER (SMALLER)
    =========================== */
 .vinyl-wrapper {
     position: relative;
-    width: 160px;
-    height: 160px;
-    margin: 0 auto 15px auto;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 10px auto;
 }
 
 .vinyl {
-    width: 160px;
-    height: 160px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     background: radial-gradient(circle at 30% 30%, #666, #222 40%, #000 80%);
-    border: 6px solid #000;
+    border: 4px solid #000;
     animation: spin 4s linear infinite;
     animation-play-state: paused;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    z-index: 2;
 }
 
 .vinyl-lines {
@@ -161,21 +78,20 @@ section h2 {
 }
 
 .vinyl-center {
-    width: 70px;
-    height: 70px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background: radial-gradient(circle, #fdda24, #009b3a, #da291c);
 }
 
-/* PLAY BUTTON */
 .play-btn {
     position: absolute;
-    width: 60px;
-    height: 60px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     border: none;
     background: radial-gradient(circle, #fdda24, #009b3a, #da291c);
-    font-size: 26px;
+    font-size: 20px;
     cursor: pointer;
     z-index: 3;
     top: 50%;
@@ -184,53 +100,48 @@ section h2 {
 }
 
 /* ===========================
-   TONEARM + NEEDLE
+   TONEARM (SMALLER)
    =========================== */
 .tonearm {
     position: absolute;
-    width: 120px;
-    height: 10px;
+    width: 90px;
+    height: 8px;
     background: #ccc;
-    top: 30px;
-    right: -18px;
-    border-radius: 6px;
+    top: 20px;
+    right: -12px;
+    border-radius: 5px;
     transform-origin: left center;
-    transform: rotate(0deg);
     transition: transform 0.4s ease;
-    z-index: 4;
 }
 
 .needle {
     position: absolute;
-    width: 16px;
-    height: 32px;
+    width: 12px;
+    height: 24px;
     background: #222;
-    top: -12px;
-    right: -8px;
+    top: -8px;
+    right: -6px;
     border-radius: 4px;
     transform-origin: top center;
-    transform: rotate(0deg);
     transition: transform 0.4s ease;
-    z-index: 5;
 }
 
 /* ===========================
-   CHAT BOX (DESKTOP)
+   CHAT BOX (COMPACT)
    =========================== */
 .chat-box {
-    width: 380px;
+    width: 260px;
     background: #111;
-    padding: 20px;
-    border-radius: 14px;
+    padding: 10px;
+    border-radius: 12px;
     border: 2px solid #009b3a;
     text-align: center;
     box-sizing: border-box;
 
-    height: 350px;        /* fixed height */
-    overflow-y: auto;     /* scroll INSIDE the chat box */
+    height: 450px;
+    overflow-y: auto; /* scroll inside */
 }
 
-/* Chat iframe fills the scrollable area */
 .chat-frame {
     width: 100%;
     height: 100%;
@@ -240,25 +151,21 @@ section h2 {
 }
 
 /* ===========================
-   MOBILE STACKING
+   MOBILE
    =========================== */
 @media (max-width: 700px) {
 
     .flex-row {
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        width: 100%;
     }
 
     .chat-box {
         width: 100%;
-        height: 600px;
-        overflow-y: auto;
+        height: 400px;
     }
 
     .chat-frame {
-        width: 100%;
         height: 100%;
     }
 }
