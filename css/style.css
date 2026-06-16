@@ -226,7 +226,7 @@ section h2 {
     text-align: center;
     box-sizing: border-box;
 
-    height: 600px;        /* fixed height */
+    height: 300px;        /* fixed height */
     overflow-y: auto;     /* scroll INSIDE the chat box */
 }
 
