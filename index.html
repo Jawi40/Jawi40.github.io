@@ -2,15 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta-name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAMEXUS SERVICES</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAMEXUS SERVICES – Home</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-<!-- HEADER -->
 <div id="header"></div>
 <script>
   fetch("partials/header.html")
@@ -18,154 +16,56 @@
     .then(t => document.getElementById("header").innerHTML = t);
 </script>
 
-<!-- SECTION 1 -->
-<section>
-    <h2>Welcome</h2>
-    <p>I’m <span class="highlight">JAWI</span>, and I explore and share the world of internet radio — from streaming music to providing music vibes and commentaries. This site is my personal hub for sharing what I learn, what I build, and what I love about digital broadcasting.</p>
-</section>
+<div class="page-wrapper">
 
-<div class="section-divider"></div>
+    <section>
+        <h2>Welcome to JAMEXUS SERVICES</h2>
+        <p>Your home for music, vibes, and digital creativity.</p>
+    </section>
 
-<!-- SECTION 2 -->
-<section>
-    <h2>What I Do</h2>
-    <ul>
-        <li>DJ on the internet for virtual parties</li>
-        <li>DJ at public social and private events</li>
-        <li>I provide a lot of other resources and skills</li>
-        <li>Share tutorials for beginners who want to become a DJ</li>
-    </ul>
-</section>
-
-<div class="section-divider"></div>
-
-<!-- SECTION 3: FEATURED STATION -->
-<section>
-    <h2>Featured Station of the Week</h2>
+    <div class="section-divider"></div>
 
     <div class="flex-row">
 
-        <!-- PLAYER -->
+        <!-- PLAYER BOX -->
         <div class="player-box">
+            <div class="player-title">Live Radio</div>
+            <div class="now-playing" id="nowPlaying">Loading...</div>
 
-            <h2 class="player-title">Infin8Radio</h2>
-
-            <div id="nowPlaying" class="now-playing">🎵 Loading current track...</div>
-
-            <!-- VINYL + NEEDLE -->
             <div class="vinyl-wrapper">
+                <div class="tonearm" id="tonearm"></div>
+                <div class="needle" id="needle"></div>
 
-                <div id="tonearm" class="tonearm"></div>
-                <div id="needleHead" class="needle"></div>
-
-                <div id="vinyl" class="vinyl">
+                <div class="vinyl" id="vinyl">
                     <div class="vinyl-lines"></div>
                     <div class="vinyl-center"></div>
-                    <button id="playBtn" class="play-btn">▶</button>
+                    <button class="play-btn" id="playBtn">▶</button>
                 </div>
             </div>
 
-            <div id="listenerCount" class="listener-count">🔊 Live listeners: 0</div>
-
-            <audio id="audioPlayer" crossorigin="anonymous" playsinline>
-                <source src="https://stream.zeno.fm/axipqkdhsiitv" type="audio/mpeg">
-            </audio>
-
+            <div class="listener-count" id="listeners">Listeners: 0</div>
         </div>
 
-        <!-- CHAT -->
+        <!-- CHAT BOX -->
         <div class="chat-box">
-            <h2 class="chat-title">💬 Music Vibes Chat Room</h2>
-
-            <iframe 
-                src="https://minnit.chat/Infin8Radio?embed&wix"
-                class="chat-frame"
-                frameborder="0">
-            </iframe>
+            <div class="chat-title">Live Chat</div>
+            <iframe class="chat-frame" src="https://minnit.chat/JAMEXUS?embed&nickname="></iframe>
         </div>
 
     </div>
-</section>
+
+</div>
 
 <div class="section-divider"></div>
 
-<!-- SECTION 4 -->
-<section>
-    <h2>Why Internet Radio?</h2>
-    <p>Internet radio is one of the most open, creative, and global forms of broadcasting. Anyone can create. Anyone can listen. I’m here to explore that world and help others dive in.</p>
-</section>
-
-<div class="section-divider"></div>
-
-<!-- SECTION 5 -->
-<section>
-    <h2>Connect</h2>
-    <p>Email: uc5521@gmail.com</p>
-</section>
-
-<div class="section-divider"></div>
-
-<!-- PLAYER SCRIPT -->
-<script>
-const audio = document.getElementById('audioPlayer');
-const vinyl = document.getElementById('vinyl');
-const playBtn = document.getElementById('playBtn');
-const tonearm = document.getElementById('tonearm');
-const needle = document.getElementById('needleHead');
-
-playBtn.addEventListener('click', () => {
-    if (audio.paused) {
-        audio.play();
-        vinyl.style.animationPlayState = 'running';
-        playBtn.textContent = '⏸';
-        tonearm.style.transform = 'rotate(22deg)';
-        needle.style.transform = 'rotate(22deg)';
-    } else {
-        audio.pause();
-        vinyl.style.animationPlayState = 'paused';
-        playBtn.textContent = '▶';
-        tonearm.style.transform = 'rotate(0deg)';
-        needle.style.transform = 'rotate(0deg)';
-    }
-});
-</script>
-
-<!-- METADATA SCRIPT -->
-<script>
-async function updateMetadata() {
-    const nowBar = document.getElementById("nowPlaying");
-    const listenerBar = document.getElementById("listenerCount");
-
-    try {
-        const response = await fetch("https://api.zeno.fm/mounts/metadata/axipqkdhsiitv?cache=" + Date.now());
-        const data = await response.json();
-
-        nowBar.textContent = data.now_playing ? "🎵 Now Playing: " + data.now_playing : "🎵 Now Playing: Live Stream";
-
-        if (data.listeners !== undefined) {
-            listenerBar.textContent = "🔊 Live listeners: " + data.listeners;
-            listenerBar.style.display = "block";
-        } else {
-            listenerBar.style.display = "none";
-        }
-
-    } catch (err) {
-        nowBar.textContent = "🎵 Now Playing: Live Stream";
-        listenerBar.style.display = "none";
-    }
-}
-
-updateMetadata();
-setInterval(updateMetadata, 10000);
-</script>
-
-<!-- FOOTER -->
 <div id="footer"></div>
 <script>
   fetch("partials/footer.html")
-    .then(response => response.text())
-    .then(data => document.getElementById("footer").innerHTML = data);
+    .then(r => r.text())
+    .then(t => document.getElementById("footer").innerHTML = t);
 </script>
+
+<script src="js/player.js"></script>
 
 </body>
 </html>
