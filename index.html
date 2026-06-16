@@ -109,7 +109,7 @@
                 text-shadow: 0 0 8px #fdda24;
             ">Infin8Radio</h2>
 
-            <!-- NOW PLAYING ONLY -->
+            <!-- NOW PLAYING -->
             <div id="nowPlaying" style="
                 width: 100%;
                 padding: 10px;
@@ -216,6 +216,18 @@
                 </div>
             </div>
 
+            <!-- LISTENER COUNT BELOW VINYL -->
+            <div id="listenerCount" style="
+                margin-top: 10px;
+                font-size: 18px;
+                font-weight: bold;
+                color: #fdda24;
+                text-shadow: 0 0 8px #009b3a, 0 0 12px #da291c;
+                display: none;
+            ">
+                🔊 Live listeners: 0
+            </div>
+
             <audio id="audioPlayer" crossorigin="anonymous" playsinline>
                 <source src="https://stream.zeno.fm/axipqkdhsiitv" type="audio/mpeg">
             </audio>
@@ -287,23 +299,34 @@ playBtn.addEventListener('click', () => {
 });
 </script>
 
-<!-- CLEAN METADATA SCRIPT (NO NEXT) -->
+<!-- METADATA SCRIPT -->
 <script>
 async function updateMetadata() {
     const nowBar = document.getElementById("nowPlaying");
+    const listenerBar = document.getElementById("listenerCount");
 
     try {
         const response = await fetch("https://api.zeno.fm/mounts/metadata/axipqkdhsiitv?cache=" + Date.now());
         const data = await response.json();
 
+        // NOW PLAYING
         if (data.now_playing && data.now_playing !== "") {
             nowBar.textContent = "🎵 Now Playing: " + data.now_playing;
         } else {
             nowBar.textContent = "🎵 Now Playing: Live Stream";
         }
 
+        // LISTENER COUNT
+        if (data.listeners !== undefined && data.listeners !== null) {
+            listenerBar.textContent = "🔊 Live listeners: " + data.listeners;
+            listenerBar.style.display = "block";
+        } else {
+            listenerBar.style.display = "none";
+        }
+
     } catch (err) {
         nowBar.textContent = "🎵 Now Playing: Live Stream";
+        listenerBar.style.display = "none";
     }
 }
 
