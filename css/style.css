@@ -255,7 +255,7 @@ section h2 {
 }
 
 /* ===========================
-   CHAT BOX (FIXED SIZING)
+   CHAT BOX
    =========================== */
 .chat-box {
     width: 380px;
@@ -294,20 +294,23 @@ section h2 {
 }
 
 /* ===========================
-   MOBILE RESPONSIVE FIXES
+   UNIVERSAL MOBILE NAV FIX
    =========================== */
 @media (max-width: 600px) {
 
-    /* NAVIGATION FIX */
     nav {
+        display: flex;
         flex-wrap: wrap;
-        gap: 10px;
-        padding: 10px 0;
+        justify-content: center;
+        gap: 12px;
+        padding: 12px 0;
     }
 
     nav a {
         font-size: 16px;
-        padding: 6px 10px;
+        padding: 6px 12px;
+        display: inline-block;
+        white-space: nowrap;
     }
 
     /* Stack player + chat */
@@ -360,5 +363,20 @@ section h2 {
 
     .chat-frame {
         height: 400px !important;
+    }
+}
+
+@media (max-width: 420px) {
+
+    nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    nav a {
+        width: 100%;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 18px;
     }
 }
