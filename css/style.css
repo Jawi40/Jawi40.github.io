@@ -184,4 +184,80 @@ section h2 {
 }
 
 /* ===========================
-   TONE
+   TONEARM + NEEDLE
+   =========================== */
+.tonearm {
+    position: absolute;
+    width: 120px;
+    height: 10px;
+    background: #ccc;
+    top: 30px;
+    right: -18px;
+    border-radius: 6px;
+    transform-origin: left center;
+    transform: rotate(0deg);
+    transition: transform 0.4s ease;
+    z-index: 4;
+}
+
+.needle {
+    position: absolute;
+    width: 16px;
+    height: 32px;
+    background: #222;
+    top: -12px;
+    right: -8px;
+    border-radius: 4px;
+    transform-origin: top center;
+    transform: rotate(0deg);
+    transition: transform 0.4s ease;
+    z-index: 5;
+}
+
+/* ===========================
+   CHAT BOX (DESKTOP)
+   =========================== */
+.chat-box {
+    width: 380px;
+    background: #111;
+    padding: 20px;
+    border-radius: 14px;
+    border: 2px solid #009b3a;
+    text-align: center;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    height: auto;
+    min-height: 700px;
+}
+
+.chat-frame {
+    width: 100%;
+    height: 650px;
+    border: none;
+    border-radius: 10px;
+    display: block;
+}
+
+/* ===========================
+   MOBILE STACKING
+   =========================== */
+@media (max-width: 700px) {
+
+    .flex-row {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .chat-box {
+        width: 100%;
+        min-height: 500px;
+    }
+
+    .chat-frame {
+        width: 100%;
+        height: 500px;
+    }
+}
