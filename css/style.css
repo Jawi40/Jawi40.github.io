@@ -253,3 +253,44 @@ section h2 {
         font-size: 18px;
     }
 }
+
+/* ===========================
+   TONEARM + NEEDLE (RESTORED)
+   =========================== */
+
+.tonearm {
+    position: absolute;
+    width: 140px;
+    height: 12px;
+    background: #ccc;
+    top: 20px;
+    right: -40px;
+    border-radius: 6px;
+    transform-origin: left center;
+    transform: rotate(0deg);
+    transition: transform 0.4s ease;
+    z-index: 5;
+}
+
+.needle {
+    position: absolute;
+    width: 20px;
+    height: 40px;
+    background: #222;
+    top: 40px;
+    right: -55px;
+    border-radius: 4px;
+    transform-origin: top center;
+    transform: rotate(0deg);
+    transition: transform 0.4s ease;
+    z-index: 6;
+}
+
+/* ===========================
+   VINYL SPIN ANIMATION
+   =========================== */
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
