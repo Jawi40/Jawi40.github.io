@@ -1,0 +1,153 @@
+/* ===========================
+   GLOBAL THEME
+   =========================== */
+body {
+    margin: 0;
+    padding: 0;
+    background: #0a0a0a; /* smoother black */
+    color: #fdda24; /* gold */
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* ===========================
+   HEADER
+   =========================== */
+header {
+    background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+    padding: 25px 10px;
+    text-align: center;
+    border-bottom: 3px solid #00e0ff;
+    box-shadow: 0 0 18px #00e0ff;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 56px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #fdda24;
+    text-shadow: 0 0 12px #00e0ff;
+}
+
+header p {
+    margin-top: 8px;
+    font-size: 20px;
+    opacity: 0.9;
+}
+
+/* ===========================
+   NAVIGATION
+   =========================== */
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 45px;
+    padding: 18px 0;
+    background: #111;
+    border-bottom: 3px solid #00e0ff;
+    box-shadow: 0 0 12px #00e0ff;
+}
+
+nav a {
+    color: #fdda24;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 0 8px #00e0ff;
+    transition: 0.25s ease;
+}
+
+nav a:hover {
+    color: #00e0ff;
+    transform: scale(1.1);
+}
+
+/* ===========================
+   SECTIONS
+   =========================== */
+section {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
+section h2 {
+    font-size: 32px;
+    margin-bottom: 15px;
+    color: #fdda24;
+    text-shadow: 0 0 8px #fdda24;
+}
+
+/* ===========================
+   SECTION DIVIDER
+   =========================== */
+.section-divider {
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #009b3a, #da291c);
+    box-shadow: 0 0 14px #009b3a, 0 0 14px #da291c;
+    margin: 60px 0;
+}
+
+/* ===========================
+   FLEX ROW (PLAYER + CHAT)
+   =========================== */
+.flex-row {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+/* ===========================
+   PLAYER BOX
+   =========================== */
+.player-box {
+    width: 380px;
+    background: #111;
+    padding: 20px;
+    border-radius: 14px;
+    border: 2px solid #009b3a;
+    box-shadow: 0 0 20px rgba(0,0,0,0.7);
+    text-align: center;
+}
+
+.player-title {
+    font-size: 26px;
+    font-weight: bold;
+    color: #fdda24;
+    text-shadow: 0 0 8px #fdda24;
+}
+
+/* ===========================
+   CHAT BOX
+   =========================== */
+.chat-box {
+    width: 380px;
+    background: #111;
+    padding: 20px;
+    border-radius: 14px;
+    border: 2px solid #009b3a;
+    text-align: center;
+}
+
+.chat-title {
+    font-size: 26px;
+    font-weight: bold;
+    color: #fdda24;
+}
+
+.chat-frame {
+    border-radius: 10px;
+    border: 1px solid #da291c;
+}
+
+/* ===========================
+   HIGHLIGHT TEXT
+   =========================== */
+.highlight {
+    color: #fdda24;
+    font-weight: bold;
+    text-shadow: 0 0 8px #fdda24;
+}
