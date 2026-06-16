@@ -112,10 +112,10 @@ section h2 {
 }
 
 /* ===========================
-   PLAYER BOX
+   PLAYER BOX (SMALLER)
    =========================== */
 .player-box {
-    width: 300px;
+    width: 240px; /* smaller */
     background: #111;
     padding: 10px;
     border-radius: 14px;
@@ -125,55 +125,28 @@ section h2 {
 }
 
 /* ===========================
-   CHAT BOX
-   =========================== */
-.chat-box {
-    width: 380px;
-    background: #111;
-    padding: 20px;
-    border-radius: 14px;
-    border: 2px solid #009b3a;
-    text-align: center;
-    box-sizing: border-box;
-    overflow: hidden;
-}
-
-.chat-frame {
-    width: 100%;
-    height: 500px;
-    border: none;
-    border-radius: 10px;
-    display: block;
-}
-
-/* ===========================
-   VINYL PLAYER
+   VINYL PLAYER (SMALLER)
    =========================== */
 .vinyl-wrapper {
     position: relative;
-    width: 200px;
-    height: 200px;
-    margin: 0 auto 20px auto;
+    width: 160px;   /* smaller */
+    height: 160px;  /* smaller */
+    margin: 0 auto 15px auto;
 }
 
 .vinyl {
-    width: 200px;
-    height: 200px;
+    width: 160px;
+    height: 160px;
     border-radius: 50%;
     background: radial-gradient(circle at 30% 30%, #666, #222 40%, #000 80%);
-    border: 8px solid #000;
+    border: 6px solid #000; /* scaled down */
     animation: spin 4s linear infinite;
-    animation-play-state: paused; /* JS will toggle this */
+    animation-play-state: paused;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     z-index: 2;
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
 }
 
 .vinyl-lines {
@@ -188,21 +161,21 @@ section h2 {
 }
 
 .vinyl-center {
-    width: 90px;
-    height: 90px;
+    width: 70px;   /* scaled down */
+    height: 70px;  /* scaled down */
     border-radius: 50%;
     background: radial-gradient(circle, #fdda24, #009b3a, #da291c);
 }
 
-/* PLAY BUTTON */
+/* PLAY BUTTON (SCALED) */
 .play-btn {
     position: absolute;
-    width: 75px;
-    height: 75px;
+    width: 60px;   /* smaller */
+    height: 60px;  /* smaller */
     border-radius: 50%;
     border: none;
     background: radial-gradient(circle, #fdda24, #009b3a, #da291c);
-    font-size: 32px;
+    font-size: 26px; /* scaled */
     cursor: pointer;
     z-index: 3;
     top: 50%;
@@ -211,15 +184,15 @@ section h2 {
 }
 
 /* ===========================
-   TONEARM + NEEDLE
+   TONEARM + NEEDLE (SCALED)
    =========================== */
 .tonearm {
     position: absolute;
-    width: 150px;
-    height: 12px;
+    width: 120px;  /* scaled down */
+    height: 10px;
     background: #ccc;
-    top: 40px; /* Adjusted for better alignment */
-    right: -20px; /* Slightly corrected */
+    top: 30px;     /* adjusted for smaller vinyl */
+    right: -18px;  /* adjusted */
     border-radius: 6px;
     transform-origin: left center;
     transform: rotate(0deg);
@@ -229,17 +202,18 @@ section h2 {
 
 .needle {
     position: absolute;
-    width: 20px;
-    height: 40px;
+    width: 16px;   /* scaled */
+    height: 32px;  /* scaled */
     background: #222;
-    top: -14px;
-    right: -10px;
+    top: -12px;
+    right: -8px;
     border-radius: 4px;
     transform-origin: top center;
     transform: rotate(0deg);
     transition: transform 0.4s ease;
     z-index: 5;
 }
+
 
 
 /* ===========================
