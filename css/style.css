@@ -7,7 +7,7 @@ body {
     background: #0a0a0a;
     color: #fdda24;
     font-family: Arial, sans-serif;
-    text-align: center; /* FIX: centers all text by default */
+    line-height: 1.6;
 }
 
 /* ===========================
@@ -20,7 +20,7 @@ body {
 }
 
 /* ===========================
-   HEADER (RESTORED)
+   HEADER
    =========================== */
 header {
     background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
@@ -39,115 +39,221 @@ header h1 {
     text-shadow: 0 0 12px #00e0ff;
 }
 
+header p {
+    margin-top: 8px;
+    font-size: 20px;
+    opacity: 0.9;
+}
+
+/* ===========================
+   NAVIGATION
+   =========================== */
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 45px;
+    padding: 18px 0;
+    background: #111;
+    border-bottom: 3px solid #00e0ff;
+    box-shadow: 0 0 12px #00e0ff;
+    position: relative;
+    z-index: 1000;
+}
+
+nav a {
+    color: #fdda24;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 0 8px #00e0ff;
+    transition: 0.25s ease;
+}
+
+nav a:hover {
+    color: #00e0ff;
+    transform: scale(1.1);
+}
+
+/* ===========================
+   SECTIONS
+   =========================== */
+section {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
+section h2 {
+    font-size: 32px;
+    margin-bottom: 15px;
+    color: #fdda24;
+    text-shadow: 0 0 8px #fdda24;
+}
+
+/* ===========================
+   SECTION DIVIDER
+   =========================== */
+.section-divider {
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #009b3a, #da291c);
+    box-shadow: 0 0 14px #009b3a, 0 0 14px #da291c;
+    margin: 60px 0;
+}
+
 /* ===========================
    FLEX ROW
    =========================== */
 .flex-row {
     display: flex;
     justify-content: center;
-    gap: 40px;
+    gap: 30px;
     flex-wrap: wrap;
 }
 
 /* ===========================
-   PLAYER BOX (FIXED)
+   PLAYER BOX
    =========================== */
 .player-box {
-    width: 260px; /* FIX: wider so tonearm fits */
+    width: 300px;
     background: #111;
-    padding: 15px;
-    border-radius: 12px;
+    padding: 10px;
+    border-radius: 14px;
     border: 2px solid #009b3a;
+    text-align: center;
     box-sizing: border-box;
 }
 
 /* ===========================
-   VINYL PLAYER (FIXED)
+   CHAT BOX
    =========================== */
-.vinyl-wrapper {
-    position: relative;
-    width: 140px; /* FIX: bigger record */
-    height: 140px;
-    margin: 0 auto 15px auto;
+.chat-box {
+    width: 380px;
+    background: #111;
+    padding: 20px;
+    border-radius: 14px;
+    border: 2px solid #009b3a;
+    text-align: center;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
-.vinyl {
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #666, #222 40%, #000 80%);
-    border: 6px solid #000;
-    animation: spin 4s linear infinite;
-    animation-play-state: paused;
-    position: relative;
-}
-
-.vinyl-center {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: radial-gradient(circle, #fdda24, #009b3a, #da291c);
-}
-
-.play-btn {
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: none;
-    background: radial-gradient(circle, #fdda24, #009b3a, #da291c);
-    font-size: 22px;
-    cursor: pointer;
-    z-index: 3;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+.chat-frame {
+    width: 100% !important;
+    height: 500px !important;
+    border: none !important;
+    border-radius: 10px;
+    display: block !important;
 }
 
 /* ===========================
-   TONEARM (FIXED)
+   VINYL PLAYER
+   =========================== */
+.vinyl-wrapper {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 20px auto;
+}
+
+.vinyl {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #666, #222 40%, #000 80%);
+    border: 8px solid #000;
+    animation: spin 4s linear infinite;
+    animation-play-state: paused;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.vinyl-lines {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: repeating-radial-gradient(circle,
+        rgba(255,255,255,0.05) 0px,
+        rgba(255,255,255,0.05) 2px,
+        rgba(0,0,0,0.4) 3px,
+        rgba(0,0,0,0.4) 6px);
+}
+
+.vinyl-center {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fdda24, #009b3a, #da291c);
+}
+
+/* PLAY BUTTON */
+.play-btn {
+    position: absolute;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    border: none;
+    background: radial-gradient(circle, #fdda24, #009b3a, #da291c);
+    font-size: 32px;
+    cursor: pointer;
+    z-index: 3;
+}
+
+/* ===========================
+   TONEARM + NEEDLE
    =========================== */
 .tonearm {
     position: absolute;
-    width: 120px; /* FIX: longer */
-    height: 10px;
+    width: 150px;
+    height: 12px;
     background: #ccc;
-    top: 35px; /* FIX: aligned with larger record */
-    right: -30px; /* FIX: moved outward so it's visible */
+    top: 20px;
+    right: -30px;
     border-radius: 6px;
     transform-origin: left center;
+    transform: rotate(0deg);
     transition: transform 0.4s ease;
+    z-index: 4;
 }
 
 .needle {
     position: absolute;
-    width: 18px;
-    height: 30px;
+    width: 20px;
+    height: 40px;
     background: #222;
-    top: -10px;
-    right: -8px;
+    top: -14px;
+    right: -10px;
     border-radius: 4px;
     transform-origin: top center;
+    transform: rotate(0deg);
     transition: transform 0.4s ease;
+    z-index: 5;
 }
 
 /* ===========================
-   CHAT BOX (slightly bigger)
+   MOBILE STACKING
    =========================== */
-.chat-box {
-    width: 300px;
-    background: #111;
-    padding: 15px;
-    border-radius: 12px;
-    border: 2px solid #009b3a;
-    box-sizing: border-box;
-    height: 450px;
-    overflow-y: auto;
-}
+@media (max-width: 700px) {
 
-.chat-frame {
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 10px;
+    .flex-row {
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+    }
+
+    .player-box,
+    .chat-box {
+        width: 100% !important;
+        max-width: 420px;
+    }
 }
