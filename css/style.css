@@ -14,7 +14,7 @@ body {
    PAGE WRAPPER
    =========================== */
 .page-wrapper {
-    max-width: 900px; /* smaller */
+    max-width: 900px;
     margin: 0 auto;
     padding: 0 10px;
 }
@@ -25,17 +25,17 @@ body {
 .flex-row {
     display: flex;
     justify-content: center;
-    gap: 15px; /* smaller gap */
+    gap: 15px;
     flex-wrap: wrap;
 }
 
 /* ===========================
-   PLAYER BOX (30% SMALLER)
+   PLAYER BOX (TRUE 30% SMALLER)
    =========================== */
 .player-box {
-    width: 300px; /* was 180px */
+    width: 140px; /* correct compact size */
     background: #111;
-    padding: 7px; /* smaller padding */
+    padding: 6px;
     border-radius: 10px;
     border: 2px solid #009b3a;
     text-align: center;
@@ -47,7 +47,7 @@ body {
    =========================== */
 .vinyl-wrapper {
     position: relative;
-    width: 85px;   /* was 120px */
+    width: 85px;
     height: 85px;
     margin: 0 auto 8px auto;
 }
@@ -78,16 +78,16 @@ body {
 }
 
 .vinyl-center {
-    width: 50px; /* was 50px */
-    height: 50px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
     background: radial-gradient(circle, #fdda24, #009b3a, #da291c);
 }
 
 .play-btn {
     position: absolute;
-    width: 32px; /* was 45px */
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     border: none;
     background: radial-gradient(circle, #fdda24, #009b3a, #da291c);
@@ -104,7 +104,7 @@ body {
    =========================== */
 .tonearm {
     position: absolute;
-    width: 60px; /* was 90px */
+    width: 60px;
     height: 6px;
     background: #ccc;
     top: 14px;
@@ -116,7 +116,7 @@ body {
 
 .needle {
     position: absolute;
-    width: 9px; /* was 12px */
+    width: 9px;
     height: 18px;
     background: #222;
     top: -6px;
@@ -127,18 +127,18 @@ body {
 }
 
 /* ===========================
-   CHAT BOX (30% SMALLER)
+   CHAT BOX (TRUE 30% SMALLER)
    =========================== */
 .chat-box {
-    width: 250px; /* was 260px */
+    width: 180px; /* correct compact size */
     background: #111;
-    padding: 7px;
+    padding: 6px;
     border-radius: 10px;
     border: 2px solid #009b3a;
     text-align: center;
     box-sizing: border-box;
 
-    height: 400px; /* was 450px */
+    height: 315px;
     overflow-y: auto;
 }
 
@@ -151,7 +151,7 @@ body {
 }
 
 /* ===========================
-   MOBILE (ALSO 30% SMALLER)
+   MOBILE
    =========================== */
 @media (max-width: 750px) {
 
