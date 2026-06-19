@@ -117,7 +117,7 @@ section h2 {
 .player-box {
     width: 300px;
     background: #111;
-    padding: 10px;
+    padding: 5px;
     border-radius: 14px;
     border: 2px solid #009b3a;
     text-align: center;
@@ -130,7 +130,7 @@ section h2 {
 .chat-box {
     width: 380px;
     background: #111;
-    padding: 20px;
+    padding: 10px;
     border-radius: 14px;
     border: 2px solid #009b3a;
     text-align: center;
@@ -140,7 +140,7 @@ section h2 {
 
 .chat-frame {
     width: 100% !important;
-    height: 500px !important;
+    height: 350px !important;
     border: none !important;
     border-radius: 10px;
     display: block !important;
