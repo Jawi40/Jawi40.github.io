@@ -1,83 +1,4 @@
-/* ===========================
-   GLOBAL PAGE STYLES
-=========================== */
-
-body {
-    margin: 0;
-    padding: 0;
-    background: #000;
-    color: #eee;
-    font-family: system-ui, sans-serif;
-}
-
-.page-wrapper {
-    max-width: 1100px;
-    margin: auto;
-    padding: 20px;
-}
-
-h2 {
-    color: #fdda24;
-    text-shadow: 0 0 8px rgba(255,215,0,0.5);
-}
-
-.highlight {
-    color: #00ff66;
-    font-weight: bold;
-}
-
-.section-divider {
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, #009b3a, #da291c);
-    margin: 40px 0;
-    border-radius: 2px;
-}
-
-/* ===========================
-   FLEX ROW (PLAYER + CHAT)
-=========================== */
-
-.flex-row {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
-}
-
-/* ===========================
-   CHAT BOX
-=========================== */
-
-.chat-box {
-    width: 100%;
-    max-width: 380px;
-    background: rgba(15, 15, 15, 0.85);
-    padding: 12px;
-    border-radius: 14px;
-    border: 2px solid #009b3a;
-    box-shadow:
-        0 0 18px rgba(0, 155, 58, 0.4),
-        0 0 18px rgba(218, 41, 28, 0.4),
-        inset 0 0 12px rgba(0, 0, 0, 0.6);
-}
-
-.chat-title {
-    margin-top: 0;
-    text-align: center;
-    color: #fdda24;
-}
-
-.chat-frame {
-    width: 100%;
-    height: 420px;
-    border-radius: 10px;
-}
-
-/* ===========================
-   HEADER + NAVIGATION
-=========================== */
-
+/* HEADER */
 header {
     background: #000;
     border-bottom: 2px solid #009b3a;
@@ -87,16 +8,17 @@ header {
 
 .nav-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: 14px 20px;
+    position: relative;
 }
 
-/* ⭐ FIXED: JAMEXUS LOGO — BIG, BOLD, GLOWING */
+/* LOGO — BIG + CENTERED */
 .logo {
-    font-size: 32px;
+    font-size: 34px;
     font-weight: 900;
-    letter-spacing: 2px;
+    letter-spacing: 2.5px;
     color: #fdda24;
     text-shadow:
         0 0 6px rgba(255,215,0,0.9),
@@ -104,7 +26,7 @@ header {
         0 0 20px rgba(255,215,0,0.5);
 }
 
-/* Desktop nav */
+/* DESKTOP NAV */
 nav {
     display: flex;
     gap: 40px;
@@ -121,15 +43,14 @@ nav a:hover {
     color: #fdda24;
 }
 
-/* ===========================
-   HAMBURGER MENU
-=========================== */
-
+/* HAMBURGER */
 .hamburger {
     display: none;
     flex-direction: column;
     gap: 5px;
     cursor: pointer;
+    position: absolute;
+    right: 20px;
 }
 
 .hamburger span {
@@ -139,43 +60,23 @@ nav a:hover {
     border-radius: 3px;
 }
 
-/* ===========================
-   MOBILE RESPONSIVE
-=========================== */
-
+/* MOBILE */
 @media (max-width: 700px) {
 
-    /* ⭐ Center the logo on mobile */
-    .nav-container {
-        justify-content: center;
-        position: relative;
-    }
-
-    /* ⭐ Move hamburger to the right */
     .hamburger {
         display: flex;
-        position: absolute;
-        right: 20px;
-        top: 18px;
     }
 
-    /* ⭐ Make JAMEXUS even more dominant on mobile */
-    .logo {
-        font-size: 34px;
-        letter-spacing: 2.5px;
-    }
-
-    /* ⭐ Mobile nav menu (hidden by default) */
     nav {
+        display: none;
+        flex-direction: column;
         position: absolute;
         top: 60px;
         left: 0;
         width: 100%;
         background: rgba(10,10,10,0.95);
-        display: none;
-        flex-direction: column;
-        padding: 20px 0;
         border-top: 2px solid #009b3a;
+        padding: 20px 0;
         gap: 0;
     }
 
@@ -183,14 +84,14 @@ nav a:hover {
         padding: 14px 20px;
         text-align: center;
         width: 100%;
-        display: block;
         border-bottom: 1px solid #222;
     }
 
-    /* ⭐ When menu is open */
     nav.open {
         display: flex;
     }
+}
+
 
     /* Stack player + chat */
     .flex-row {
