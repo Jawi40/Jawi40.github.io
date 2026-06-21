@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services | JAMEXUS SERVICES</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header"></div>
+<script>
+  fetch("partials/header.html")
+    .then(r => r.text())
+    .then(t => document.getElementById("header").innerHTML = t);
+</script>
+
+<div class="page-wrapper">
+
+    <section class="services-section">
+        <h1 class="page-title">My Services</h1>
+        <p class="intro-text">
+            I offer a range of entertainment, creative, and digital services designed to bring energy, professionalism, and style to any project or event. Whether you need music, media, or technical support, I’ve got you covered.
+        </p>
+
+        <div class="service-block">
+            <h2>🎧 Internet DJing</h2>
+            <p>
+                Hosting live online DJ sets, music streams, and virtual parties. Perfect for online communities, gaming streams, radio shows, and digital events.
+            </p>
+        </div>
+
+        <div class="service-block">
+            <h2>🎤 Event DJing</h2>
+            <p>
+                Professional DJ services for public and private events, including parties, weddings, clubs, and community gatherings. Bringing the vibes, the energy, and the sound.
+            </p>
+        </div>
+
+        <div class="service-block">
+            <h2>🎨 Creative & Media Services</h2>
+            <p>
+                Offering digital content creation, audio production, branding assistance, and other creative services to help elevate your project or business.
+            </p>
+        </div>
+
+        <div class="service-block">
+            <h2>📚 Tutorials & Training</h2>
+            <p>
+                Helping beginners learn the basics of DJing, streaming, and digital broadcasting. Step‑by‑step guidance for anyone wanting to start their journey.
+            </p>
+        </div>
+
+        <div class="service-block">
+            <h2>🛠 Technical Support</h2>
+            <p>
+                Assistance with setting up streaming software, audio equipment, radio automation, and online broadcasting tools.
+            </p>
+        </div>
+
+        <div class="service-block">
+            <h2>🌐 Website & Digital Setup</h2>
+            <p>
+                Support with building simple websites, embedding players, setting up chatrooms, and creating online radio pages — just like this one.
+            </p>
+        </div>
+
+        <div class="contact-cta">
+            <h3>Interested in a service?</h3>
+            <p>Email me at <strong>uc5521@gmail.com</strong> to get started.</p>
+        </div>
+    </section>
+
+</div>
+
+<!-- FOOTER -->
+<div id="footer"></div>
+<script>
+  fetch("partials/footer.html")
+    .then(r => r.text())
+    .then(t => document.getElementById("footer").innerHTML = t);
+</script>
+
+</body>
+</html>
