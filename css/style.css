@@ -1,106 +1,266 @@
-/* HEADER */
-header {
-    background: #000;
-    border-bottom: 2px solid #009b3a;
-    position: relative;
-    z-index: 999;
-}
-
-.nav-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 14px 20px;
-    position: relative;
-}
-
-/* LOGO — BIG + CENTERED */
-.logo {
-    font-size: 34px;
-    font-weight: 900;
-    letter-spacing: 2.5px;
+/* ===========================
+   GLOBAL THEME
+   =========================== */
+body {
+    margin: 0;
+    padding: 0;
+    background: #0a0a0a;
     color: #fdda24;
-    text-shadow:
-        0 0 6px rgba(255,215,0,0.9),
-        0 0 12px rgba(255,215,0,0.7),
-        0 0 20px rgba(255,215,0,0.5);
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
 }
 
-/* DESKTOP NAV */
+/* ===========================
+   PAGE WRAPPER
+   =========================== */
+.page-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ===========================
+   HEADER
+   =========================== */
+header {
+    background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+    padding: 25px 10px;
+    text-align: center;
+    border-bottom: 3px solid #00e0ff;
+    box-shadow: 0 0 18px #00e0ff;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 56px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #fdda24;
+    text-shadow: 0 0 12px #00e0ff;
+}
+
+header p {
+    margin-top: 8px;
+    font-size: 20px;
+    opacity: 0.9;
+}
+
+/* ===========================
+   NAVIGATION
+   =========================== */
 nav {
     display: flex;
+    justify-content: center;
     gap: 40px;
+    padding: 18px 0;
+    background: #111;
+    border-bottom: 3px solid #00e0ff;
+    box-shadow: 0 0 12px #00e0ff;
+    position: relative;
+    z-index: 1000;
 }
 
 nav a {
-    color: #eee;
+    color: #fdda24;
     text-decoration: none;
-    font-weight: 600;
-    transition: 0.2s;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 0 8px #00e0ff;
+    transition: 0.25s ease;
 }
 
 nav a:hover {
+    color: #00e0ff;
+    transform: scale(1.1);
+}
+
+/* ===========================
+   SECTIONS
+   =========================== */
+section {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
+section h2 {
+    font-size: 32px;
+    margin-bottom: 15px;
     color: #fdda24;
+    text-shadow: 0 0 8px #fdda24;
 }
 
-/* HAMBURGER */
-.hamburger {
-    display: none;
-    flex-direction: column;
-    gap: 5px;
-    cursor: pointer;
+/* ===========================
+   SECTION DIVIDER
+   =========================== */
+.section-divider {
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #009b3a, #da291c);
+    box-shadow: 0 0 14px #009b3a, 0 0 14px #da291c;
+    margin: 60px 0;
+}
+
+/* ===========================
+   FLEX ROW
+   =========================== */
+.flex-row {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+/* ===========================
+   PLAYER BOX
+   =========================== */
+.player-box {
+    width: 300px;
+    background: #111;
+    padding: 5px;
+    border-radius: 14px;
+    border: 2px solid #009b3a;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* ===========================
+   CHAT BOX
+   =========================== */
+.chat-box {
+    width: 380px;
+    background: #111;
+    padding: 10px;
+    border-radius: 14px;
+    border: 2px solid #009b3a;
+    text-align: center;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.chat-frame {
+    width: 100% !important;
+    height: 350px !important;
+    border: none !important;
+    border-radius: 10px;
+    display: block !important;
+}
+
+/* ===========================
+   VINYL PLAYER
+   =========================== */
+.vinyl-wrapper {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 20px auto;
+}
+
+.vinyl {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #666, #222 40%, #000 80%);
+    border: 8px solid #000;
+    animation: spin 4s linear infinite;
+    animation-play-state: paused;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.vinyl-lines {
     position: absolute;
-    right: 20px;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: repeating-radial-gradient(circle,
+        rgba(255,255,255,0.05) 0px,
+        rgba(255,255,255,0.05) 2px,
+        rgba(0,0,0,0.4) 3px,
+        rgba(0,0,0,0.4) 6px);
 }
 
-.hamburger span {
-    width: 30px;
-    height: 3px;
-    background: #fdda24;
-    border-radius: 3px;
+.vinyl-center {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fdda24, #009b3a, #da291c);
 }
 
-/* MOBILE */
+/* PLAY BUTTON */
+.play-btn {
+    position: absolute;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    border: none;
+    background: radial-gradient(circle, #fdda24, #009b3a, #da291c);
+    font-size: 32px;
+    cursor: pointer;
+    z-index: 3;
+}
+
+/* ===========================
+   TONEARM + NEEDLE
+   =========================== */
+.tonearm {
+    position: absolute;
+    width: 150px;
+    height: 12px;
+    background: #ccc;
+    top: 20px;
+    right: -30px;
+    border-radius: 6px;
+    transform-origin: left center;
+    transform: rotate(0deg);
+    transition: transform 0.4s ease;
+    z-index: 4;
+}
+
+.needle {
+    position: absolute;
+    width: 20px;
+    height: 40px;
+    background: #222;
+    top: -14px;
+    right: -10px;
+    border-radius: 4px;
+    transform-origin: top center;
+    transform: rotate(0deg);
+    transition: transform 0.4s ease;
+    z-index: 5;
+}
+
+/* ===========================
+   MOBILE STACKING
+   =========================== */
 @media (max-width: 700px) {
 
-    .hamburger {
-        display: flex;
+    .flex-row {
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
     }
 
-    nav {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        width: 100%;
-        background: rgba(10,10,10,0.95);
-        border-top: 2px solid #009b3a;
-        padding: 20px 0;
-        gap: 0;
-    }
-
-    nav a {
-        padding: 14px 20px;
-        text-align: center;
-        width: 100%;
-        border-bottom: 1px solid #222;
-    }
-
-    nav.open {
-        display: flex;
+    .player-box,
+    .chat-box {
+        width: 100% !important;
+        max-width: 420px;
     }
 }
 
-
-    /* Stack player + chat */
-    .flex-row {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .chat-box {
-        width: 100%;
-        max-width: 420px;
+@media (max-width: 700px) {
+    nav {
+        padding-left: 20px;
+        padding-right: 20px;
     }
 }
