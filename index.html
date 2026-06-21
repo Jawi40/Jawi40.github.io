@@ -9,11 +9,15 @@
     <link rel="preconnect" href="https://stream.zeno.fm">
 
     <meta http-equiv="Content-Security-Policy"
-      content="default-src 'self';
-               img-src 'self' https:;
-               script-src 'self' https://minnit.chat;
-               style-src 'self' 'unsafe-inline';
-               frame-src https://minnit.chat;">
+      content="
+        default-src 'self';
+        img-src 'self' https:;
+        script-src 'self' https://minnit.chat 'unsafe-inline';
+        style-src 'self' 'unsafe-inline';
+        frame-src https://minnit.chat;
+        connect-src 'self';
+      ">
+
 
 </head>
 
