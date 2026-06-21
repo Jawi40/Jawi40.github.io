@@ -1,266 +1,412 @@
-/* ===========================
-   GLOBAL THEME
-   =========================== */
-body {
-    margin: 0;
-    padding: 0;
-    background: #0a0a0a;
-    color: #fdda24;
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-}
+<!-- Replace the vinyl player inside .player-box with this block -->
+<div id="infin8-console" aria-label="Infin8 Console">
+  <div class="console-wrapper" role="region" aria-labelledby="consoleTitle">
+    <div class="console-header">
+      <div class="console-title" id="consoleTitle">
+        <span class="flag flag-jm" aria-hidden="true"></span>
+        <span class="flag flag-mx" aria-hidden="true"></span>
+        <span class="flag flag-us" aria-hidden="true"></span>
+        <span>Infin8Radio Console</span>
+      </div>
 
-/* ===========================
-   PAGE WRAPPER
-   =========================== */
-.page-wrapper {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
+      <div class="status-block" style="display:flex;align-items:center;gap:8px;">
+        <div style="display:flex;flex-direction:column;align-items:flex-end;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="live-indicator" id="liveIndicator" aria-hidden="false" title="Live status"></div>
+            <div style="font-size:12px;color:#bfbfbf;" id="statusLabel">Idle</div>
+          </div>
+          <div id="statusDetail" style="font-size:11px;color:#9f9f9f;">Ready</div>
+        </div>
+      </div>
+    </div>
 
-/* ===========================
-   HEADER
-   =========================== */
-header {
-    background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
-    padding: 25px 10px;
-    text-align: center;
-    border-bottom: 3px solid #00e0ff;
-    box-shadow: 0 0 18px #00e0ff;
-}
+    <div class="controls-row" role="toolbar" aria-label="Player controls">
+      <button class="btn main" id="playBtn" aria-pressed="false" aria-label="Play/Pause">▶</button>
+      <button class="btn" id="retryBtn" aria-label="Retry">↻</button>
 
-header h1 {
-    margin: 0;
-    font-size: 56px;
-    font-weight: bold;
-    letter-spacing: 1px;
-    color: #fdda24;
-    text-shadow: 0 0 12px #00e0ff;
-}
+      <div style="flex:1"></div>
 
-header p {
-    margin-top: 8px;
-    font-size: 20px;
-    opacity: 0.9;
-}
+      <div style="font-size:11px;color:#cfcfcf;">
+        Errors: <span id="errorCount">0</span><br />
+        Last reconnect: <span id="lastReconnect">--</span>
+      </div>
+    </div>
 
-/* ===========================
-   NAVIGATION
-   =========================== */
-nav {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    padding: 18px 0;
-    background: #111;
-    border-bottom: 3px solid #00e0ff;
-    box-shadow: 0 0 12px #00e0ff;
-    position: relative;
-    z-index: 1000;
-}
+    <div class="equalizer eq-paused" id="equalizer" aria-hidden="true" aria-label="Equalizer visualization">
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+    </div>
 
-nav a {
-    color: #fdda24;
-    text-decoration: none;
-    font-size: 20px;
-    font-weight: bold;
-    text-shadow: 0 0 8px #00e0ff;
-    transition: 0.25s ease;
-}
+    <div class="volume-row" aria-label="Volume control">
+      <span style="font-size:12px;color:#cfcfcf;">Vol</span>
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.01" aria-valuemin="0" aria-valuemax="1" />
+      <span id="volumeValue" style="font-size:12px;color:#cfcfcf;">--%</span>
+    </div>
 
-nav a:hover {
-    color: #00e0ff;
-    transform: scale(1.1);
-}
+    <div class="diag-toggle" id="diagToggle" role="button" tabindex="0" aria-expanded="false">Show Details ▼</div>
 
-/* ===========================
-   SECTIONS
-   =========================== */
-section {
-    max-width: 900px;
-    margin: 50px auto;
-    padding: 0 20px;
-}
+    <div class="diagnostics" id="diagnosticsPanel" aria-hidden="true">
+      <div>Stream URL: <span id="streamUrlText"></span></div>
+      <div>Connection: <span id="connectionState">Idle</span></div>
+      <div>Uptime: <span id="uptime">0s</span></div>
+      <div>Listeners: <span id="listenerCount">--</span></div>
+    </div>
 
-section h2 {
-    font-size: 32px;
-    margin-bottom: 15px;
-    color: #fdda24;
-    text-shadow: 0 0 8px #fdda24;
-}
+    <div class="console-footer">
+      <span>Engine: Jamexus-style</span>
+      <span>Mode: Radio Stream</span>
+    </div>
+  </div>
 
-/* ===========================
-   SECTION DIVIDER
-   =========================== */
-.section-divider {
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, #009b3a, #da291c);
-    box-shadow: 0 0 14px #009b3a, 0 0 14px #da291c;
-    margin: 60px 0;
-}
+  <audio id="radioAudio" crossorigin="anonymous" preload="none"></audio>
 
-/* ===========================
-   FLEX ROW
-   =========================== */
-.flex-row {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
-}
+  <style>
+    /* Scoped styles for #infin8-console */
+    #infin8-console { width: 100%; display: flex; justify-content: center; padding: 10px 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; box-sizing: border-box; }
+    .console-wrapper { width: 540px; background: rgba(10,10,10,0.85); backdrop-filter: blur(6px); border: 2px solid #1f1f1f; border-radius: 14px; box-shadow: 0 0 25px rgba(0,0,0,0.7), 0 0 30px rgba(0,255,0,0.08), 0 0 30px rgba(255,255,0,0.06), 0 0 30px rgba(255,0,0,0.04); padding: 10px; color: #eee; position: relative; }
+    .console-header { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; border-bottom: 2px solid rgba(0,77,0,0.18); background: linear-gradient(90deg, rgba(0,0,0,0.35), rgba(0,100,0,0.12)); border-radius: 10px 10px 0 0; gap: 8px; }
+    .console-title { font-size: 16px; font-weight: 700; color: #f4d400; display: flex; align-items: center; gap: 8px; text-shadow: 0 0 6px rgba(255,215,0,0.45); }
+    .flag { width: 22px; height: 14px; border-radius: 2px; background-size: cover; border: 1px solid #222; display:inline-block; }
+    .flag-jm { background-image: url("https://upload.wikimedia.org/wikipedia/commons/0/0a/Flag_of_Jamaica.svg"); background-size: cover; }
+    .flag-mx { background-image: url("https://upload.wikimedia.org/wikipedia/commons/f/fc/Flag_of_Mexico.svg"); background-size: cover; }
+    .flag-us { background-image: url("https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg"); background-size: cover; }
+    .live-indicator { width: 10px; height: 10px; border-radius: 3px; background: #b00000; box-shadow: 0 0 6px rgba(255,0,0,0.6); transition: 0.25s; flex-shrink: 0; }
+    .live-ok { background: #00d000 !important; box-shadow: 0 0 8px rgba(0,208,0,0.6); }
+    .live-warn { background: #f4d400 !important; box-shadow: 0 0 8px rgba(244,212,0,0.6); }
+    .controls-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 8px; }
+    .btn { width: 38px; height: 38px; border-radius: 8px; border: 1px solid #333; background: #222; color: #f4d400; font-size: 18px; cursor: pointer; transition: transform 0.12s ease, box-shadow 0.12s ease; display: inline-flex; align-items: center; justify-content: center; }
+    .btn:active { transform: translateY(1px); } .btn:focus { outline: 2px solid rgba(244,212,0,0.25); outline-offset: 2px; }
+    .btn.main { background: #f4d400; color: #000; font-weight: 700; border: none; box-shadow: 0 0 10px rgba(255,215,0,0.25); }
+    .pulse { animation: pulseGlow 1.4s ease-in-out infinite; }
+    @keyframes pulseGlow { 0% { box-shadow: 0 0 6px rgba(255,215,0,0.18); } 50% { box-shadow: 0 0 14px rgba(255,215,0,0.36); } 100% { box-shadow: 0 0 6px rgba(255,215,0,0.18); } }
+    .equalizer { display: flex; justify-content: center; gap: 4px; margin-top: 6px; height: 14px; align-items: end; }
+    .eq-bar { width: 6px; background: linear-gradient(180deg,#f4d400,#ffb84d); border-radius: 3px; animation: eqBounce 0.6s infinite ease-in-out; height: 6px; }
+    .eq-bar:nth-child(1) { animation-delay: 0s; } .eq-bar:nth-child(2) { animation-delay: 0.08s; } .eq-bar:nth-child(3) { animation-delay: 0.16s; } .eq-bar:nth-child(4) { animation-delay: 0.24s; } .eq-bar:nth-child(5) { animation-delay: 0.32s; }
+    @keyframes eqBounce { 0% { height: 4px; transform: translateY(6px); opacity: 0.6; } 50% { height: 14px; transform: translateY(0); opacity: 1; } 100% { height: 4px; transform: translateY(6px); opacity: 0.6; } }
+    .eq-paused .eq-bar { animation-play-state: paused; height: 4px !important; transform: translateY(6px) !important; opacity: 0.6 !important; }
+    .volume-row { margin-top: 12px; display: flex; align-items: center; gap: 8px; padding: 6px; }
+    .volume-row input[type="range"] { width: 100%; height: 6px; background: #333; border-radius: 4px; -webkit-appearance: none; appearance: none; }
+    .volume-row input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 18px; background: #f4d400; border-radius: 4px; box-shadow: 0 0 6px rgba(255,215,0,0.6); border: 1px solid rgba(0,0,0,0.25); cursor: pointer; }
+    .diag-toggle { margin-top: 10px; cursor: pointer; color: #f4d400; font-size: 13px; text-align: center; }
+    .diagnostics { margin-top: 6px; padding: 8px; background: #0d0d0d; border: 1px solid #222; border-radius: 8px; font-size: 12px; line-height: 1.4; max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    .diagnostics.open { max-height: 260px; }
+    .pop { animation: popAnim 0.35s ease; }
+    @keyframes popAnim { 0% { transform: scale(1); } 50% { transform: scale(1.35); } 100% { transform: scale(1); } }
+    .console-footer { margin-top: 14px; padding: 8px 10px; background: linear-gradient(90deg, #006400, #000); border-top: 2px solid #004d00; font-size: 11px; color: #f4d400; display: flex; justify-content: space-between; border-radius: 0 0 10px 10px; }
+    @media (max-width: 600px) { .console-wrapper { width: 95%; } .controls-row { flex-wrap: wrap; justify-content: center; } .console-title { font-size: 14px; } }
+  </style>
 
-/* ===========================
-   PLAYER BOX
-   =========================== */
-.player-box {
-    width: 300px;
-    background: #111;
-    padding: 5px;
-    border-radius: 14px;
-    border: 2px solid #009b3a;
-    text-align: center;
-    box-sizing: border-box;
-}
+  <script>
+    (function () {
+      const STREAM_URL = "https://stream.zeno.fm/axipqkdhsiitv/listen";
 
-/* ===========================
-   CHAT BOX
-   =========================== */
-.chat-box {
-    width: 380px;
-    background: #111;
-    padding: 10px;
-    border-radius: 14px;
-    border: 2px solid #009b3a;
-    text-align: center;
-    box-sizing: border-box;
-    overflow: hidden;
-}
+      // Elements
+      const audio = document.getElementById("radioAudio");
+      const playBtn = document.getElementById("playBtn");
+      const retryBtn = document.getElementById("retryBtn");
+      const volumeSlider = document.getElementById("volumeSlider");
+      const volumeValue = document.getElementById("volumeValue");
+      const liveIndicator = document.getElementById("liveIndicator");
+      const statusLabel = document.getElementById("statusLabel");
+      const statusDetail = document.getElementById("statusDetail");
+      const errorCountEl = document.getElementById("errorCount");
+      const lastReconnectEl = document.getElementById("lastReconnect");
+      const connectionStateEl = document.getElementById("connectionState");
+      const uptimeEl = document.getElementById("uptime");
+      const streamUrlText = document.getElementById("streamUrlText");
+      const listenerCountEl = document.getElementById("listenerCount");
+      const equalizer = document.getElementById("equalizer");
+      const diagToggle = document.getElementById("diagToggle");
+      const diagnosticsPanel = document.getElementById("diagnosticsPanel");
 
-.chat-frame {
-    width: 100% !important;
-    height: 350px !important;
-    border: none !important;
-    border-radius: 10px;
-    display: block !important;
-}
+      streamUrlText.textContent = STREAM_URL;
 
-/* ===========================
-   VINYL PLAYER
-   =========================== */
-.vinyl-wrapper {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    margin: 0 auto 20px auto;
-}
+      // State
+      let isPlaying = false;
+      let reconnectTimer = null;
+      let errorCount = 0;
+      let manualStop = false;
+      let uptimeTimer = null;
+      let startTime = null;
+      let lastListenerCount = null;
+      let listenersInterval = null;
 
-.vinyl {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #666, #222 40%, #000 80%);
-    border: 8px solid #000;
-    animation: spin 4s linear infinite;
-    animation-play-state: paused;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    z-index: 2;
-}
+      // Helpers
+      function setStatus(label, detail, type = null) {
+        statusLabel.textContent = label;
+        statusDetail.textContent = detail;
 
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
+        liveIndicator.classList.remove("live-ok", "live-warn");
+        if (type === "ok") liveIndicator.classList.add("live-ok");
+        else if (type === "warn") liveIndicator.classList.add("live-warn");
+      }
 
-.vinyl-lines {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: repeating-radial-gradient(circle,
-        rgba(255,255,255,0.05) 0px,
-        rgba(255,255,255,0.05) 2px,
-        rgba(0,0,0,0.4) 3px,
-        rgba(0,0,0,0.4) 6px);
-}
+      function startUptime() {
+        startTime = Date.now();
+        clearInterval(uptimeTimer);
+        uptimeTimer = setInterval(() => {
+          const diff = Math.floor((Date.now() - startTime) / 1000);
+          uptimeEl.textContent = diff + "s";
+        }, 1000);
+      }
 
-.vinyl-center {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background: radial-gradient(circle, #fdda24, #009b3a, #da291c);
-}
+      function stopUptime() {
+        clearInterval(uptimeTimer);
+        uptimeEl.textContent = "0s";
+      }
 
-/* PLAY BUTTON */
-.play-btn {
-    position: absolute;
-    width: 75px;
-    height: 75px;
-    border-radius: 50%;
-    border: none;
-    background: radial-gradient(circle, #fdda24, #009b3a, #da291c);
-    font-size: 32px;
-    cursor: pointer;
-    z-index: 3;
-}
+      function fadeIn(targetVolume = parseFloat(volumeSlider.value || 0.8)) {
+        let v = 0;
+        audio.volume = 0;
+        const step = 0.05;
+        const interval = setInterval(() => {
+          v = Math.min(v + step, targetVolume);
+          audio.volume = v;
+          if (v >= targetVolume) clearInterval(interval);
+        }, 40);
+      }
 
-/* ===========================
-   TONEARM + NEEDLE
-   =========================== */
-.tonearm {
-    position: absolute;
-    width: 150px;
-    height: 12px;
-    background: #ccc;
-    top: 20px;
-    right: -30px;
-    border-radius: 6px;
-    transform-origin: left center;
-    transform: rotate(0deg);
-    transition: transform 0.4s ease;
-    z-index: 4;
-}
+      function fadeOut(callback) {
+        let v = audio.volume;
+        const step = 0.05;
+        const interval = setInterval(() => {
+          v = Math.max(v - step, 0);
+          audio.volume = v;
+          if (v <= 0) {
+            clearInterval(interval);
+            if (callback) callback();
+          }
+        }, 40);
+      }
 
-.needle {
-    position: absolute;
-    width: 20px;
-    height: 40px;
-    background: #222;
-    top: -14px;
-    right: -10px;
-    border-radius: 4px;
-    transform-origin: top center;
-    transform: rotate(0deg);
-    transition: transform 0.4s ease;
-    z-index: 5;
-}
+      function eqStart() { equalizer.classList.remove("eq-paused"); }
+      function eqStop() { equalizer.classList.add("eq-paused"); }
 
-/* ===========================
-   MOBILE STACKING
-   =========================== */
-@media (max-width: 700px) {
+      function clearReconnect() {
+        if (reconnectTimer) {
+          clearTimeout(reconnectTimer);
+          reconnectTimer = null;
+        }
+      }
 
-    .flex-row {
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 100% !important;
-    }
+      async function startStream() {
+        manualStop = false;
+        clearReconnect();
 
-    .player-box,
-    .chat-box {
-        width: 100% !important;
-        max-width: 420px;
-    }
-}
+        audio.src = STREAM_URL;
+        audio.preload = "auto";
 
-@media (max-width: 700px) {
-    nav {
-        padding-left: 20px;
-        padding-right: 20px;
-    }
-}
+        setStatus("Connecting", "Initializing…", "warn");
+        connectionStateEl.textContent = "Connecting";
+
+        try {
+          await audio.play();
+          isPlaying = true;
+          playBtn.textContent = "⏸";
+          playBtn.classList.add("pulse");
+          playBtn.setAttribute("aria-pressed", "true");
+          setStatus("LIVE", "Stream active", "ok");
+          connectionStateEl.textContent = "Playing";
+          startUptime();
+          fadeIn();
+          eqStart();
+        } catch (err) {
+          handleError(err);
+        }
+      }
+
+      function stopStream(manual = true) {
+        manualStop = !!manual;
+        clearReconnect();
+        fadeOut(() => {
+          try {
+            audio.pause();
+            audio.removeAttribute("src");
+            audio.load();
+          } catch (e) { /* ignore */ }
+          isPlaying = false;
+          playBtn.textContent = "▶";
+          playBtn.classList.remove("pulse");
+          playBtn.setAttribute("aria-pressed", "false");
+          setStatus("Stopped", manual ? "Stopped by user" : "Stopped", null);
+          connectionStateEl.textContent = "Stopped";
+          stopUptime();
+          eqStop();
+        });
+      }
+
+      function handleError(err) {
+        if (manualStop) return;
+
+        errorCount++;
+        errorCountEl.textContent = errorCount;
+
+        setStatus("Error", "Stream failed", null);
+        connectionStateEl.textContent = "Error";
+
+        eqStop();
+        scheduleReconnect();
+      }
+
+      function scheduleReconnect() {
+        if (manualStop) return;
+        clearReconnect();
+
+        setStatus("Reconnecting", "Retrying…", "warn");
+        connectionStateEl.textContent = "Reconnecting";
+
+        reconnectTimer = setTimeout(() => {
+          lastReconnectEl.textContent = new Date().toLocaleTimeString();
+          startStream();
+        }, 3000);
+      }
+
+      // Audio event handlers
+      audio.addEventListener("playing", () => {
+        isPlaying = true;
+        setStatus("LIVE", "Stream active", "ok");
+        connectionStateEl.textContent = "Playing";
+        startUptime();
+        eqStart();
+      });
+
+      audio.addEventListener("pause", () => {
+        isPlaying = false;
+        playBtn.textContent = "▶";
+        playBtn.classList.remove("pulse");
+        playBtn.setAttribute("aria-pressed", "false");
+        setStatus("Paused", "Paused");
+        connectionStateEl.textContent = "Paused";
+        stopUptime();
+        eqStop();
+      });
+
+      audio.addEventListener("ended", () => {
+        isPlaying = false;
+        playBtn.textContent = "▶";
+        playBtn.classList.remove("pulse");
+        setStatus("Ended", "Stream ended");
+        connectionStateEl.textContent = "Ended";
+        stopUptime();
+        eqStop();
+      });
+
+      audio.addEventListener("error", (e) => {
+        console.warn("Audio error", e);
+        handleError(e);
+      });
+
+      // UI bindings
+      playBtn.addEventListener("click", () => {
+        if (!isPlaying) startStream();
+        else audio.pause();
+      });
+
+      playBtn.addEventListener("keydown", (e) => {
+        if (e.key === " " || e.key === "Enter") {
+          e.preventDefault();
+          playBtn.click();
+        }
+      });
+
+      retryBtn.addEventListener("click", () => {
+        stopStream(false);
+        clearReconnect();
+        setTimeout(() => startStream(), 250);
+      });
+
+      volumeSlider.addEventListener("input", (e) => {
+        const v = parseFloat(e.target.value);
+        audio.volume = v;
+        volumeValue.textContent = Math.round(v * 100) + "%";
+        volumeSlider.setAttribute("aria-valuenow", v.toString());
+        try { localStorage.setItem("consoleVolume", v.toString()); } catch (err) { /* ignore storage errors */ }
+      });
+
+      // Diagnostics toggle (click + keyboard)
+      function toggleDiagnostics() {
+        const open = diagnosticsPanel.classList.toggle("open");
+        diagnosticsPanel.setAttribute("aria-hidden", (!open).toString());
+        diagToggle.setAttribute("aria-expanded", open.toString());
+        diagToggle.textContent = open ? "Hide Details ▲" : "Show Details ▼";
+      }
+
+      diagToggle.addEventListener("click", toggleDiagnostics);
+      diagToggle.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          toggleDiagnostics();
+        }
+      });
+
+      // Listener count updater
+      async function updateListeners() {
+        try {
+          const res = await fetch("https://api.zeno.fm/mounts/metadata/axipqkdhsiitv");
+          if (!res.ok) throw new Error("Network response not ok");
+          const data = await res.json();
+          const count = (data && data.listeners) ? data.listeners : "--";
+
+          if (count !== lastListenerCount && lastListenerCount !== null) {
+            listenerCountEl.classList.add("pop");
+            setTimeout(() => listenerCountEl.classList.remove("pop"), 350);
+          }
+
+          listenerCountEl.textContent = count;
+          lastListenerCount = count;
+        } catch (err) {
+          listenerCountEl.textContent = "--";
+        }
+      }
+
+      // Initialization
+      (function init() {
+        try {
+          const savedVol = localStorage.getItem("consoleVolume");
+          const initVol = savedVol !== null ? parseFloat(savedVol) : 0.8;
+          volumeSlider.value = initVol;
+          volumeSlider.setAttribute("aria-valuenow", initVol.toString());
+          volumeValue.textContent = Math.round(initVol * 100) + "%";
+          audio.volume = initVol;
+        } catch (err) {
+          volumeSlider.value = 0.8;
+          volumeValue.textContent = "80%";
+          audio.volume = 0.8;
+        }
+
+        setStatus("Idle", "Ready");
+        connectionStateEl.textContent = "Idle";
+
+        updateListeners();
+        listenersInterval = setInterval(updateListeners, 10000);
+      })();
+
+      // Expose small API for external scripts
+      const wrapper = document.getElementById("infin8-console");
+      if (wrapper) {
+        wrapper.infin8 = {
+          play: () => startStream(),
+          pause: () => audio.pause(),
+          stop: () => stopStream(true),
+          toggle: () => { if (isPlaying) audio.pause(); else startStream(); },
+          setLive: (s) => {
+            if (s === "ok") liveIndicator.classList.add("live-ok");
+            else if (s === "warn") liveIndicator.classList.add("live-warn");
+            else { liveIndicator.classList.remove("live-ok", "live-warn"); }
+          },
+          setVolume: (v) => { volumeSlider.value = v; volumeSlider.dispatchEvent(new Event("input")); }
+        };
+      }
+
+      // Cleanup on page unload
+      window.addEventListener("beforeunload", () => {
+        clearTimeout(reconnectTimer);
+        clearInterval(listenersInterval);
+        clearInterval(uptimeTimer);
+      });
+    })();
+  </script>
+</div>
