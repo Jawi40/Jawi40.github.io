@@ -1,20 +1,29 @@
 <header>
     <div class="nav-container">
+
+        <!-- LOGO -->
         <div class="logo">JAMEXUS</div>
 
-        <!-- Hamburger Button -->
+        <!-- HAMBURGER -->
         <div class="hamburger" id="hamburger">
             <span></span>
             <span></span>
             <span></span>
         </div>
 
-        <!-- Navigation Links -->
+        <!-- NAV MENU -->
         <nav id="navMenu">
             <a href="index.html">Home</a>
-            <a href="services.html">Services</a>
-            <a href="radio.html">Radio</a>
+            <a href="about.html">About</a>
+            <a href="project.html">Project</a>
             <a href="contact.html">Contact</a>
         </nav>
+
     </div>
 </header>
+
+<script>
+document.getElementById("hamburger").addEventListener("click", () => {
+    document.getElementById("navMenu").classList.toggle("open");
+});
+</script>
