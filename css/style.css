@@ -34,7 +34,7 @@ header h1 {
     margin: 0;
     font-size: 56px;
     font-weight: bold;
-    letter-spacing: 1px;
+    letter-spacing: 0px;
     color: #fdda24;
     text-shadow: 0 0 12px #00e0ff;
 }
