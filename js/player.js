@@ -1,9 +1,16 @@
 import { startListening, stopListening } from "./listener-counter.js";
 
-document.getElementById("playButton").addEventListener("click", () => {
-    startListening();
-});
+const playBtn = document.getElementById("playBtn");
+const radioAudio = document.getElementById("radioAudio");
 
-document.getElementById("pauseButton").addEventListener("click", () => {
-    stopListening();
+playBtn.addEventListener("click", () => {
+    if (radioAudio.paused) {
+        radioAudio.play();
+        startListening();
+        playBtn.textContent = "⏸";
+    } else {
+        radioAudio.pause();
+        stopListening();
+        playBtn.textContent = "▶";
+    }
 });
