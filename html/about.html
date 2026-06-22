@@ -4,14 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About – JAMEXUS SERVICES</title>
-    <link rel="stylesheet" href="css/style.css">
-   </head>
+
+    <!-- FIXED PATH -->
+    <link rel="stylesheet" href="../css/style.css">
+</head>
 
 <body>
 
 <div id="header"></div>
 <script>
-  fetch("partials/header.html")
+  // FIXED PATH
+  fetch("../partials/header.html")
     .then(r => r.text())
     .then(t => document.getElementById("header").innerHTML = t);
 </script>
@@ -34,7 +37,8 @@
 
 <div id="footer"></div>
 <script>
-  fetch("partials/footer.html")
+  // FIXED PATH
+  fetch("../partials/footer.html")
     .then(r => r.text())
     .then(t => document.getElementById("footer").innerHTML = t);
 </script>
