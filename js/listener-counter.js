@@ -3,13 +3,13 @@
 // Generate a unique ID for this listener
 let listenerId = "listener_" + Math.random().toString(36).substr(2, 9);
 
-// Reference to the listeners node
+// Firebase reference
 const listenersRef = firebase.database().ref("listeners");
 
-// Track if the user is currently counted
+// Track if user is currently counted
 let isListening = false;
 
-// Add listener when Play is pressed
+// Called when Play is pressed
 function startListening() {
     if (!isListening) {
         listenersRef.child(listenerId).set(true);
@@ -17,7 +17,7 @@ function startListening() {
     }
 }
 
-// Remove listener when Pause is pressed
+// Called when Pause is pressed
 function stopListening() {
     if (isListening) {
         listenersRef.child(listenerId).remove();
@@ -25,19 +25,19 @@ function stopListening() {
     }
 }
 
-// Auto-remove listener when tab closes
+// Remove listener on tab close
 window.addEventListener("beforeunload", () => {
     if (isListening) {
         listenersRef.child(listenerId).remove();
     }
 });
 
-// Real-time listener count display
+// Update footer count in real time
 listenersRef.on("value", snapshot => {
     const count = snapshot.numChildren();
-    const footerElement = document.getElementById("listenerCount");
+    const footer = document.getElementById("listenerCount");
 
-    if (footerElement) {
-        footerElement.textContent = `Listeners: ${count}`;
+    if (footer) {
+        footer.textContent = `Listeners: ${count}`;
     }
 });
