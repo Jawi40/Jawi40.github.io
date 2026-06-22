@@ -262,24 +262,16 @@
                                 startStream();
                             }, 3000);
                         }
-
-                        playBtn.addEventListener("click", () => {
+playBtn.addEventListener("click", () => {
     if (!isPlaying) {
-        startStream();      // your existing audio start logic
-        startListening();   // 🔥 added
+        startStream();      // start audio
+        startListening();   // start Firebase listener
     } else {
-        audio.pause();
-        isPlaying = false;
-
-        stopListening();    // 🔥 added
-
-        playBtn.textContent = "▶";
-        playBtn.classList.remove("pulse");
-        setStatus("Paused", "Paused");
-        connectionStateEl.textContent = "Paused";
-        eqStop();
+        stopStream();       // stop audio (your existing logic)
+        stopListening();    // stop Firebase listener
     }
 });
+
 
 
                         retryBtn.addEventListener("click", () => {
