@@ -1,43 +1,22 @@
-// listener-counter.js
+import { db } from "./firebase-init.js";
+import { ref, set, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
-// Generate a unique ID for this listener
-let listenerId = "listener_" + Math.random().toString(36).substr(2, 9);
+let listenerId = null;
 
-// Firebase reference
-const listenersRef = firebase.database().ref("listeners");
+export function startListening() {
+    listenerId = "listener_" + Math.random().toString(36).substring(2, 10);
 
-// Track if user is currently counted
-let isListening = false;
+    const listenerRef = ref(db, "listeners/" + listenerId);
 
-// Called when Play is pressed
-function startListening() {
-    if (!isListening) {
-        listenersRef.child(listenerId).set(true);
-        isListening = true;
-    }
+    set(listenerRef, true);
+    onDisconnect(listenerRef).remove();
 }
 
-// Called when Pause is pressed
-function stopListening() {
-    if (isListening) {
-        listenersRef.child(listenerId).remove();
-        isListening = false;
-    }
+export function stopListening() {
+    if (!listenerId) return;
+
+    const listenerRef = ref(db, "listeners/" + listenerId);
+    remove(listenerRef);
+
+    listenerId = null;
 }
-
-// Remove listener on tab close
-window.addEventListener("beforeunload", () => {
-    if (isListening) {
-        listenersRef.child(listenerId).remove();
-    }
-});
-
-// Update footer count in real time
-listenersRef.on("value", snapshot => {
-    const count = snapshot.numChildren();
-    const footer = document.getElementById("listenerCount");
-
-    if (footer) {
-        footer.textContent = `Listeners: ${count}`;
-    }
-});
