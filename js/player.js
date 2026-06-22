@@ -1,5 +1,5 @@
 // Import listener tracking from Firebase module
-import { startListening, stopListening } from "./listener-counter.js";
+import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
 
 // =========================
 // DOM ELEMENTS
@@ -170,25 +170,18 @@ function scheduleReconnect() {
 }
 
 // =========================
-// LISTENER COUNT (ZENO API)
+// REAL-TIME LISTENER COUNT (FIREBASE)
 // =========================
-async function updateListeners() {
-    try {
-        const res = await fetch("https://api.zeno.fm/mounts/metadata/axipqkdhsiitv");
-        const data = await res.json();
-        const count = data.listeners ?? "--";
+onListenerCount((count) => {
+    listenerCountEl.textContent = count;
 
-        if (count !== lastListenerCount && lastListenerCount !== null) {
-            listenerCountEl.classList.add("pop");
-            setTimeout(() => listenerCountEl.classList.remove("pop"), 350);
-        }
-
-        listenerCountEl.textContent = count;
-        lastListenerCount = count;
-    } catch {
-        listenerCountEl.textContent = "--";
+    if (lastListenerCount !== null && count !== lastListenerCount) {
+        listenerCountEl.classList.add("pop");
+        setTimeout(() => listenerCountEl.classList.remove("pop"), 350);
     }
-}
+
+    lastListenerCount = count;
+});
 
 // =========================
 // EVENT LISTENERS
@@ -230,7 +223,3 @@ volumeValue.textContent = Math.round(initVol * 100) + "%";
 audio.volume = initVol;
 
 setStatus("Idle", "Ready");
-
-// Start listener polling
-setInterval(updateListeners, 10000);
-updateListeners();
