@@ -51,9 +51,8 @@
 
         <div class="flex-row">
 
-            <!-- ⭐ FIXED PLAYER COLUMN ⭐ -->
-            <div class="player-box">
-
+            <!-- PLAYER COLUMN -->
+            <div style="flex:1; min-width:280px;">
                 <div id="infin8-console">
 
                     <div class="console-wrapper">
@@ -116,7 +115,7 @@
                     <!-- AUDIO ELEMENT -->
                     <audio id="radioAudio"></audio>
 
-                    <!-- ⭐ PODCAST RSS BUTTON (NOW LOCKED UNDER PLAYER) ⭐ -->
+                    <!-- ⭐ PODCAST RSS BUTTON ⭐ -->
                     <div class="rss-wrapper">
                         <a href="https://virtualdj.com/podcast/Don_Jawi/list.xml" 
                            class="rss-button" 
@@ -129,18 +128,20 @@
                 </div>
             </div>
 
-            <!-- CHAT COLUMN -->
-            <script src="https://minnit.chat/js/embed.js?c=1772345192" defer></script>
+            <!-- ⭐ CHAT COLUMN (FIXED) ⭐ -->
+            <div class="chat-box">
+                <script src="https://minnit.chat/js/embed.js?c=1772345192" defer></script>
 
-            <span class="minnit-chat-sembed"
-                data-chatname="https://organizations.minnit.chat/223717055944276/c/Infin8Radio?embed"
-                data-style="width:100%; height:500px; max-height:90vh;"
-                data-version="1.55">
-            </span>
+                <span class="minnit-chat-sembed"
+                    data-chatname="https://organizations.minnit.chat/223717055944276/c/Infin8Radio?embed"
+                    data-style="width:100%; height:500px; max-height:90vh;"
+                    data-version="1.55">
+                </span>
 
-            <p class="powered-by-minnit">
-                <a href="https://minnit.chat" target="_blank"></a>
-            </p>
+                <p class="powered-by-minnit">
+                    <a href="https://minnit.chat" target="_blank"></a>
+                </p>
+            </div>
 
         </div>
 
