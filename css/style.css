@@ -435,3 +435,25 @@ section h2 {
     text-shadow: 0 0 6px #fdda24;
 }
 
+.rss-wrapper {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.rss-button {
+    display: inline-block;
+    background-color: #ff9800;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: 0.2s ease-in-out;
+}
+
+.rss-button:hover {
+    background-color: #e68900;
+    transform: scale(1.05);
+}
+
