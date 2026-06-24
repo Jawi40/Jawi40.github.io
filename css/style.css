@@ -355,7 +355,7 @@ section:nth-of-type(3) h2 {
 
 @media (max-width: 500px) {
     nav {
-        gap: 15px; /* reduced from 40px */
+        gap: 10px; /* reduced from 40px */
         padding: 20px 0;
     }
 
