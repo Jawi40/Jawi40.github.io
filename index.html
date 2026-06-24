@@ -1,374 +1,189 @@
-/* ===========================
-   GLOBAL THEME
-   =========================== */
-* { box-sizing: border-box; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAMEXUS</title>
 
-body {
-    margin: 0;
-    padding: 0;
-    background: #0a0a0a;
-    color: #fdda24;
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-}
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://stream.zeno.fm">
+</head>
 
-/* ===========================
-   PAGE WRAPPER
-   =========================== */
-.page-wrapper {
-    max-width: 1100px; /* FIXED: allows player + chat side-by-side */
-    margin: 0 auto;
-    padding: 0 20px;
-}
+<body>
 
-/* ===========================
-   HEADER
-   =========================== */
-header {
-    background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
-    padding: 30px 20px;
-    text-align: center;
-    border-bottom: 3px solid #00e0ff;
-    box-shadow: 0 0 18px #00e0ff;
-}
+<!-- HEADER -->
+<div id="header"></div>
+<script>
+  fetch("partials/header.html")
+    .then(r => r.text())
+    .then(t => document.getElementById("header").innerHTML = t);
+</script>
 
-header h1 {
-    margin: 0;
-    font-size: 56px;
-    font-weight: bold;
-    letter-spacing: 1px;
-    color: #fdda24;
-    text-shadow: 0 0 12px #00e0ff;
-}
+<div class="page-wrapper">
 
-header p {
-    margin-top: 8px;
-    font-size: 20px;
-    opacity: 0.9;
-}
+    <!-- SECTION 1 -->
+    <section>
+        <h2>Welcome</h2>
+        <p>
+            I’m <span class="highlight">JAWI</span>, and I explore and share the world of internet radio —
+            from streaming music to providing music vibes and commentaries.
+            This site is my personal hub for sharing what I learn, what I build,
+            and what I love about digital broadcasting.
+        </p>
+    </section>
 
-/* ===========================
-   NAVIGATION
-   =========================== */
-nav {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    padding: 25px 0;
-    background: #111;
-    border-bottom: 3px solid #00e0ff;
-    box-shadow: 0 0 12px #00e0ff;
-}
+    <div class="section-divider"></div>
 
-nav a {
-    color: #fdda24;
-    text-decoration: none;
-    font-size: 20px;
-    font-weight: bold;
-    text-shadow: 0 0 8px #00e0ff;
-    transition: 0.25s ease;
-}
+    <!-- SECTION 2 -->
+    <section>
+        <h2>What I Do</h2>
+        <p><strong>• Internet DJing</strong> — Hosting virtual parties and live online sets.</p>
+        <p><strong>• Event DJing</strong> — Providing music for public and private events.</p>
+        <p><strong>• Creative Services</strong> — Offering various digital and media‑related skills.</p>
+        <p><strong>• Tutorials</strong> — Helping beginners learn how to become DJs.</p>
+    </section>
 
-nav a:hover {
-    color: #00e0ff;
-    text-shadow: 0 0 12px #00e0ff;
-}
+    <div class="section-divider"></div>
 
-/* ===========================
-   SECTIONS
-   =========================== */
-section {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 0 30px;
-}
+    <!-- SECTION 3: FEATURED STATION -->
+    <section>
+        <h2>Featured Station</h2>
 
-section h2 {
-    font-size: 32px;
-    margin-bottom: 15px;
-    color: #fdda24;
-    text-shadow: 0 0 8px #fdda24;
-}
+        <div class="flex-row">
 
-/* Featured Station spacing fix */
-section:nth-of-type(3) h2 {
-    text-align: center;
-    margin-bottom: 25px;
-}
+            <!-- PLAYER COLUMN -->
+            <div class="player-box">
+                <div id="infin8-console">
 
-/* ===========================
-   SECTION DIVIDER
-   =========================== */
-.section-divider {
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, #009b3a, #da291c);
-    box-shadow: 0 0 14px #009b3a, 0 0 14px #da291c;
-    margin: 60px 0;
-}
+                    <div class="console-wrapper">
+                        <div class="console-header">
+                            <div class="console-title">
+                                <span class="flag flag-jm"></span>
+                                <span class="flag flag-mx"></span>
+                                <span class="flag flag-us"></span>
+                                Infin8Radio
+                            </div>
 
-/* ===========================
-   FLEX ROW (PLAYER + CHAT)
-   =========================== */
-.flex-row {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: nowrap; /* FORCE SIDE-BY-SIDE ON DESKTOP */
-}
+                            <div class="status-block">
+                                <span class="live-indicator" id="liveIndicator"></span>
+                                <span id="statusLabel">Idle</span><br>
+                                <span id="statusDetail">Ready</span>
+                            </div>
+                        </div>
 
-/* ===========================
-   PLAYER + CHAT WIDTH FIX
-   =========================== */
-.player-box,
-.chat-box {
-    width: 450px;
-    max-width: 100%;
-}
+                        <div class="controls-row">
+                            <button class="btn main" id="playBtn">▶</button>
+                            <button class="btn" id="retryBtn">↻</button>
 
-/* Chat styling to match player */
-.chat-box {
-    min-width: 300px;
-    background: #111;
-    padding: 12px;
-    border-radius: 14px;
-    border: 2px solid #009b3a;
-    box-shadow: 0 0 12px #009b3a;
-}
+                            <div style="flex:1"></div>
 
-/* ===========================
-   PLAYER BOX
-   =========================== */
-.player-box {
-    background: #111;
-    padding: 12px;
-    border-radius: 14px;
-    border: 2px solid #009b3a;
-    text-align: center;
-}
+                            <div style="font-size:11px;">
+                                Errors: <span id="errorCount">0</span><br>
+                                Last reconnect: <span id="lastReconnect">--</span>
+                            </div>
+                        </div>
 
-/* ===========================
-   CHAT BOX
-   =========================== */
-.minnit-chat-sembed {
-    display: block !important;
-}
+                        <div class="equalizer eq-paused" id="equalizer">
+                            <div class="eq-bar"></div>
+                            <div class="eq-bar"></div>
+                            <div class="eq-bar"></div>
+                            <div class="eq-bar"></div>
+                            <div class="eq-bar"></div>
+                        </div>
 
-/* ===========================
-   INFIN8RADIO (ADVANCED)
-=========================== */
+                        <div class="volume-row">
+                            <span>Vol</span>
+                            <input type="range" id="volumeSlider" min="0" max="1" step="0.01">
+                            <span id="volumeValue">--%</span>
+                        </div>
 
-#infin8-console {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 10px 0;
-    font-family: system-ui, sans-serif;
-}
+                        <div class="diag-toggle" id="diagToggle">Show Details ▼</div>
 
-.console-wrapper {
-    width: 100%;
-    max-width: 450px;
-    background: rgba(10,10,10,0.85);
-    border-radius: 14px;
-    border: 2px solid #1f1f1f;
-    box-shadow: 0 0 20px rgba(0,0,0,0.7);
-    padding: 10px;
-    color: #eee;
-}
+                        <div class="diagnostics" id="diagnosticsPanel">
+                            <div>Stream URL: <span id="streamUrlText"></span></div>
+                            <div>Connection: <span id="connectionState">Idle</span></div>
+                            <div>Uptime: <span id="uptime">0s</span></div>
+                            <div>Ear5: <span id="listenerCount">--</span></div>
+                        </div>
 
-/* HEADER */
-.console-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 10px;
-    border-bottom: 1px solid #004d00;
-    background: linear-gradient(90deg, #000, #006400);
-    border-radius: 10px 10px 0 0;
-}
+                        <div class="console-footer">
+                            <span>Engine: Jamexus-style</span>
+                            <span>Mode: Radio Stream</span>
+                        </div>
 
-.console-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: #fdda24;
-}
+                        <!-- ⭐ RSS BUTTON INSIDE PLAYER BOX ⭐ -->
+                        <div class="rss-wrapper" style="margin-top:15px; margin-bottom:10px;">
+                            <a href="https://virtualdj.com/user/Don_Jawi/podcast.html" 
+                               class="rss-button" 
+                               target="_blank" 
+                               rel="noopener">
+                                🎧 Podcast: Jawi
+                            </a>
+                        </div>
 
-/* FLAGS */
-.flag {
-    display: inline-block;
-    width: 18px;
-    height: 12px;
-    background-size: cover;
-    background-position: center;
-    border-radius: 2px;
-    margin-right: 3px;
-}
+                    </div>
 
-.flag-jm { background-image: url('https://flagcdn.com/w20/jm.png'); }
-.flag-mx { background-image: url('https://flagcdn.com/w20/mx.png'); }
-.flag-us { background-image: url('https://flagcdn.com/w20/us.png'); }
+                    <!-- AUDIO ELEMENT -->
+                    <audio id="radioAudio"></audio>
 
-/* LIVE INDICATOR */
-.live-indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 3px;
-    background: #b00000;
-    box-shadow: 0 0 6px rgba(255,0,0,0.6);
-}
+                </div>
+            </div>
 
-.live-ok { background: #00d000 !important; }
-.live-warn { background: #f4d400 !important; }
+            <!-- CHAT COLUMN -->
+            <div class="chat-box">
+                <script src="https://minnit.chat/js/embed.js?c=1772345192" defer></script>
 
-/* CONTROLS */
-.controls-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 12px;
-}
+                <span class="minnit-chat-sembed"
+                    data-chatname="https://organizations.minnit.chat/223717055944276/c/Infin8Radio?embed"
+                    data-style="width:100%; height:500px; max-height:90vh;"
+                    data-version="1.55">
+                </span>
 
-.btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    border: none;
-    background: #fdda24;
-    color: #000;
-    font-size: 18px;
-    cursor: pointer;
-}
+                <p class="powered-by-minnit">
+                    <a href="https://minnit.chat" target="_blank"></a>
+                </p>
+            </div>
 
-/* EQUALIZER */
-.equalizer {
-    display: flex;
-    justify-content: center;
-    gap: 4px;
-    margin-top: 8px;
-    height: 14px;
-}
+        </div>
 
-.eq-bar {
-    width: 6px;
-    background: #fdda24;
-    border-radius: 3px;
-    animation: eqBounce 0.6s infinite ease-in-out;
-}
+    </section>
 
-.eq-paused .eq-bar {
-    animation-play-state: paused;
-    height: 3px !important;
-}
+    <div class="section-divider"></div>
 
-@keyframes eqBounce {
-    0% { height: 3px; }
-    50% { height: 12px; }
-    100% { height: 3px; }
-}
+    <!-- SECTION 4 -->
+    <section>
+        <h2>Why Internet Radio?</h2>
+        <p>
+            Internet radio is one of the most open, creative, and global forms of broadcasting.
+            Anyone can create. Anyone can listen.
+            I’m here to explore that world and help others dive in.
+        </p>
+    </section>
 
-/* VOLUME */
-.volume-row {
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+    <div class="section-divider"></div>
 
-.volume-row input[type="range"] {
-    width: 100%;
-}
+    <!-- SECTION 5 -->
+    <section>
+        <h2>Connect</h2>
+        <p>Email: <span class="highlight">uc5521@gmail.com</span></p>
+    </section>
 
-/* DIAGNOSTICS */
-.diag-toggle {
-    margin-top: 10px;
-    cursor: pointer;
-    color: #f4d400;
-    font-size: 13px;
-    text-align: center;
-}
+</div>
 
-.diagnostics {
-    margin-top: 6px;
-    padding: 8px;
-    background: #0d0d0d;
-    border: 1px solid #222;
-    border-radius: 8px;
-    font-size: 12px;
-    line-height: 1.4;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.35s ease;
-}
+<div class="section-divider"></div>
 
-.diagnostics.open {
-    max-height: 260px;
-}
+<!-- FOOTER -->
+<div id="footer"></div>
+<script>
+  fetch("partials/footer.html")
+    .then(r => r.text())
+    .then(t => document.getElementById("footer").innerHTML = t);
+</script>
 
-/* FOOTER */
-.console-footer {
-    margin-top: 14px;
-    padding: 8px 10px;
-    background: linear-gradient(90deg, #006400, #000);
-    border-top: 2px solid #004d00;
-    font-size: 11px;
-    color: #f4d400;
-    display: flex;
-    justify-content: space-between;
-    border-radius: 0 0 10px 10px;
-}
+<!-- MODULE SCRIPTS -->
+<script type="module" src="js/firebase-init.js"></script>
+<script type="module" src="js/listener-counter.js"></script>
+<script type="module" src="js/player.js"></script>
 
-/* RSS BUTTON */
-.rss-wrapper {
-    text-align: center;
-    margin-top: 15px;
-}
-
-.rss-button {
-    display: inline-block;
-    background-color: #ff9800;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 1rem;
-    transition: 0.2s ease-in-out;
-}
-
-.rss-button:hover {
-    background-color: #e68900;
-    transform: scale(1.05);
-}
-
-/* ===========================
-   MOBILE FIXES
-=========================== */
-@media (max-width: 600px) {
-    .flex-row {
-        flex-direction: column;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-
-    .player-box,
-    .chat-box {
-        width: 100%;
-        max-width: 450px;
-    }
-
-    section {
-        margin: 25px auto;
-    }
-}
-
-@media (max-width: 500px) {
-    nav {
-        gap: 20px;
-        padding: 20px 0;
-    }
-
-    nav a {
-        font-size: 18px;
-    }
-}
+</body>
+</html>
