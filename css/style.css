@@ -69,7 +69,6 @@ nav a {
     font-weight: bold;
     text-shadow: 0 0 8px #00e0ff;
     transition: 0.25s ease;
-    transform-origin: center;
 }
 
 nav a:hover {
@@ -111,14 +110,22 @@ section h2 {
     display: flex;
     justify-content: center;
     gap: 30px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap; /* prevents chat dropping under player */
 }
 
 /* ===========================
-   PLAYER BOX (container for console)
+   PLAYER + CHAT WIDTH FIX
+   =========================== */
+.player-box,
+.chat-box {
+    width: 450px;
+    max-width: 100%;
+}
+
+/* ===========================
+   PLAYER BOX
    =========================== */
 .player-box {
-    width: 300px;
     background: #111;
     padding: 12px;
     border-radius: 14px;
@@ -130,22 +137,11 @@ section h2 {
    CHAT BOX
    =========================== */
 .chat-box {
-    width: 100%;
-    max-width: 520px;
     margin: 0 auto;
 }
 
 .minnit-chat-sembed {
     display: block !important;
-}
-
-
-.chat-frame {
-    width: 100%;
-    height: 350px;
-    border: none;
-    border-radius: 10px;
-    display: block;
 }
 
 /* ===========================
@@ -162,7 +158,7 @@ section h2 {
 
 .console-wrapper {
     width: 100%;
-    max-width: 520px;
+    max-width: 450px; /* match player width */
     background: rgba(10,10,10,0.85);
     border-radius: 14px;
     border: 2px solid #1f1f1f;
@@ -234,15 +230,6 @@ section h2 {
     cursor: pointer;
 }
 
-.btn.main {
-    background: #fdda24;
-}
-
-.btn-secondary {
-    background: #222;
-    color: #fdda24;
-}
-
 /* EQUALIZER */
 .equalizer {
     display: flex;
@@ -308,16 +295,6 @@ section h2 {
     max-height: 260px;
 }
 
-.pop {
-    animation: popAnim 0.35s ease;
-}
-
-@keyframes popAnim {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.35); }
-    100% { transform: scale(1); }
-}
-
 /* FOOTER */
 .console-footer {
     margin-top: 14px;
@@ -331,110 +308,7 @@ section h2 {
     border-radius: 0 0 10px 10px;
 }
 
-/* MOBILE */
-@media (max-width: 600px) {
-    .console-wrapper { width: 95%; }
-    .controls-row { flex-wrap: wrap; justify-content: center; }
-    .console-title { font-size: 14px; }
-}
-
-/* ===========================
-   SERVICES PAGE STYLING
-=========================== */
-
-.services-section {
-    max-width: 900px;
-    margin: 50px auto;
-    padding: 0 20px;
-}
-
-.page-title {
-    text-align: center;
-    font-size: 42px;
-    font-weight: 900;
-    color: #fdda24;
-    text-shadow: 0 0 12px #00e0ff;
-    margin-bottom: 10px;
-}
-
-.intro-text {
-    text-align: center;
-    font-size: 18px;
-    color: #ddd;
-    margin-bottom: 40px;
-    line-height: 1.7;
-}
-
-/* SERVICE CARDS */
-.service-block {
-    background: rgba(0, 0, 0, 0.75);
-    border-left: 5px solid #00e0ff;
-    padding: 20px 22px;
-    margin-bottom: 25px;
-    border-radius: 10px;
-    box-shadow: 0 0 14px rgba(0,224,255,0.35);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.service-block:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 0 18px rgba(0,224,255,0.55);
-}
-
-.service-block h2 {
-    margin: 0 0 10px 0;
-    font-size: 24px;
-    color: #fdda24;
-    text-shadow: 0 0 8px #fdda24;
-}
-
-.service-block p {
-    margin: 0;
-    color: #ccc;
-    font-size: 16px;
-    line-height: 1.6;
-}
-
-/* CONTACT CTA */
-.contact-cta {
-    margin-top: 50px;
-    padding: 25px;
-    background: linear-gradient(90deg, #006400, #000);
-    border-radius: 12px;
-    border: 2px solid #009b3a;
-    text-align: center;
-    box-shadow: 0 0 16px rgba(0,155,58,0.5);
-}
-
-.contact-cta h3 {
-    margin: 0 0 12px 0;
-    font-size: 26px;
-    color: #fdda24;
-    text-shadow: 0 0 8px #00e0ff;
-}
-
-.contact-cta p {
-    margin: 0;
-    color: #eee;
-    font-size: 17px;
-}
-
-/* MOBILE */
-@media (max-width: 600px) {
-    .page-title {
-        font-size: 32px;
-    }
-    .service-block {
-        padding: 20px;
-    }
-}
-
-#listenerCount {
-    color: #fdda24;
-    font-weight: 700;
-    text-shadow: 0 0 6px #fdda24;
-}
-
+/* RSS BUTTON */
 .rss-wrapper {
     text-align: center;
     margin-top: 15px;
@@ -455,22 +329,4 @@ section h2 {
 .rss-button:hover {
     background-color: #e68900;
     transform: scale(1.05);
-}
-
-.player-box,
-.chat-box {
-    width: 425px;
-    max-width: 100%;
-}
-
-/* === FORCE PLAYER + CHAT SAME WIDTH AND SIDE-BY-SIDE === */
-.player-box,
-.chat-box {
-    width: 425px;      /* fits perfectly inside your layout */
-    max-width: 100%;
-}
-
-/* Optional: center both columns inside flex-row */
-.flex-row {
-    justify-content: center;
 }
