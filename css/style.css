@@ -360,12 +360,11 @@ section h2 {
    MOBILE FIX — JAMAICAN POLISH
    =========================== */
 @media (max-width: 600px) {
-
-    .flex-row {
-        flex-direction: column;
-        align-items: center;
-        gap: 25px;
+    section {
+        margin: 35px auto;
+        padding: 0 10px; /* smaller padding = cleaner alignment */
     }
+}
 
     .player-box,
     .chat-box {
