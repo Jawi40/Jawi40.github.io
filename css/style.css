@@ -25,35 +25,21 @@ body {
    HEADER — JAMAICAN GLOW
    =========================== */
 header {
-    background: linear-gradient(135deg, #000, #0d2600); /* deep green tint */
-    padding: 35px 10px;
-    text-align: center;
-    border-bottom: 2px solid #009b3a; /* Jamaican green */
-    box-shadow: 0 0 25px #009b3a;
-}
-
-header h1 {
-    margin: 0;
-    font-size: 62px;
-    font-weight: bold;
-    letter-spacing: 1px;
-    color: #fdda24;
-    text-shadow: 0 0 18px #fdda24, 0 0 25px #009b3a;
-}
-
-header p {
-    margin-top: 12px;
-    font-size: 22px;
-    opacity: 0.95;
-    color: #da291c; /* Jamaican red accent */
-    text-shadow: 0 0 10px #da291c;
-}
-
-header {
-    padding: 45px 20px;
+    background: linear-gradient(135deg, #000, #0d2600);
+    padding: 45px 20px; /* keeps original height */
     text-align: center;
     border-bottom: 4px solid #009b3a;
     box-shadow: 0 0 25px #009b3a;
+}
+
+/* LOGO — FINAL FIXED VERSION */
+.site-logo {
+    width: 100%;
+    max-width: 600px;   /* adjust this number to make it wider */
+    height: auto;
+    display: block;
+    margin: 0 auto 20px;
+    filter: drop-shadow(0 0 12px #009b3a);
 }
 
 /* ===========================
@@ -155,7 +141,7 @@ section:nth-of-type(3) h2 {
     background: #0d0d0d;
     padding: 15px;
     border-radius: 14px;
-    border: 2px solid #da291c; /* red accent */
+    border: 2px solid #da291c;
     box-shadow: 0 0 18px #da291c;
     text-align: center;
 }
@@ -389,20 +375,3 @@ section:nth-of-type(3) h2 {
         margin: 35px auto;
     }
 }
-
-header {
-    padding: 20px 0;
-    text-align: center;
-    width: 100%;
-}
-
-.site-logo {
-    width: 100%;        /* fills the header width */
-    max-width: 450px;   /* controls desktop size */
-    height: auto;
-    display: block;
-    margin: 0 auto 20px;
-    filter: drop-shadow(0 0 12px #009b3a);
-}
-
-
