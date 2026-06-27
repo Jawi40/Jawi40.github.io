@@ -384,7 +384,7 @@ section:nth-of-type(3) h2 {
 }
 
 .site-logo {
-    width: 160px;        /* adjust size if needed */
+    width: 2000px;        /* adjust size if needed */
     height: auto;
     display: block;
     margin: 0 auto 20px; /* centers + adds spacing */
