@@ -33,12 +33,16 @@ header {
 }
 
 /* LOGO — FINAL FIXED VERSION */
+header {
+    padding: 5px 0;
+}
+
 .site-logo {
     width: 100%;
-    max-width: 350px;   /* perfect medium size */
+    max-width: 350px;
     height: auto;
     display: block;
-    margin: 0 auto 20px;
+    margin: 0 auto;
     filter: drop-shadow(0 0 12px #009b3a);
 }
 
