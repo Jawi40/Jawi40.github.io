@@ -26,9 +26,9 @@ body {
    =========================== */
 header {
     background: linear-gradient(135deg, #000, #0d2600); /* deep green tint */
-    padding: 45px 20px;
+    padding: 35px 10px;
     text-align: center;
-    border-bottom: 4px solid #009b3a; /* Jamaican green */
+    border-bottom: 2px solid #009b3a; /* Jamaican green */
     box-shadow: 0 0 25px #009b3a;
 }
 
