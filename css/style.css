@@ -35,7 +35,7 @@ header {
 /* LOGO — FINAL FIXED VERSION */
 .site-logo {
     width: 100%;
-    max-width: 600px;   /* adjust this number to make it wider */
+    max-width: 450px;   /* adjust this number to make it wider */
     height: auto;
     display: block;
     margin: 0 auto 20px;
