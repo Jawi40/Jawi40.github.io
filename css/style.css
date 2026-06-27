@@ -49,6 +49,13 @@ header p {
     text-shadow: 0 0 10px #da291c;
 }
 
+header {
+    padding: 45px 20px;
+    text-align: center;
+    border-bottom: 4px solid #009b3a;
+    box-shadow: 0 0 25px #009b3a;
+}
+
 /* ===========================
    NAVIGATION — REGGAE VIBES
    =========================== */
