@@ -84,12 +84,13 @@ section {
     padding: 0 25px;
 }
 
-section h2 {
+section h2,
+.page-wrapper h2 {
     font-size: 36px;
     margin-bottom: 20px;
     color: #fdda24;
     text-shadow: 0 0 12px #fdda24, 0 0 15px #009b3a;
-    text-align: center;   /* ⭐ Only centers the titles */
+    text-align: center;
 }
 
 /* Featured Station */
