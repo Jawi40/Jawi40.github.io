@@ -384,8 +384,9 @@ section:nth-of-type(3) h2 {
 }
 
 .site-logo {
-    width: 140px;
+    width: 160px;        /* adjust size if needed */
     height: auto;
-    margin-bottom: 15px;
-    filter: drop-shadow(0 0 12px #009b3a);
+    display: block;
+    margin: 0 auto 20px; /* centers + adds spacing */
+    filter: drop-shadow(0 0 12px #009b3a); /* Jamaican green glow */
 }
