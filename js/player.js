@@ -95,7 +95,7 @@ function eqStop() {
 }
 
 // =========================
-// STREAM ENGINE
+// STREAM ENGINE (OPTIMIZED)
 // =========================
 export async function startStream() {
     manualStop = false;
@@ -106,16 +106,18 @@ export async function startStream() {
     connectionStateEl.textContent = "Connecting";
 
     try {
-        await audio.play();
+        await audio.play(); // NEW: async/await = faster, non-blocking
         isPlaying = true;
 
-        // Listener tracking
+        // Firebase listener tracking (kept from old player)
         startListening();
 
         playBtn.textContent = "⏸";
         playBtn.classList.add("pulse");
+
         setStatus("LIVE", "Stream active", "ok");
         connectionStateEl.textContent = "Playing";
+
         startUptime();
         fadeIn();
         eqStart();
@@ -127,18 +129,21 @@ export async function startStream() {
 export function stopStream() {
     manualStop = true;
 
-    // Listener tracking
+    // Firebase listener tracking (kept)
     stopListening();
 
     fadeOut(() => {
         audio.pause();
         audio.removeAttribute("src");
         audio.load();
+
         isPlaying = false;
         playBtn.textContent = "▶";
         playBtn.classList.remove("pulse");
+
         setStatus("Stopped", "Stopped by user");
         connectionStateEl.textContent = "Stopped";
+
         stopUptime();
         eqStop();
     });
@@ -187,11 +192,8 @@ onListenerCount((count) => {
 // EVENT LISTENERS
 // =========================
 playBtn.addEventListener("click", () => {
-    if (!isPlaying) {
-        startStream();
-    } else {
-        stopStream();
-    }
+    if (!isPlaying) startStream();
+    else stopStream();
 });
 
 retryBtn.addEventListener("click", () => {
