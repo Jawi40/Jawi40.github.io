@@ -106,8 +106,18 @@ export async function startStream() {
     connectionStateEl.textContent = "Connecting";
 
     try {
-        await audio.play(); // NEW: async/await = faster, non-blocking
-        isPlaying = true;
+    await audio.play();
+} catch (err) {
+    // Mobile fallback
+    audio.muted = false;
+    const playAttempt = audio.play();
+    if (playAttempt !== undefined) {
+        playAttempt.catch(() => {
+            // Still blocked — user must tap again
+            setStatus("Tap to Play", "Mobile browser blocked autoplay", "warn");
+        });
+    }
+}
 
         // Firebase listener tracking (kept from old player)
         startListening();
