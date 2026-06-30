@@ -38,15 +38,15 @@ let startTime = null;
 let lastListenerCount = null;
 
 // =========================
-// AUDIO ENGINE (iOS SAFE)
+// AUDIO ENGINE (iOS + Android SAFE)
 // =========================
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 let gainNode = audioCtx.createGain();
 let source = null;
 
-// Create audio graph AFTER resume (iOS requirement)
+// MUST be called AFTER resume()
 function connectAudioGraph() {
-    if (source) return; // prevent duplicate connections
+    if (source) return; // prevent duplicate nodes
     source = audioCtx.createMediaElementSource(audio);
     source.connect(gainNode).connect(audioCtx.destination);
 }
@@ -216,8 +216,9 @@ onListenerCount((count) => {
 // EVENT LISTENERS
 // =========================
 playBtn.addEventListener("click", async () => {
-    await audioCtx.resume();   // REQUIRED FOR iOS AUDIO
-    connectAudioGraph();       // REQUIRED FOR iOS AUDIO
+    await audioCtx.resume();   // REQUIRED for iOS + Android
+    connectAudioGraph();       // REQUIRED after resume
+
     if (!isPlaying) startStream();
     else stopStream();
 });
