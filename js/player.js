@@ -38,12 +38,18 @@ let startTime = null;
 let lastListenerCount = null;
 
 // =========================
-// iOS‑SAFE AUDIO ENGINE (Gain Node)
+// AUDIO ENGINE (iOS SAFE)
 // =========================
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const gainNode = audioCtx.createGain();
-const source = audioCtx.createMediaElementSource(audio);
-source.connect(gainNode).connect(audioCtx.destination);
+let gainNode = audioCtx.createGain();
+let source = null;
+
+// Create audio graph AFTER resume (iOS requirement)
+function connectAudioGraph() {
+    if (source) return; // prevent duplicate connections
+    source = audioCtx.createMediaElementSource(audio);
+    source.connect(gainNode).connect(audioCtx.destination);
+}
 
 // =========================
 // STATUS + UI HELPERS
@@ -72,7 +78,7 @@ function stopUptime() {
 }
 
 // =========================
-// FADE USING GAIN NODE (iOS compatible)
+// FADE USING GAIN NODE
 // =========================
 function fadeIn() {
     let v = 0;
@@ -108,7 +114,7 @@ function eqStop() {
 }
 
 // =========================
-// STREAM ENGINE (CLEAN + iOS SAFE)
+// STREAM ENGINE
 // =========================
 export async function startStream() {
     manualStop = false;
@@ -123,10 +129,11 @@ export async function startStream() {
     connectionStateEl.textContent = "Connecting";
 
     try {
+        gainNode.gain.value = parseFloat(volumeSlider.value);
+
         await audio.play();
         isPlaying = true;
 
-        // Firebase listener tracking
         startListening();
 
         playBtn.textContent = "⏸";
@@ -192,7 +199,7 @@ function scheduleReconnect() {
 }
 
 // =========================
-// REAL-TIME LISTENER COUNT (FIREBASE)
+// REAL-TIME LISTENER COUNT
 // =========================
 onListenerCount((count) => {
     listenerCountEl.textContent = count;
@@ -208,17 +215,20 @@ onListenerCount((count) => {
 // =========================
 // EVENT LISTENERS
 // =========================
-playBtn.addEventListener("click", () => {
+playBtn.addEventListener("click", async () => {
+    await audioCtx.resume();   // REQUIRED FOR iOS AUDIO
+    connectAudioGraph();       // REQUIRED FOR iOS AUDIO
     if (!isPlaying) startStream();
     else stopStream();
 });
 
-retryBtn.addEventListener("click", () => {
+retryBtn.addEventListener("click", async () => {
+    await audioCtx.resume();
+    connectAudioGraph();
     stopStream();
     startStream();
 });
 
-// iOS‑SAFE VOLUME CONTROL
 volumeSlider.addEventListener("input", () => {
     const v = parseFloat(volumeSlider.value);
     gainNode.gain.value = v;
