@@ -82,7 +82,7 @@ section {
 /* Desktop centering fix */
 @media (min-width: 900px) {
     section {
-        padding: 0 10px; /* keeps your 10px margin but centers visually */
+        padding: 0 10px;
     }
 }
 
@@ -255,20 +255,22 @@ section h2 {
     background: #ffe55c;
 }
 
-/* EQUALIZER */
+/* EQUALIZER (aligned with play button, upright) */
 .equalizer {
-  display: flex;
-  justify-content: center;
-  gap: 4px;
-  height: 14px;
-   margin-top: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    height: 42px;          /* match .btn height */
+    margin-top: 0;         /* same line as play button */
 }
 
 .eq-bar {
-  width: 6px;
-  background: #f4d400;
-  border-radius: 3px;
-  animation: eqBounce 0.6s infinite ease-in-out;
+    width: 6px;
+    background: #f4d400;
+    border-radius: 3px;
+    height: 6px;           /* base height */
+    animation: eqBounce 0.6s infinite ease-in-out;
 }
 
 .eq-bar:nth-child(1) { animation-delay: 0s; }
@@ -278,20 +280,14 @@ section h2 {
 .eq-bar:nth-child(5) { animation-delay: 0.4s; }
 
 @keyframes eqBounce {
-  0% { height: 3px; }
-  50% { height: 12px; }
-  100% { height: 3px; }
+    0%   { height: 6px; }
+    50%  { height: 32px; }  /* grows upward */
+    100% { height: 6px; }
 }
 
 .eq-paused .eq-bar {
-  animation-play-state: paused;
-  height: 3px !important;
-}
-
-@keyframes eqBounce {
-    0% { height: 3px; }
-    50% { height: 12px; }
-    100% { height: 3px; }
+    animation-play-state: paused;
+    height: 6px !important;
 }
 
 /* VOLUME */
@@ -375,7 +371,7 @@ section h2 {
 
     section {
         margin: 35px auto;
-        padding: 0 10px; /* cleaner alignment */
+        padding: 0 10px;
     }
 
     .flex-row {
