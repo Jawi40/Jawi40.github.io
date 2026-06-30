@@ -79,7 +79,6 @@ section {
     padding: 0 25px;
 }
 
-/* Desktop centering fix */
 @media (min-width: 900px) {
     section {
         padding: 0 10px;
@@ -255,21 +254,23 @@ section h2 {
     background: #ffe55c;
 }
 
-/* EQUALIZER (aligned with play button, upright) */
+/* ===========================
+   EQUALIZER — FIXED + ALIGNED + UPRIGHT
+   =========================== */
 .equalizer {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 4px;
-    height: 42px;          /* match .btn height */
-    margin-top: 0;         /* same line as play button */
+    height: 42px;        /* same height as play button */
+    margin-top: 0;       /* same line */
 }
 
 .eq-bar {
     width: 6px;
     background: #f4d400;
     border-radius: 3px;
-    height: 6px;           /* base height */
+    height: 6px;         /* base height */
     animation: eqBounce 0.6s infinite ease-in-out;
 }
 
@@ -281,7 +282,7 @@ section h2 {
 
 @keyframes eqBounce {
     0%   { height: 6px; }
-    50%  { height: 32px; }  /* grows upward */
+    50%  { height: 32px; }   /* grows upward */
     100% { height: 6px; }
 }
 
@@ -290,7 +291,9 @@ section h2 {
     height: 6px !important;
 }
 
-/* VOLUME */
+/* ===========================
+   VOLUME
+   =========================== */
 .volume-row {
     margin-top: 12px;
     display: flex;
@@ -302,7 +305,9 @@ section h2 {
     width: 100%;
 }
 
-/* DIAGNOSTICS */
+/* ===========================
+   DIAGNOSTICS
+   =========================== */
 .diag-toggle {
     margin-top: 12px;
     cursor: pointer;
@@ -328,7 +333,9 @@ section h2 {
     max-height: 260px;
 }
 
-/* FOOTER */
+/* ===========================
+   FOOTER
+   =========================== */
 .console-footer {
     margin-top: 16px;
     padding: 10px 12px;
@@ -341,7 +348,9 @@ section h2 {
     border-radius: 0 0 10px 10px;
 }
 
-/* RSS BUTTON */
+/* ===========================
+   RSS BUTTON
+   =========================== */
 .rss-wrapper {
     text-align: center;
     margin-top: 18px;
@@ -395,4 +404,3 @@ section h2 {
         font-size: 18px;
     }
 }
-
