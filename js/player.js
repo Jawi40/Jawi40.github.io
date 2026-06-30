@@ -95,7 +95,7 @@ function eqStop() {
 }
 
 // =========================
-// STREAM ENGINE (MOBILE-SAFE)
+// STREAM ENGINE (CLEAN, WORKING)
 // =========================
 export async function startStream() {
     manualStop = false;
@@ -110,17 +110,7 @@ export async function startStream() {
     connectionStateEl.textContent = "Connecting";
 
     try {
-        try {
-            await audio.play();
-        } catch (err) {
-            const playAttempt = audio.play();
-            if (playAttempt !== undefined) {
-                playAttempt.catch(() => {
-                    setStatus("Tap to Play", "Mobile browser blocked autoplay", "warn");
-                });
-            }
-        }
-
+        await audio.play();
         isPlaying = true;
 
         // Firebase listener tracking
@@ -135,7 +125,6 @@ export async function startStream() {
         startUptime();
         fadeIn();
         eqStart();
-
     } catch (err) {
         handleError();
     }
