@@ -38,6 +38,14 @@ let startTime = null;
 let lastListenerCount = null;
 
 // =========================
+// iOS‑SAFE AUDIO ENGINE (Gain Node)
+// =========================
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const gainNode = audioCtx.createGain();
+const source = audioCtx.createMediaElementSource(audio);
+source.connect(gainNode).connect(audioCtx.destination);
+
+// =========================
 // STATUS + UI HELPERS
 // =========================
 function setStatus(label, detail, type = null) {
@@ -63,22 +71,27 @@ function stopUptime() {
     uptimeEl.textContent = "0s";
 }
 
+// =========================
+// FADE USING GAIN NODE (iOS compatible)
+// =========================
 function fadeIn() {
     let v = 0;
     const target = parseFloat(volumeSlider.value);
-    audio.volume = 0;
+    gainNode.gain.value = 0;
+
     const interval = setInterval(() => {
         v += 0.05;
-        audio.volume = Math.min(v, target);
+        gainNode.gain.value = Math.min(v, target);
         if (v >= target) clearInterval(interval);
     }, 40);
 }
 
 function fadeOut(callback) {
-    let v = audio.volume;
+    let v = gainNode.gain.value;
+
     const interval = setInterval(() => {
         v -= 0.05;
-        audio.volume = Math.max(v, 0);
+        gainNode.gain.value = Math.max(v, 0);
         if (v <= 0) {
             clearInterval(interval);
             if (callback) callback();
@@ -95,7 +108,7 @@ function eqStop() {
 }
 
 // =========================
-// STREAM ENGINE (CLEAN, WORKING)
+// STREAM ENGINE (CLEAN + iOS SAFE)
 // =========================
 export async function startStream() {
     manualStop = false;
@@ -125,6 +138,7 @@ export async function startStream() {
         startUptime();
         fadeIn();
         eqStart();
+
     } catch (err) {
         handleError();
     }
@@ -204,9 +218,10 @@ retryBtn.addEventListener("click", () => {
     startStream();
 });
 
+// iOS‑SAFE VOLUME CONTROL
 volumeSlider.addEventListener("input", () => {
     const v = parseFloat(volumeSlider.value);
-    audio.volume = v;
+    gainNode.gain.value = v;
     volumeValue.textContent = Math.round(v * 100) + "%";
     localStorage.setItem("consoleVolume", v);
 });
@@ -225,6 +240,6 @@ const savedVol = localStorage.getItem("consoleVolume");
 const initVol = savedVol ? parseFloat(savedVol) : 0.8;
 volumeSlider.value = initVol;
 volumeValue.textContent = Math.round(initVol * 100) + "%";
-audio.volume = initVol;
+gainNode.gain.value = initVol;
 
 setStatus("Idle", "Ready");
