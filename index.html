@@ -7,23 +7,23 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://stream.zeno.fm">
 
-    <!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <!-- Firebase SDKs (v8, non-module) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
-<!-- Firebase Config -->
-<script>
-const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+    <!-- Firebase Config -->
+    <script>
+    const firebaseConfig = {
+      apiKey: "YOUR_KEY",
+      authDomain: "YOUR_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_BUCKET",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
 
-firebase.initializeApp(firebaseConfig);
-</script>
+    firebase.initializeApp(firebaseConfig);
+    </script>
 </head>
 
 <body>
