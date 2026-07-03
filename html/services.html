@@ -143,3 +143,19 @@
     <p>Online DJ service for virtual events.</p>
   </div>
 </div>
+
+<script>
+  const buttons = document.querySelectorAll('.dropdown-btn');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const content = btn.nextElementSibling;
+      const arrow = btn.querySelector('.arrow');
+
+      const isOpen = content.style.display === 'block';
+
+      content.style.display = isOpen ? 'none' : 'block';
+      arrow.classList.toggle('rotate', !isOpen);
+    });
+  });
+</script>
