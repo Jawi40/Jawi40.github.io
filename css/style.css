@@ -418,3 +418,70 @@ section h2 {
         max-width: 500px;
     }
 }
+
+/* ===========================
+   SERVICES PAGE — JAMAICAN THEME
+   =========================== */
+
+/* Dropdown Buttons */
+.dropdown-btn {
+    width: 100%;
+    background: #0b0b0b;
+    color: #fdda24; /* Jamaican Gold */
+    padding: 14px;
+    text-align: left;
+    border: 2px solid #009b3a; /* Jamaican Green */
+    outline: none;
+    font-size: 20px;
+    cursor: pointer;
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px;
+    transition: 0.25s ease;
+    text-shadow: 0 0 8px #009b3a;
+}
+
+.dropdown-btn:hover {
+    background: #111;
+    box-shadow: 0 0 12px #009b3a;
+    transform: translateY(-2px);
+}
+
+/* Dropdown Arrow */
+.arrow {
+    transition: transform 0.3s ease;
+    color: #fdda24;
+}
+
+.arrow.rotate {
+    transform: rotate(180deg);
+}
+
+/* Dropdown Content */
+.dropdown-content {
+    display: none;
+    background: #0d0d0d;
+    padding: 18px 22px;
+    color: #eee;
+    border-left: 5px solid #009b3a; /* Jamaican Green */
+    border-radius: 0 0 8px 8px;
+    margin-top: 5px;
+    box-shadow: 0 0 18px #009b3a;
+}
+
+.dropdown-content p {
+    margin: 12px 0;
+    line-height: 1.6;
+    color: #fdda24; /* Gold text */
+}
+
+/* Divider inside dropdown */
+.dropdown-content hr {
+    border: none;
+    height: 4px;
+    background: linear-gradient(90deg, #009b3a, #fdda24, #da291c);
+    box-shadow: 0 0 12px #009b3a;
+    margin: 18px 0;
+}
