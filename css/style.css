@@ -386,6 +386,37 @@ section h2 {
     transform: scale(1.05);
 }
 
+<style>
+  .dropdown-btn {
+    width: 100%;
+    background: #222;
+    color: #fff;
+    padding: 14px;
+    text-align: left;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .dropdown-btn:hover {
+    background: #444;
+  }
+
+  .dropdown-content {
+    display: none;
+    background: #333;
+    padding: 10px 20px;
+    color: #ddd;
+    border-left: 3px solid #555;
+  }
+
+  .dropdown-content p {
+    margin: 8px 0;
+  }
+</style>
+
 /* ===========================
    MOBILE FIX — JAMAICAN POLISH
    =========================== */
