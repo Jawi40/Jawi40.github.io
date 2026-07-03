@@ -48,9 +48,8 @@ header {
 nav {
     display: flex;
     justify-content: center;
-    flex-wrap: wrap; /* FIXED for Android */
-    gap: 20px;       /* reduced */
-    padding: 15px 0;
+    gap: 35px;
+    padding: 20px 0;
     background: #0b0b0b;
     border-bottom: 3px solid #009b3a;
     box-shadow: 0 0 15px #009b3a;
@@ -122,7 +121,7 @@ section h2 {
     display: flex;
     justify-content: center;
     gap: 35px;
-    flex-wrap: wrap; /* FIXED for Android */
+    flex-wrap: nowrap; /* SIDE-BY-SIDE ON DESKTOP */
 }
 
 /* ===========================
@@ -130,8 +129,8 @@ section h2 {
    =========================== */
 .player-box,
 .chat-box {
-    width: 100%;        /* FIXED */
-    max-width: 460px;   /* safe for Android */
+    width: 460px;
+    max-width: 100%;
 }
 
 /* ===========================
@@ -407,7 +406,8 @@ section h2 {
     }
 
     .flex-row {
-        flex-direction: column;
+        flex-direction: column; /* STACK ON MOBILE */
+        flex-wrap: wrap;
         align-items: center;
         gap: 25px;
     }
@@ -415,6 +415,6 @@ section h2 {
     .player-box,
     .chat-box {
         width: 100%;
-        max-width: 100%;
+        max-width: 500px;
     }
 }
