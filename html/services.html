@@ -8,6 +8,23 @@
   <link rel="stylesheet" href="../css/style.css">
 
   <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      color: #0ff;
+      text-shadow: 0 0 6px #0ff;
+    }
+
+    h3 {
+      color: #0ff;
+      text-shadow: 0 0 6px #0ff;
+      margin-top: 10px;
+    }
+
     .dropdown-btn {
       width: 100%;
       background: #222;
@@ -22,10 +39,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
     }
 
     .dropdown-btn:hover {
-      background: #444;
+      background: #333;
+      box-shadow: 0 0 6px #0ff;
     }
 
     .arrow {
@@ -38,30 +57,50 @@
 
     .dropdown-content {
       display: none;
-      background: #333;
-      padding: 10px 20px;
+      background: #111;
+      padding: 15px 20px;
       color: #ddd;
-      border-left: 3px solid #555;
+      border-left: 3px solid #0ff;
+      margin-top: 5px;
+      box-shadow: 0 0 8px #0ff33;
     }
 
     .dropdown-content p {
-      margin: 8px 0;
+      margin: 10px 0;
+      line-height: 1.5;
     }
 
     .service {
-      margin-bottom: 10px;
+      margin-bottom: 15px;
+    }
+
+    nav a {
+      color: #0ff;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+
+    nav a:hover {
+      text-shadow: 0 0 6px #0ff;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px 0;
+      color: #0ff;
+      margin-top: 40px;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- REAL HEADER -->
+  <!-- HEADER -->
   <header>
       <img src="/images/transparent.png" class="site-logo">
   </header>
 
-  <!-- REAL NAVIGATION -->
+  <!-- NAVIGATION -->
   <nav>
       <a href="/index.html">Home</a>
       <a href="/html/services.html">Services</a>
@@ -71,504 +110,438 @@
 
   <main>
 
-    <!-- CENTERED HEADING -->
+    <!-- PAGE TITLE -->
     <h1 style="text-align:center;">My Services</h1>
 
-    <!-- CENTERED PARAGRAPH -->
-    <p style="text-align:center;">
-        I offer a range of entertainment, creative, and digital services designed to bring energy,
-        professionalism, and style to any project or event.
+    <!-- INTRO PARAGRAPH -->
+    <p style="text-align:center; max-width:800px; margin:0 auto 20px;">
+      I offer a range of entertainment, creative, and digital services designed to bring energy,
+      professionalism, and style to any project or event.
     </p>
 
-    <!-- ⭐ CLEANED & REORDERED SERVICES SECTION ⭐ -->
+    <!-- ⭐ FULL SERVICES SECTION ⭐ -->
 
     <!-- 1. Range Partner -->
     <div class="service">
-  <button class="dropdown-btn">
-    🔫🤝 Range Partner – The Jamexus Experience <span class="arrow">▼</span>
-  </button>
+      <button class="dropdown-btn">
+        🔫🤝 Range Partner – The Jamexus Experience <span class="arrow">▼</span>
+      </button>
 
-  <div class="dropdown-content">
+      <div class="dropdown-content">
 
-    <h3 style="color:#0ff; margin-top:10px;">A Unique Recreational Shooting Partnership</h3>
-    <p>
-      Jamexus offers a one‑of‑a‑kind partnership for individuals who enjoy recreational pistol and rifle shooting.
-      This is not a class or certification — it’s a personalized, supportive, confidence‑building experience
-      designed to make every range session safe, enjoyable, and memorable.
-    </p>
+        <h3>A Unique Recreational Shooting Partnership</h3>
+        <p>
+          Jamexus offers a one‑of‑a‑kind partnership for individuals who enjoy recreational pistol and rifle shooting.
+          This is not a class or certification — it’s a personalized, supportive, confidence‑building experience
+          designed to make every range session safe, enjoyable, and memorable.
+        </p>
 
-    <h3 style="color:#0ff; margin-top:15px;">What You’ll Experience</h3>
+        <h3>What You’ll Experience</h3>
 
-    <p><strong>🔒 Safety First</strong><br>
-      Clear, essential conversations about safe firearm handling and range awareness — ensuring every moment is controlled and comfortable.
-    </p>
+        <p><strong>🔒 Safety First</strong><br>
+          Clear, essential conversations about safe firearm handling and range awareness.
+        </p>
 
-    <p><strong>🎯 Understanding the Fundamentals</strong><br>
-      Discussions about stance, grip, sight picture, and trigger behavior for pistols and rifles — helping partners understand what contributes to accurate shooting.
-    </p>
+        <p><strong>🎯 Understanding the Fundamentals</strong><br>
+          Discussions about stance, grip, sight picture, and trigger behavior for pistols and rifles.
+        </p>
 
-    <p><strong>🧩 Personalized Shooting Plans</strong><br>
-      Every partner has different goals. Jamexus builds simple, tailored plans that match your comfort level and interests.
-    </p>
+        <p><strong>🧩 Personalized Shooting Plans</strong><br>
+          Simple, tailored plans based on your comfort level and goals.
+        </p>
 
-    <p><strong>🎮 Fun, Supportive Practice Sessions</strong><br>
-      Enjoy relaxed, engaging range time that feels like a friendly competition. Score‑keeping adds excitement and helps track progress.
-    </p>
+        <p><strong>🎮 Fun, Supportive Practice Sessions</strong><br>
+          Relaxed, engaging range time with friendly score‑keeping.
+        </p>
 
-    <p><strong>🤝 Range Etiquette & Confidence</strong><br>
-      Learn how to communicate, set up targets, and move confidently at the range while respecting fellow shooters.
-    </p>
+        <p><strong>🤝 Range Etiquette & Confidence</strong><br>
+          Learn how to move confidently and respectfully at the range.
+        </p>
 
-    <p><strong>🏆 Recreational Competitions</strong><br>
-      Friendly challenges and shooting games add excitement and motivation. Scores help you see improvement while keeping things fun.
-    </p>
+        <p><strong>🏆 Recreational Competitions</strong><br>
+          Friendly challenges and shooting games to track progress.
+        </p>
 
-    <p><strong>🔧 Equipment Conversations</strong><br>
-      General advice on firearms and accessories based on your comfort level and recreational interests.
-    </p>
+        <p><strong>🔧 Equipment Conversations</strong><br>
+          General advice on firearms and accessories based on your comfort level.
+        </p>
 
-    <p><strong>📈 Continuous Improvement</strong><br>
-      Supportive feedback and simple insights help you grow at your own pace. Experience the difference with <strong>JAMEXUS</strong>.
-    </p>
+        <p><strong>📈 Continuous Improvement</strong><br>
+          Supportive feedback and simple insights help you grow at your own pace.
+        </p>
 
-    <hr style="border-color:#555; margin:15px 0;">
+        <hr style="border-color:#0ff;">
 
-    <h3 style="color:#0ff;">Transparent Pricing — No Hidden Fees</h3>
+        <h3>Transparent Pricing — No Hidden Fees</h3>
 
-    <p><strong>If you have your own equipment:</strong><br>
-      • Partner’s time (3 hours)<br>
-      • 100 rounds (.40 Caliber or 5.56×45mm only)<br>
-      • Range fee<br>
-      <strong>Email for pricing:</strong> Services@Jamexus.com
-    </p>
+        <p><strong>If you have your own equipment:</strong><br>
+          • Partner’s time (3 hours)<br>
+          • 100 rounds (.40 Cal or 5.56)<br>
+          • Range fee<br>
+          <strong>Email for pricing:</strong> Services@Jamexus.com
+        </p>
 
-    <p><strong>If you do NOT own a weapon:</strong><br>
-      Just show up — everything is provided.<br><br>
-      • Weapon rental: Glock 40 (handgun) / AR‑15 (rifle)<br>
-      • Ammunition: 100 rounds<br>
-      • Eye protection<br>
-      • Ear protection<br>
-      • Range fee<br>
-      • Score card<br>
-      • Target<br>
-      • Partner’s time (3 hours)
-    </p>
+        <p><strong>If you do NOT own a weapon:</strong><br>
+          Everything is provided — weapon rental, ammo, eye/ear protection, target, score card, range fee,
+          and 3 hours of partner time.
+        </p>
 
-    <p style="margin-top:15px;">
-      <strong>Email me and I’ll call with more information.</strong><br>
-      100% transparent. No hidden fees. Just a great experience.
-    </p>
-
-  </div>
-</div>
+      </div>
+    </div>
 
 
     <!-- 2. Computer / Networking Services -->
     <div class="service">
-  <button class="dropdown-btn">
-    💼🌐 Welcome to JAMEXUS – Your Trusted Service Station <span class="arrow">▼</span>
-  </button>
+      <button class="dropdown-btn">
+        💼🌐 Welcome to JAMEXUS – Your Trusted Service Station <span class="arrow">▼</span>
+      </button>
 
-  <div class="dropdown-content">
+      <div class="dropdown-content">
 
-    <h3 style="color:#0ff; margin-top:10px;">Exceptional Support. Real Solutions. Free Online Consultations.</h3>
+        <h3>Exceptional Support. Real Solutions. Free Online Consultations.</h3>
 
-    <p>
-      In a world powered by technology, JAMEXUS stands as your reliable partner for clarity, confidence,
-      and problem‑solving. Whether you're dealing with device issues, network problems, setup challenges,
-      or simply need guidance, we’re here to make your digital life easier — and we do it with patience,
-      professionalism, and transparency.
-    </p>
+        <p>
+          JAMEXUS stands as your reliable partner for clarity, confidence, and problem‑solving.
+          Whether you're dealing with device issues, network problems, setup challenges,
+          or simply need guidance, we make your digital life easier.
+        </p>
 
-    <h3 style="color:#0ff; margin-top:15px;">What We Specialize In</h3>
+        <h3>What We Specialize In</h3>
 
-    <p><strong>🔧 Tech Troubleshooting & Helpdesk Support</strong><br>
-      Smooth, stress‑free assistance for everyday device issues — from Windows glitches to Android frustrations.
-    </p>
+        <p><strong>🔧 Tech Troubleshooting & Helpdesk Support</strong><br>
+          Smooth, stress‑free assistance for everyday device issues.
+        </p>
 
-    <p><strong>🌐 Networking & Connectivity</strong><br>
-      Clear guidance on routers, Wi‑Fi setups, home networks, and connection problems.
-    </p>
+        <p><strong>🌐 Networking & Connectivity</strong><br>
+          Guidance on routers, Wi‑Fi setups, home networks, and connection problems.
+        </p>
 
-    <p><strong>💻 Windows Device Setup</strong><br>
-      Need help setting up a new laptop, configuring apps, or optimizing your system? We’ve got you covered.
-    </p>
+        <p><strong>💻 Windows Device Setup</strong><br>
+          Help with new laptops, apps, and system optimization.
+        </p>
 
-    <p><strong>📚 Tutorials & Walkthroughs</strong><br>
-      Easy‑to‑follow explanations that help you understand your devices instead of feeling overwhelmed by them.
-    </p>
+        <p><strong>📚 Tutorials & Walkthroughs</strong><br>
+          Easy‑to‑follow explanations for everyday users.
+        </p>
 
-    <p><strong>🔐 Security Awareness</strong><br>
-      Conversations about staying safe online, protecting your accounts, and recognizing digital threats.
-    </p>
+        <p><strong>🔐 Security Awareness</strong><br>
+          Conversations about staying safe online.
+        </p>
 
-    <p><strong>🌎 Hablamos Español</strong><br>
-      Support available in English and Spanish — because technology should be accessible to everyone.
-    </p>
+        <p><strong>🌎 Hablamos Español</strong><br>
+          Support available in English and Spanish.
+        </p>
 
-    <hr style="border-color:#555; margin:15px 0;">
+        <hr style="border-color:#0ff;">
 
-    <p style="margin-top:10px;">
-      <strong>Need help with your Windows or Android device?</strong><br>
-      Reach out anytime — JAMEXUS is here to support you with honesty, clarity, and zero hidden fees.
-    </p>
+        <p><strong>Need help with your Windows or Android device?</strong><br>
+          JAMEXUS is here to support you with honesty, clarity, and zero hidden fees.
+        </p>
 
-    <p style="margin-top:10px;">
-      📧 <strong>Email:</strong> Services@Jamexus.com
-    </p>
+        <p>📧 <strong>Email:</strong> Services@Jamexus.com</p>
 
-  </div>
-</div>
+      </div>
+    </div>
 
 
     <!-- 3. Technical Support -->
     <div class="service">
-  <button class="dropdown-btn">
-    🛠⚡ Technical Support <span class="arrow">▼</span>
-  </button>
+      <button class="dropdown-btn">
+        🛠⚡ Technical Support <span class="arrow">▼</span>
+      </button>
 
-  <div class="dropdown-content">
+      <div class="dropdown-content">
 
-    <h3 style="color:#0ff; margin-top:10px;">Reliable Tech Support for Your Digital World</h3>
+        <h3>Reliable Tech Support for Your Digital World</h3>
 
-    <p>
-      Technology should make life easier — not stressful. JAMEXUS provides clear, patient, and professional
-      support for all your digital needs, helping you solve problems quickly and confidently. Whether you're
-      streaming, broadcasting, setting up audio equipment, or troubleshooting software, we make the process smooth.
-    </p>
+        <p>
+          JAMEXUS provides clear, patient, and professional support for all your digital needs.
+          Streaming, broadcasting, audio equipment, software — we make it smooth.
+        </p>
 
-    <h3 style="color:#0ff; margin-top:15px;">What We Can Help You With</h3>
+        <h3>What We Can Help You With</h3>
 
-    <p><strong>🎧 Streaming Software Assistance</strong><br>
-      Get help with OBS, online radio tools, DJ streaming platforms, and other broadcasting software.
-      Perfect for creators, DJs, and online hosts who want a seamless setup.
-    </p>
+        <p><strong>🎧 Streaming Software Assistance</strong><br>
+          OBS, radio tools, DJ platforms, and more.
+        </p>
 
-    <p><strong>🔊 Audio Equipment Support</strong><br>
-      Guidance on mixers, microphones, interfaces, speakers, and digital audio setups — ensuring your sound
-      is clean, balanced, and ready for any event or broadcast.
-    </p>
+        <p><strong>🔊 Audio Equipment Support</strong><br>
+          Mixers, microphones, interfaces, speakers.
+        </p>
 
-    <p><strong>📻 Radio Automation Tools</strong><br>
-      Need help running online radio? JAMEXUS assists with automation software, scheduling tools,
-      and digital broadcasting workflows.
-    </p>
+        <p><strong>📻 Radio Automation Tools</strong><br>
+          Scheduling, automation, and broadcast workflows.
+        </p>
 
-    <p><strong>⚙️ Digital Troubleshooting</strong><br>
-      From unexpected errors to confusing settings, we help you navigate issues with clarity and confidence.
-    </p>
+        <p><strong>⚙️ Digital Troubleshooting</strong><br>
+          Clear solutions for confusing tech issues.
+        </p>
 
-    <hr style="border-color:#555; margin:15px 0;">
+        <hr style="border-color:#0ff;">
 
-    <h3 style="color:#0ff;">Why Choose JAMEXUS?</h3>
+        <h3>Why Choose JAMEXUS?</h3>
 
-    <p>
-      Because you deserve tech support that’s friendly, fast, and reliable. JAMEXUS brings experience,
-      patience, and real problem‑solving skills — helping you stay productive, creative, and connected.
-    </p>
+        <p>
+          Friendly, fast, reliable support that keeps you productive and connected.
+        </p>
 
-    <p style="margin-top:10px;">
-      📧 <strong>Email:</strong> Services@Jamexus.com
-    </p>
+        <p>📧 <strong>Email:</strong> Services@Jamexus.com</p>
 
-  </div>
-</div>
+      </div>
+    </div>
 
 
     <!-- 4. Online Remote DJ -->
     <div class="service">
-  <button class="dropdown-btn">
-    🎉🎧 JAMEXUS Internet Parties – Live Remote DJs! <span class="arrow">▼</span>
-  </button>
+      <button class="dropdown-btn">
+        🎉🎧 JAMEXUS Internet Parties – Live Remote DJs! <span class="arrow">▼</span>
+      </button>
 
-  <div class="dropdown-content">
+      <div class="dropdown-content">
 
-    <h3 style="color:#0ff; margin-top:10px;">Unmatched Energy. Real DJs. Real Vibes.</h3>
+        <h3>Unmatched Energy. Real DJs. Real Vibes.</h3>
 
-    <p>
-      JAMEXUS brings you <strong>unparalleled internet parties</strong> powered by live remote DJs who keep the
-      energy flowing for a full <strong>4-hour event</strong>. Whether you're celebrating at home, hosting a gathering,
-      or connecting with friends worldwide, we deliver a party atmosphere that feels alive, interactive, and unforgettable.
-    </p>
+        <p>
+          JAMEXUS brings you <strong>unparalleled internet parties</strong> powered by live remote DJs
+          who keep the energy flowing for a full <strong>4-hour event</strong>.
+        </p>
 
-    <h3 style="color:#0ff; margin-top:15px;">What Makes Our Parties Special</h3>
+        <h3>What Makes Our Parties Special</h3>
 
-    <p><strong>🎧 Live Remote DJs</strong><br>
-      Our DJs take your requests, dedications, and shoutouts in real time — making every event feel personal and electric.
-    </p>
+        <p><strong>🎧 Live Remote DJs</strong><br>
+          Requests, dedications, shoutouts — live.
+        </p>
 
-    <p><strong>📣 Announcements & Shoutouts</strong><br>
-      Celebrate birthdays, milestones, inside jokes, or special moments with live DJ announcements during the party.
-    </p>
+        <p><strong>📣 Announcements & Shoutouts</strong><br>
+          Celebrate moments with live DJ announcements.
+        </p>
 
-    <p><strong>💬 Real-Time Interaction</strong><br>
-      Communicate with the DJ through our chat room or text messages while the event is happening.
-    </p>
+        <p><strong>💬 Real-Time Interaction</strong><br>
+          Chat or text the DJ during the event.
+        </p>
 
-    <p><strong>🌍 Worldwide Party Access</strong><br>
-      Share the link with family and friends across the globe — everyone can join the same party from anywhere.
-    </p>
+        <p><strong>🌍 Worldwide Party Access</strong><br>
+          Share the link globally — everyone joins in.
+        </p>
 
-    <p><strong>🔊 Big Sound, Big Fun</strong><br>
-      Copy & paste the link below into your browser, connect your device to loudspeakers, and dance away:
-    </p>
+        <p><strong>🔊 Big Sound, Big Fun</strong><br>
+          Connect speakers and dance:
+        </p>
 
-    <p style="margin:10px 0; font-size:18px; color:#0ff;">
-      <strong>www.jamexus.com/infin8radio</strong>
-    </p>
+        <p style="font-size:18px; color:#0ff; text-shadow:0 0 6px #0ff;">
+          <strong>www.jamexus.com/infin8radio</strong>
+        </p>
 
-    <p>
-      Wherever you are — at home, outdoors, or across the world — <strong>JAMEXUS brings the live vibe straight to you.</strong>
-    </p>
-
-  </div>
-</div>
+      </div>
+    </div>
 
 
     <!-- 5. Event DJ -->
     <div class="service">
-  <button class="dropdown-btn">
-    🎶🔥 JAMEXUS Music & Internet Radio Experience <span class="arrow">▼</span>
-  </button>
+      <button class="dropdown-btn">
+        🎶🔥 JAMEXUS Music & Internet Radio Experience <span class="arrow">▼</span>
+      </button>
 
-  <div class="dropdown-content">
+      <div class="dropdown-content">
 
-    <h3 style="color:#0ff; margin-top:10px;">Your Music. Your Vibe. Your Party.</h3>
+        <h3>Your Music. Your Vibe. Your Party.</h3>
 
-    <p>
-      JAMEXUS is your go‑to provider for a wide spectrum of music genres — 
-      <strong>dancehall, reggae, hip hop, R&B, afrobeat, club mixes, and more.</strong>
-      Whether you’re hosting a virtual party, tuning in for dedicated requests, or just want nonstop vibes,
-      JAMEXUS delivers a powerful internet radio experience built around your style.
-    </p>
+        <p>
+          JAMEXUS delivers dancehall, reggae, hip hop, R&B, afrobeat, club mixes, and more.
+          A powerful internet radio experience built around your style.
+        </p>
 
-    <h3 style="color:#0ff; margin-top:15px;">Why People Love JAMEXUS</h3>
+        <h3>Why People Love JAMEXUS</h3>
 
-    <p><strong>🎧 Endless Music Variety</strong><br>
-      From smooth R&B to high‑energy dancehall, JAMEXUS brings the perfect blend for any mood or event.
-    </p>
+        <p><strong>🎧 Endless Music Variety</strong><br>
+          The perfect blend for any mood.
+        </p>
 
-    <p><strong>📻 Internet Radio Platform</strong><br>
-      Stream live mixes, curated playlists, and special broadcasts directly from our online station.
-    </p>
+        <p><strong>📻 Internet Radio Platform</strong><br>
+          Live mixes, playlists, and broadcasts.
+        </p>
 
-    <p><strong>🙌 Dedicated Requests</strong><br>
-      Want a specific song, genre, or vibe? JAMEXUS takes your requests and keeps the energy flowing.
-    </p>
+        <p><strong>🙌 Dedicated Requests</strong><br>
+          Your vibe, your music.
+        </p>
 
-    <p><strong>🔗 Connections That Matter</strong><br>
-      If JAMEXUS doesn’t have what you’re looking for, we’ll connect you with someone who does — 
-      ensuring you always get the experience you want.
-    </p>
+        <p><strong>🔗 Connections That Matter</strong><br>
+          If we don’t have it, we’ll connect you to someone who does.
+        </p>
 
-    <p><strong>🎉 Party Anywhere</strong><br>
-      Whether you’re at home, outdoors, or celebrating with friends worldwide, JAMEXUS brings the party straight to you.
-    </p>
+        <p><strong>🎉 Party Anywhere</strong><br>
+          JAMEXUS brings the party to you.
+        </p>
 
-    <hr style="border-color:#555; margin:15px 0;">
+        <hr style="border-color:#0ff;">
 
-    <h3 style="color:#0ff;">Tune In & Turn Up</h3>
+        <h3>Tune In & Turn Up</h3>
 
-    <p>
-      Copy & paste the link below into your browser and enjoy the JAMEXUS vibe:
-    </p>
+        <p>Copy & paste the link below:</p>
 
-    <p style="margin:10px 0; font-size:18px; color:#0ff;">
-      <strong>www.jamexus.com/infin8radio</strong>
-    </p>
+        <p style="font-size:18px; color:#0ff; text-shadow:0 0 6px #0ff;">
+          <strong>www.jamexus.com/infin8radio</strong>
+        </p>
 
-    <p>
-      Connect your device to loudspeakers, share the link with friends and family, and enjoy a global party experience.
-      Wherever you are — <strong>JAMEXUS brings the music to you.</strong>
-    </p>
-
-  </div>
-</div>
+      </div>
+    </div>
 
 
     <!-- 6. Tutorials & Training -->
     <div class="service">
-  <button class="dropdown-btn">
-    📚🔥 Tutorials & DJ Training – Learn the Real Art of DJing <span class="arrow">▼</span>
-  </button>
+      <button class="dropdown-btn">
+        📚🔥 Tutorials & DJ Training – Learn the Real Art of DJing <span class="arrow">▼</span>
+      </button>
 
-  <div class="dropdown-content">
+      <div class="dropdown-content">
 
-    <h3 style="color:#0ff; margin-top:10px;">Turn Your Passion Into Skill — The JAMEXUS Way</h3>
+        <h3>Turn Your Passion Into Skill — The JAMEXUS Way</h3>
 
-    <p>
-      If you’ve ever dreamed of becoming a DJ, mixing your favorite tracks, or controlling the vibe of a room,
-      <strong>JAMEXUS will take you from curious beginner to confident creator.</strong>
-      These sessions aren’t boring lectures — they’re hands‑on, exciting, and built around the music you love.
-    </p>
+        <p>
+          Hands‑on DJ training built around the music you love.
+          From beginner to confident creator.
+        </p>
 
-    <h3 style="color:#0ff; margin-top:15px;">Why Aspiring DJs Choose JAMEXUS</h3>
+        <h3>Why Aspiring DJs Choose JAMEXUS</h3>
 
-    <p><strong>🎚 Master BPM Like a Pro</strong><br>
-      Learn how BPM truly works — not just numbers on a screen, but how tempo shapes energy, transitions,
-      and the entire feel of your mix.
-    </p>
+        <p><strong>🎚 Master BPM</strong><br>
+          Learn how tempo shapes transitions and energy.
+        </p>
 
-    <p><strong>🎧 Mix With Confidence</strong><br>
-      Understand how DJs blend tracks smoothly, match energy, and create transitions that feel natural and powerful.
-      You’ll learn the “why” behind great mixes, not just the “how.”
-    </p>
+        <p><strong>🎧 Mix With Confidence</strong><br>
+          Understand how DJs blend tracks smoothly.
+        </p>
 
-    <p><strong>👂 Play by Ear — The Skill Every Real DJ Needs</strong><br>
-      Forget relying on visual aids or waveforms. JAMEXUS teaches you how to
-      <strong>hear</strong> your transitions, feel the rhythm, and mix with instinct.
-      This is the skill that separates button‑pushers from true DJs.
-    </p>
+        <p><strong>👂 Play by Ear</strong><br>
+          Learn the skill that separates real DJs from button‑pushers.
+        </p>
 
-    <p><strong>📡 Streaming & Broadcasting Basics</strong><br>
-      Learn how to share your mixes online, run digital radio sessions, and build your presence in the DJ world.
-    </p>
+        <p><strong>📡 Streaming Basics</strong><br>
+          Share your mixes online with confidence.
+        </p>
 
-    <p><strong>🎤 DJ Flow, Confidence & Stage Presence</strong><br>
-      Discover how DJs communicate, control the vibe, and keep listeners engaged — even during online sets.
-    </p>
+        <p><strong>🎤 DJ Flow & Presence</strong><br>
+          Control the vibe and keep listeners engaged.
+        </p>
 
-    <hr style="border-color:#555; margin:15px 0;">
+        <hr style="border-color:#0ff;">
 
-    <h3 style="color:#0ff;">This Is Your Moment</h3>
+        <h3>This Is Your Moment</h3>
 
-    <p>
-      Whether you want to DJ for fun, for friends, for online audiences, or for future events,
-      <strong>JAMEXUS gives you the foundation, the confidence, and the spark you need to start your journey.</strong>
-    </p>
+        <p>
+          Whether for fun or future events,
+          JAMEXUS gives you the foundation and confidence to begin your DJ journey.
+        </p>
 
-    <p style="margin-top:10px;">
-      If you’re serious about learning — or even just curious — reach out.
-      <strong>Your DJ journey starts the moment you contact JAMEXUS.</strong>
-    </p>
+        <p>📧 <strong>Email:</strong> Services@Jamexus.com</p>
 
-    <p style="margin-top:10px;">
-      📧 <strong>Email:</strong> Services@Jamexus.com
-    </p>
-
-  </div>
-</div>
+      </div>
+    </div>
 
 
     <!-- 7. Creative & Media Services -->
-   <div class="service">
-  <button class="dropdown-btn">
-    🎨✨ Creative & Media Services <span class="arrow">▼</span>
-  </button>
+    <div class="service">
+      <button class="dropdown-btn">
+        🎨✨ Creative & Media Services <span class="arrow">▼</span>
+      </button>
 
-  <div class="dropdown-content">
+      <div class="dropdown-content">
 
-    <h3 style="color:#0ff; margin-top:10px;">Bring Your Ideas to Life with JAMEXUS</h3>
+        <h3>Bring Your Ideas to Life with JAMEXUS</h3>
 
-    <p>
-      Creativity is the heartbeat of JAMEXUS. Whether you're building a brand, producing audio,
-      launching digital content, or shaping your online presence, we help transform your vision
-      into something bold, polished, and unforgettable.
-    </p>
+        <p>
+          Creativity is the heartbeat of JAMEXUS.
+          Audio production, branding, digital content — we help shape your vision.
+        </p>
 
-    <h3 style="color:#0ff; margin-top:15px;">What We Offer</h3>
+        <h3>What We Offer</h3>
 
-    <p><strong>🎧 Audio Production & Enhancement</strong><br>
-      Clean, professional sound for podcasts, radio shows, DJ mixes, voice recordings, and digital media.
-      We help your audio stand out with clarity, depth, and personality.
-    </p>
+        <p><strong>🎧 Audio Production</strong><br>
+          Clean, professional sound for all media.
+        </p>
 
-    <p><strong>🎨 Digital Content Creation</strong><br>
-      Eye‑catching visuals, engaging posts, and creative assets designed to elevate your brand or project.
-      Perfect for social media, websites, promotions, and personal branding.
-    </p>
+        <p><strong>🎨 Digital Content Creation</strong><br>
+          Eye‑catching visuals and creative assets.
+        </p>
 
-    <p><strong>🖼 Branding & Identity Support</strong><br>
-      Need help shaping your look, style, or message? JAMEXUS assists with logos, themes, color palettes,
-      and brand direction that reflect who you are and what you represent.
-    </p>
+        <p><strong>🖼 Branding Support</strong><br>
+          Logos, themes, color palettes, and identity.
+        </p>
 
-    <p><strong>📡 Media Support & Guidance</strong><br>
-      From online radio to digital broadcasting, we help you navigate the media world with confidence.
-      Whether you're launching a project or improving an existing one, JAMEXUS has your back.
-    </p>
+        <p><strong>📡 Media Guidance</strong><br>
+          Support for radio, streaming, and digital broadcasting.
+        </p>
 
-    <hr style="border-color:#555; margin:15px 0;">
+        <hr style="border-color:#0ff;">
 
-    <h3 style="color:#0ff;">Why Choose JAMEXUS?</h3>
+        <h3>Why Choose JAMEXUS?</h3>
 
-    <p>
-      Because you deserve creative support that feels personal, powerful, and professional.
-      JAMEXUS brings experience, passion, and a unique artistic touch to every project —
-      helping you stand out in a crowded digital world.
-    </p>
+        <p>
+          Personal, powerful, professional creative support.
+        </p>
 
-    <p style="margin-top:10px;">
-      📧 <strong>Email:</strong> Services@Jamexus.com
-    </p>
+        <p>📧 <strong>Email:</strong> Services@Jamexus.com</p>
 
-  </div>
-</div>
+      </div>
+    </div>
 
 
     <!-- 8. Website & Digital Setup -->
     <div class="service">
-  <button class="dropdown-btn">
-    🌐⚙️ Website & Digital Setup <span class="arrow">▼</span>
-  </button>
+      <button class="dropdown-btn">
+        🌐⚙️ Website & Digital Setup <span class="arrow">▼</span>
+      </button>
 
-  <div class="dropdown-content">
+      <div class="dropdown-content">
 
-    <h3 style="color:#0ff; margin-top:10px;">Build Your Digital Presence with JAMEXUS</h3>
+        <h3>Build Your Digital Presence with JAMEXUS</h3>
 
-    <p>
-      Whether you're launching a brand, promoting your music, running an online radio station,
-      or simply need a clean and functional web space, <strong>JAMEXUS makes digital setup easy, modern, and stress‑free.</strong>
-      You don’t need to be a tech expert — we’ll handle the details while you focus on your vision.
-    </p>
+        <p>
+          Clean websites, embedded players, chatrooms, radio pages —
+          JAMEXUS makes digital setup easy and modern.
+        </p>
 
-    <h3 style="color:#0ff; margin-top:15px;">What We Can Build for You</h3>
+        <h3>What We Can Build for You</h3>
 
-    <p><strong>🖥 Simple & Clean Websites</strong><br>
-      Professional, easy‑to‑navigate pages that look great on phones, tablets, and computers.
-      Perfect for personal brands, small businesses, DJs, creators, and community projects.
-    </p>
+        <p><strong>🖥 Simple Websites</strong><br>
+          Clean, responsive, professional.
+        </p>
 
-    <p><strong>📻 Embedded Radio Players</strong><br>
-      Want your listeners to tune in instantly? We can embed your radio stream directly into your site
-      so visitors can listen with one click.
-    </p>
+        <p><strong>📻 Embedded Radio Players</strong><br>
+          Instant listening with one click.
+        </p>
 
-    <p><strong>💬 Chatrooms & Community Spaces</strong><br>
-      Create interactive spaces where your audience can talk, connect, and engage during live events or broadcasts.
-    </p>
+        <p><strong>💬 Chatrooms</strong><br>
+          Interactive spaces for your audience.
+        </p>
 
-    <p><strong>🎧 DJ & Music Pages</strong><br>
-      Showcase mixes, playlists, events, and announcements with a clean layout designed for artists and entertainers.
-    </p>
+        <p><strong>🎧 DJ & Music Pages</strong><br>
+          Showcase mixes, playlists, and events.
+        </p>
 
-    <p><strong>📡 Digital Broadcasting Setup</strong><br>
-      Need help setting up your online radio or streaming tools? JAMEXUS provides guidance to get everything running smoothly.
-    </p>
+        <p><strong>📡 Broadcasting Setup</strong><br>
+          Guidance for online radio and streaming tools.
+        </p>
 
-    <hr style="border-color:#555; margin:15px 0;">
+        <hr style="border-color:#0ff;">
 
-    <h3 style="color:#0ff;">Why Choose JAMEXUS?</h3>
+        <h3>Why Choose JAMEXUS?</h3>
 
-    <p>
-      Because you deserve a digital presence that feels professional, modern, and uniquely yours.
-      JAMEXUS brings clarity, creativity, and technical support together — giving you a website or digital setup
-      that works beautifully and represents you the right way.
-    </p>
+        <p>
+          Professional, modern, and uniquely yours.
+        </p>
 
-    <p style="margin-top:10px;">
-      📧 <strong>Email:</strong> Services@Jamexus.com
-    </p>
+        <p>📧 <strong>Email:</strong> Services@Jamexus.com</p>
 
-  </div>
-</div>
-
+      </div>
+    </div>
 
   </main>
 
-  <!-- REAL FOOTER -->
-  <footer style="text-align:center; padding:15px 0; color:#0ff;">
-    Jamexus offers a powerful mix of services — technical troubleshooting, internet radio expertise, DJ coaching, notary public work, documentation support, and a growing list of solutions designed to help you succeed.
+  <!-- FOOTER -->
+  <footer>
+    Jamexus offers a powerful mix of services — technical troubleshooting, internet radio expertise,
+    DJ coaching, documentation support, and more.
     ©2026 Jawi
     <nav>
       <a href="/index.html">Home</a>
@@ -579,20 +552,3 @@
   </footer>
 
   <!-- JAVASCRIPT -->
-  <script>
-    const buttons = document.querySelectorAll('.dropdown-btn');
-
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const content = btn.nextElementSibling;
-        const arrow = btn.querySelector('.arrow');
-        const isOpen = content.style.display === 'block';
-
-        content.style.display = isOpen ? 'none' : 'block';
-        arrow.classList.toggle('rotate', !isOpen);
-      });
-    });
-  </script>
-
-</body>
-</html>
