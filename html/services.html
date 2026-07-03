@@ -1,147 +1,215 @@
-<div class="service">
-  <button class="dropdown-btn">
-    🎧 Internet DJing <span class="arrow">▼</span>
-  </button>
-  <div class="dropdown-content">
-    <p>Hosting live online DJ sets, music streams, and virtual parties.</p>
-    <p>Perfect for online communities, gaming streams, radio shows, and digital events.</p>
-  </div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Services</title>
+  <link rel="stylesheet" href="../css/style.css">
 
-<div class="service">
-  <button class="dropdown-btn">
-    🎤 Event DJing <span class="arrow">▼</span>
-  </button>
-  <div class="dropdown-content">
-    <p>Professional DJ services for public and private events including parties, weddings, clubs, and community gatherings.</p>
-    <p><strong>Price:</strong> $200 (4 hours)</p>
-  </div>
-</div>
+  <style>
+    .dropdown-btn {
+      width: 100%;
+      background: #222;
+      color: #fff;
+      padding: 14px;
+      text-align: left;
+      border: none;
+      outline: none;
+      font-size: 18px;
+      cursor: pointer;
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-<div class="service">
-  <button class="dropdown-btn">
-    🎨 Creative & Media Services <span class="arrow">▼</span>
-  </button>
-  <div class="dropdown-content">
-    <p>Digital content creation, audio production, branding assistance, and other creative services to help elevate your project or business.</p>
-  </div>
-</div>
+    .dropdown-btn:hover {
+      background: #444;
+    }
 
-<div class="service">
-  <button class="dropdown-btn">
-    📚 Tutorials & Training <span class="arrow">▼</span>
-  </button>
-  <div class="dropdown-content">
-    <p>Helping beginners learn the basics of DJing, streaming, and digital broadcasting.</p>
-    <p>Step‑by‑step guidance for anyone wanting to start their journey.</p>
-  </div>
-</div>
+    .arrow {
+      transition: transform 0.3s ease;
+    }
 
-<div class="service">
-  <button class="dropdown-btn">
-    🛠 Technical Support <span class="arrow">▼</span>
-  </button>
-  <div class="dropdown-content">
-    <p>Assistance with setting up streaming software, audio equipment, radio automation, and online broadcasting tools.</p>
-  </div>
-</div>
+    .arrow.rotate {
+      transform: rotate(180deg);
+    }
 
-<div class="service">
-  <button class="dropdown-btn">
-    🌐 Website & Digital Setup <span class="arrow">▼</span>
-  </button>
-  <div class="dropdown-content">
-    <p>Support with building simple websites, embedding players, setting up chatrooms, and creating online radio pages.</p>
-  </div>
-</div>
+    .dropdown-content {
+      display: none;
+      background: #333;
+      padding: 10px 20px;
+      color: #ddd;
+      border-left: 3px solid #555;
+    }
 
-<!-- Jamexus Services -->
+    .dropdown-content p {
+      margin: 8px 0;
+    }
 
-<div class="service">
-  <button class="dropdown-btn">
-    💬 Diverse Services Party Vibes (FREE) <span class="arrow">▼</span>
-  </button>
-  <div class="dropdown-content">
-    <p><strong>Duration:</strong> 15 minutes</p>
-    <p>Learn about any service you're interested in.</p>
-    <p>Online session.</p>
-  </div>
-</div>
+    .service {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
 
-<div class="service">
-  <button class="dropdown-btn">
-    📖 Bible Talk (FREE) <span class="arrow">▼</span>
-  </button>
-  <div class="dropdown-content">
-    <p><strong>Duration:</strong> 1 hour</p>
-    <p>Online discussion session.</p>
-  </div>
-</div>
+<body>
+  <header>
+    <h1>My Services</h1>
+  </header>
 
-<div class="service">
-  <button class="dropdown-btn">
-    🤝 Range Partner <span class="arrow">▼</span>
-  </button>
-  <div class="dropdown-content">
-    <p><strong>Duration:</strong> 3 hours</p>
-    <p>Support-based or collaborative session.</p>
-  </div>
-</div>
+  <main>
+    <p>I offer a range of entertainment, creative, and digital services designed to bring energy, professionalism, and style to any project or event.</p>
 
-<div class="service">
-  <button class="dropdown-btn">
-    🧭 Ask Jamexus – Personal Assistant <span class="arrow">▼</span>
-  </button>
-  <div class="dropdown-content">
-    <p><strong>Duration:</strong> 1 hour</p>
-    <p>Online personal assistance tailored to your needs.</p>
-    <p><strong>Price:</strong> Depends on service</p>
-  </div>
-</div>
+    <!-- SERVICES WITH DROPDOWNS -->
 
-<div class="service">
-  <button class="dropdown-btn">
-    💻 Computer / Networking Services (I.T.) <span class="arrow">▼</span>
-  </button>
-  <div class="dropdown-content">
-    <p><strong>Duration:</strong> 1 hour</p>
-    <p>Technical troubleshooting and support.</p>
-    <p><strong>Price:</strong> Depends on request</p>
-  </div>
-</div>
+    <div class="service">
+      <button class="dropdown-btn">
+        🎧 Internet DJing <span class="arrow">▼</span>
+      </button>
+      <div class="dropdown-content">
+        <p>Hosting live online DJ sets, music streams, and virtual parties.</p>
+        <p>Perfect for online communities, gaming streams, radio shows, and digital events.</p>
+      </div>
+    </div>
 
-<div class="service">
-  <button class="dropdown-btn">
-    🧠 Philosophical Venting <span class="arrow">▼</span>
-  </button>
-  <div class="dropdown-content">
-    <p><strong>Duration:</strong> 1 hour</p>
-    <p>Deep conversation, reflection, or emotional release.</p>
-    <p><strong>Price:</strong> $15</p>
-  </div>
-</div>
+    <div class="service">
+      <button class="dropdown-btn">
+        🎤 Event DJing <span class="arrow">▼</span>
+      </button>
+      <div class="dropdown-content">
+        <p>Professional DJ services for parties, weddings, clubs, and community gatherings.</p>
+        <p><strong>Price:</strong> $200 (4 hours)</p>
+      </div>
+    </div>
 
-<div class="service">
-  <button class="dropdown-btn">
-    🎧 Online Remote DJ <span class="arrow">▼</span>
-  </button>
-  <div class="dropdown-content">
-    <p><strong>Duration:</strong> 4 hours</p>
-    <p>Online DJ service for virtual events.</p>
-  </div>
-</div>
+    <div class="service">
+      <button class="dropdown-btn">
+        🎨 Creative & Media Services <span class="arrow">▼</span>
+      </button>
+      <div class="dropdown-content">
+        <p>Digital content creation, audio production, branding assistance, and media support.</p>
+      </div>
+    </div>
 
-<script>
-  const buttons = document.querySelectorAll('.dropdown-btn');
+    <div class="service">
+      <button class="dropdown-btn">
+        📚 Tutorials & Training <span class="arrow">▼</span>
+      </button>
+      <div class="dropdown-content">
+        <p>Beginner-friendly guidance for DJing, streaming, and digital broadcasting.</p>
+      </div>
+    </div>
 
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const content = btn.nextElementSibling;
-      const arrow = btn.querySelector('.arrow');
-      const isOpen = content.style.display === 'block';
+    <div class="service">
+      <button class="dropdown-btn">
+        🛠 Technical Support <span class="arrow">▼</span>
+      </button>
+      <div class="dropdown-content">
+        <p>Help with streaming software, audio equipment, radio automation, and broadcasting tools.</p>
+      </div>
+    </div>
 
-      content.style.display = isOpen ? 'none' : 'block';
-      arrow.classList.toggle('rotate', !isOpen);
+    <div class="service">
+      <button class="dropdown-btn">
+        🌐 Website & Digital Setup <span class="arrow">▼</span>
+      </button>
+      <div class="dropdown-content">
+        <p>Assistance with building simple websites, embedding players, chatrooms, and radio pages.</p>
+      </div>
+    </div>
+
+    <!-- Jamexus Services -->
+
+    <div class="service">
+      <button class="dropdown-btn">
+        💬 Diverse Services Party Vibes (FREE) <span class="arrow">▼</span>
+      </button>
+      <div class="dropdown-content">
+        <p><strong>Duration:</strong> 15 minutes</p>
+        <p>Learn about any service you're interested in.</p>
+      </div>
+    </div>
+
+    <div class="service">
+      <button class="dropdown-btn">
+        📖 Bible Talk (FREE) <span class="arrow">▼</span>
+      </button>
+      <div class="dropdown-content">
+        <p><strong>Duration:</strong> 1 hour</p>
+        <p>Online discussion session.</p>
+      </div>
+    </div>
+
+    <div class="service">
+      <button class="dropdown-btn">
+        🤝 Range Partner <span class="arrow">▼</span>
+      </button>
+      <div class="dropdown-content">
+        <p><strong>Duration:</strong> 3 hours</p>
+        <p>Support-based or collaborative session.</p>
+      </div>
+    </div>
+
+    <div class="service">
+      <button class="dropdown-btn">
+        🧭 Ask Jamexus – Personal Assistant <span class="arrow">▼</span>
+      </button>
+      <div class="dropdown-content">
+        <p><strong>Duration:</strong> 1 hour</p>
+        <p>Online personal assistance tailored to your needs.</p>
+        <p><strong>Price:</strong> Depends on service</p>
+      </div>
+    </div>
+
+    <div class="service">
+      <button class="dropdown-btn">
+        💻 Computer / Networking Services (I.T.) <span class="arrow">▼</span>
+      </button>
+      <div class="dropdown-content">
+        <p><strong>Duration:</strong> 1 hour</p>
+        <p>Technical troubleshooting and support.</p>
+        <p><strong>Price:</strong> Depends on request</p>
+      </div>
+    </div>
+
+    <div class="service">
+      <button class="dropdown-btn">
+        🧠 Philosophical Venting <span class="arrow">▼</span>
+      </button>
+      <div class="dropdown-content">
+        <p><strong>Duration:</strong> 1 hour</p>
+        <p>Deep conversation, reflection, or emotional release.</p>
+        <p><strong>Price:</strong> $15</p>
+      </div>
+    </div>
+
+    <div class="service">
+      <button class="dropdown-btn">
+        🎧 Online Remote DJ <span class="arrow">▼</span>
+      </button>
+      <div class="dropdown-content">
+        <p><strong>Duration:</strong> 4 hours</p>
+        <p>Online DJ service for virtual events.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- JAVASCRIPT AT BOTTOM -->
+  <script>
+    const buttons = document.querySelectorAll('.dropdown-btn');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const content = btn.nextElementSibling;
+        const arrow = btn.querySelector('.arrow');
+        const isOpen = content.style.display === 'block';
+
+        content.style.display = isOpen ? 'none' : 'block';
+        arrow.classList.toggle('rotate', !isOpen);
+      });
     });
-  });
-</script>
+  </script>
+
+</body>
+</html>
