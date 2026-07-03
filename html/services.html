@@ -109,7 +109,6 @@
   </nav>
 
   <main>
-
     <!-- PAGE TITLE -->
     <h1 style="text-align:center;">My Services</h1>
 
@@ -289,8 +288,6 @@
 
       </div>
     </div>
-
-
     <!-- 4. Online Remote DJ -->
     <div class="service">
       <button class="dropdown-btn">
@@ -437,8 +434,6 @@
 
       </div>
     </div>
-
-
     <!-- 7. Creative & Media Services -->
     <div class="service">
       <button class="dropdown-btn">
@@ -552,3 +547,20 @@
   </footer>
 
   <!-- JAVASCRIPT -->
+  <script>
+    const buttons = document.querySelectorAll('.dropdown-btn');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const content = btn.nextElementSibling;
+        const arrow = btn.querySelector('.arrow');
+        const isOpen = content.style.display === 'block';
+
+        content.style.display = isOpen ? 'none' : 'block';
+        arrow.classList.toggle('rotate', !isOpen);
+      });
+    });
+  </script>
+
+</body>
+</html>
