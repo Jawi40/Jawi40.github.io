@@ -109,3 +109,12 @@
 </div>
 
 <p>Interested in a service? Email me at <strong>uc5521@gmail.com</strong> to get started.</p>
+<script>
+  const buttons = document.querySelectorAll('.dropdown-btn');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const content = btn.nextElementSibling;
+      content.style.display = content.style.display === 'block' ? 'none' : 'block';
+    });
+  });
+</script>
