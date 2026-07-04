@@ -39,6 +39,7 @@ let lastListenerCount = null;
 
 let stallCheckTimer = null;
 let lastTimeUpdate = 0;
+let lastRecover = 0;
 
 // =========================
 // STATUS + UI HELPERS
@@ -78,22 +79,24 @@ function eqStop() {
 }
 
 // =========================
-// 🔥 INSTANT-START WARM STREAM FIX
+// INSTANT-START WARM STREAM
 // =========================
 function warmStream() {
     audio.src = STREAM_URL;
     audio.muted = true;
-    audio.autoplay = true;
     audio.playsInline = true;
 
-    audio.play().catch(() => {});
+    eqStop();
+    audio.load();
+
+    audio.play().catch(() => {
+        // Autoplay may be blocked; buffering can still begin
+    });
 }
 
 // =========================
-// 🔥 AUTO-RECOVERY ENGINE
+// AUTO-RECOVERY ENGINE
 // =========================
-
-// Detect stalled playback
 function startStallWatchdog() {
     clearInterval(stallCheckTimer);
     stallCheckTimer = setInterval(() => {
@@ -101,27 +104,31 @@ function startStallWatchdog() {
 
         const now = audio.currentTime;
 
-        if (now === lastTimeUpdate) {
+        // If time hasn't advanced in 5s → stalled
+        if (Math.abs(now - lastTimeUpdate) < 0.01) {
             console.warn("Stream stalled — auto-recovering");
             autoRecover();
         }
 
         lastTimeUpdate = now;
-    }, 3000);
+    }, 5000);
 }
 
-// Auto-recover logic
 function autoRecover() {
+    const now = Date.now();
+    if (now - lastRecover < 2000) return; // 2s cooldown
+    lastRecover = now;
+
     if (manualStop) return;
 
     setStatus("Reconnecting", "Restoring stream…", "warn");
     connectionStateEl.textContent = "Reconnecting";
 
-    stopStream();
+    stopStreamInternal(false);
     setTimeout(() => startStream(), 1500);
 }
 
-// Network offline/online detection
+// Network offline/online
 window.addEventListener("offline", () => {
     setStatus("Offline", "Waiting for network…", "warn");
 });
@@ -132,38 +139,41 @@ window.addEventListener("online", () => {
 
 // Playback errors
 audio.addEventListener("error", () => {
+    console.warn("Audio error — auto-recovering");
     autoRecover();
 });
 
 // Silence / no data
 audio.addEventListener("stalled", () => {
+    console.warn("Stream stalled event — auto-recovering");
     autoRecover();
 });
 
 // App/tab switching
 document.addEventListener("visibilitychange", () => {
-    if (!document.hidden && isPlaying) {
+    if (!document.hidden && isPlaying && audio.paused) {
+        console.warn("Returned to app — stream paused — auto-recovering");
         autoRecover();
     }
 });
 
-// =========================
-// 🔥 AUDIO FOCUS + DEVICE CHANGE RECOVERY
-// =========================
-
-// If another app steals audio focus
+// Audio focus + device change
 audio.addEventListener("pause", () => {
-    if (!manualStop && isPlaying) {
-        autoRecover();
-    }
+    if (manualStop) return;
+    if (!isPlaying) return;
+
+    console.warn("Audio paused externally — auto-recovering");
+    autoRecover();
 });
 
-// If Bluetooth/headphones/speakers change
-audio.addEventListener("devicechange", () => {
-    if (isPlaying) {
-        autoRecover();
-    }
-});
+if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
+    navigator.mediaDevices.addEventListener("devicechange", () => {
+        if (isPlaying) {
+            console.warn("Audio device changed — auto-recovering");
+            autoRecover();
+        }
+    });
+}
 
 // =========================
 // STREAM ENGINE
@@ -198,25 +208,27 @@ export async function startStream() {
     }
 }
 
-export function stopStream() {
-    manualStop = true;
+function stopStreamInternal(setManual = true) {
+    if (setManual) manualStop = true;
 
     stopListening();
 
     audio.pause();
-    audio.removeAttribute("src");
-    audio.load();
+    audio.muted = true;
 
     isPlaying = false;
     playBtn.textContent = "▶";
     playBtn.classList.remove("pulse");
 
-    setStatus("Stopped", "Stopped by user");
-    connectionStateEl.textContent = "Stopped";
+    setStatus("Stopped", setManual ? "Stopped by user" : "Reconnecting…");
+    connectionStateEl.textContent = setManual ? "Stopped" : "Reconnecting";
 
     stopUptime();
     eqStop();
+}
 
+export function stopStream() {
+    stopStreamInternal(true);
     warmStream();
 }
 
@@ -298,5 +310,5 @@ audio.volume = initVol;
 
 setStatus("Idle", "Ready");
 
-// 🔥 Warm the stream immediately for instant playback
+// Warm the stream immediately for instant playback
 warmStream();
