@@ -37,6 +37,9 @@ let uptimeTimer = null;
 let startTime = null;
 let lastListenerCount = null;
 
+let stallCheckTimer = null;
+let lastTimeUpdate = 0;
+
 // =========================
 // STATUS + UI HELPERS
 // =========================
@@ -75,16 +78,101 @@ function eqStop() {
 }
 
 // =========================
-// STREAM ENGINE (NO WEB AUDIO API)
+// 🔥 INSTANT-START WARM STREAM FIX
+// =========================
+function warmStream() {
+    audio.src = STREAM_URL;
+    audio.muted = true;
+    audio.autoplay = true;
+    audio.playsInline = true;
+
+    audio.play().catch(() => {});
+}
+
+// =========================
+// 🔥 AUTO-RECOVERY ENGINE
+// =========================
+
+// Detect stalled playback
+function startStallWatchdog() {
+    clearInterval(stallCheckTimer);
+    stallCheckTimer = setInterval(() => {
+        if (!isPlaying) return;
+
+        const now = audio.currentTime;
+
+        if (now === lastTimeUpdate) {
+            console.warn("Stream stalled — auto-recovering");
+            autoRecover();
+        }
+
+        lastTimeUpdate = now;
+    }, 3000);
+}
+
+// Auto-recover logic
+function autoRecover() {
+    if (manualStop) return;
+
+    setStatus("Reconnecting", "Restoring stream…", "warn");
+    connectionStateEl.textContent = "Reconnecting";
+
+    stopStream();
+    setTimeout(() => startStream(), 1500);
+}
+
+// Network offline/online detection
+window.addEventListener("offline", () => {
+    setStatus("Offline", "Waiting for network…", "warn");
+});
+
+window.addEventListener("online", () => {
+    autoRecover();
+});
+
+// Playback errors
+audio.addEventListener("error", () => {
+    autoRecover();
+});
+
+// Silence / no data
+audio.addEventListener("stalled", () => {
+    autoRecover();
+});
+
+// App/tab switching
+document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && isPlaying) {
+        autoRecover();
+    }
+});
+
+// =========================
+// 🔥 AUDIO FOCUS + DEVICE CHANGE RECOVERY
+// =========================
+
+// If another app steals audio focus
+audio.addEventListener("pause", () => {
+    if (!manualStop && isPlaying) {
+        autoRecover();
+    }
+});
+
+// If Bluetooth/headphones/speakers change
+audio.addEventListener("devicechange", () => {
+    if (isPlaying) {
+        autoRecover();
+    }
+});
+
+// =========================
+// STREAM ENGINE
 // =========================
 export async function startStream() {
     manualStop = false;
     clearTimeout(reconnectTimer);
 
-    audio.src = STREAM_URL;
     audio.muted = false;
-    audio.autoplay = false;
-    audio.playsInline = true;
 
     setStatus("Connecting", "Initializing…", "warn");
     connectionStateEl.textContent = "Connecting";
@@ -103,6 +191,7 @@ export async function startStream() {
 
         startUptime();
         eqStart();
+        startStallWatchdog();
 
     } catch (err) {
         handleError();
@@ -127,6 +216,8 @@ export function stopStream() {
 
     stopUptime();
     eqStop();
+
+    warmStream();
 }
 
 function handleError() {
@@ -181,7 +272,7 @@ retryBtn.addEventListener("click", () => {
     startStream();
 });
 
-// Native volume (works on iOS + Android)
+// Volume
 volumeSlider.addEventListener("input", () => {
     const v = parseFloat(volumeSlider.value);
     audio.volume = v;
@@ -206,3 +297,6 @@ volumeValue.textContent = Math.round(initVol * 100) + "%";
 audio.volume = initVol;
 
 setStatus("Idle", "Ready");
+
+// 🔥 Warm the stream immediately for instant playback
+warmStream();
