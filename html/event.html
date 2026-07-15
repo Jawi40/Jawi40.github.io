@@ -64,6 +64,7 @@ async function loadGallery() {
             const img = document.createElement("img");
             img.src = "/js/posters/" + file;
             img.alt = "Event Poster";
+            img.setAttribute("data-src", img.src);
             gallery.appendChild(img);
         });
 
