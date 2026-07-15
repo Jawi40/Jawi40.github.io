@@ -485,3 +485,57 @@ section h2 {
     box-shadow: 0 0 12px #009b3a;
     margin: 18px 0;
 }
+
+/* ===========================
+   EVENT PAGE — JAMAICAN THEME
+   =========================== */
+
+/* Event Gallery Container */
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+    margin: 25px auto;
+    padding-bottom: 20px;
+}
+
+/* Poster Cards */
+.gallery img {
+    width: 100%;
+    border-radius: 10px;
+    border: 2px solid #009b3a; /* Jamaican Green */
+    box-shadow: 0 0 18px #009b3a;
+    transition: 0.25s ease;
+}
+
+/* Hover Glow */
+.gallery img:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 25px #da291c; /* Jamaican Red Glow */
+}
+
+/* Submit Poster Button (reusing your theme) */
+.event-submit-btn {
+    display: inline-block;
+    background-color: #da291c;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: 0.2s ease-in-out;
+    text-shadow: 0 0 8px #000;
+}
+
+.event-submit-btn:hover {
+    background-color: #b51f1f;
+    transform: scale(1.05);
+}
+
+/* Event Page Wrapper */
+.event-wrapper {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 25px;
+}
