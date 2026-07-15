@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Poster Showcase</title>
+    <link rel="stylesheet" href="event.css">
+</head>
+<body>
+
+<header>
+    <h1>Event Poster Showcase</h1>
+    <p>Explore posters submitted for our community event.</p>
+
+    <!-- Change email or link to your Google Form -->
+    <a class="submit-btn" href="mailto:your-email@example.com">
+        Submit Your Poster
+    </a>
+</header>
+
+<section class="gallery-section">
+    <h2>Poster Gallery</h2>
+    <div class="gallery" id="gallery"></div>
+</section>
+
+<script>
+// Load poster filenames from posters/list.json
+async function loadGallery() {
+    const gallery = document.getElementById("gallery");
+
+    try {
+        const response = await fetch("posters/list.json");
+        const posters = await response.json();
+
+        posters.forEach(file => {
+            const img = document.createElement("img");
+            img.src = "posters/" + file;
+            img.alt = "Event Poster";
+            gallery.appendChild(img);
+        });
+
+    } catch (error) {
+        gallery.innerHTML = "<p>Could not load posters. Make sure list.json exists.</p>";
+    }
+}
+
+loadGallery();
+</script>
+
+</body>
+</html>
