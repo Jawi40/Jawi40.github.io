@@ -3,51 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Local Event Showcase</title>
+    <title>Event Poster Showcase</title>
 
-    <!-- Matches GitHub Pages clean aesthetic -->
-    <link rel="stylesheet" href="event.css">
+    <!-- Your unified Jamaican theme stylesheet -->
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
 
-<div class="container">
+<div class="page-wrapper">
 
+    <!-- HEADER -->
     <header>
-        <h1>Event Showcase</h1>
-        <p>Browse posters submitted for our community and share your own.</p>
-
-        <!-- Replace with your email or Google Form -->
-        <a class="submit-btn" href="mailto:j_a_w_i@hotmial.com">
-            Submit Your Poster
-        </a>
+        <img src="/images/transparent.png" class="site-logo">
     </header>
 
-    <section class="gallery-section">
+    <!-- NAVIGATION -->
+    <nav>
+        <a href="/index.html">Home</a>
+        <a href="/html/services.html">Services</a>
+        <a href="/html/about.html">About</a>
+        <a href="/html/contact.html">Contact</a>
+        <a href="/event.html">Event Poster Showcase</a>
+    </nav>
+
+    <!-- PAGE TITLE -->
+    <section class="event-wrapper">
+        <h1 class="page-title">Event Poster Showcase</h1>
+        <div class="section-divider"></div>
+    </section>
+
+    <!-- SUBMIT POSTER BUTTON -->
+    <section class="event-wrapper" style="text-align:center;">
+        <a href="mailto:your-email@example.com" class="event-submit-btn">
+            Submit Your Poster
+        </a>
+        <div class="section-divider" style="margin-top:25px;"></div>
+    </section>
+
+    <!-- POSTER GALLERY -->
+    <section class="event-wrapper">
         <h2>Poster Gallery</h2>
+        <div class="section-divider"></div>
+
         <div id="gallery" class="gallery"></div>
     </section>
 
 </div>
 
+<!-- AUTO‑LOADING POSTERS -->
 <script>
-// Load poster filenames from posters/list.json
 async function loadGallery() {
     const gallery = document.getElementById("gallery");
 
     try {
-        const response = await fetch("posters/list.json");
+        const response = await fetch("/posters/list.json");
         const posters = await response.json();
 
         posters.forEach(file => {
             const img = document.createElement("img");
-            img.src = "posters/" + file;
+            img.src = "/posters/" + file;
             img.alt = "Event Poster";
             gallery.appendChild(img);
         });
 
     } catch (error) {
-        gallery.innerHTML = "<p>Posters could not be loaded. Check list.json.</p>";
+        gallery.innerHTML = "<p style='color:#fdda24;'>Could not load posters. Check list.json.</p>";
     }
 }
 
