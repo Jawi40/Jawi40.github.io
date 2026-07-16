@@ -390,12 +390,7 @@ section h2 {
    =========================== */
 @media (max-width: 768px) {
 
-    section {
-        margin: 35px auto;
-        padding: 0 10px;
-    }
-
-    nav {
+    nav.desktop-nav {
         flex-wrap: wrap;
         gap: 12px;
         padding: 10px 0;
@@ -546,12 +541,6 @@ section h2 {
 
     .page-wrapper {
         padding: 0 12px;
-    }
-
-    nav {
-        flex-wrap: wrap;
-        gap: 12px;
-        padding: 10px 0;
     }
 
     nav a {
