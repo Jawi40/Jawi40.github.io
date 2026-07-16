@@ -95,19 +95,12 @@
 
 <body>
 
-  <!-- HEADER -->
-  <header>
-      <img src="/images/transparent.png" class="site-logo">
-  </header>
-
-  <!-- NAVIGATION -->
-  <nav>
-      <a href="/index.html">Home</a>
-      <a href="/html/services.html">Services</a>
-      <a href="/html/event.html">Events</a>
-      <a href="/html/about.html">About</a>
-      <a href="/html/contact.html">Contact</a>
-  </nav>
+ <div id="header"></div>
+<script>
+  fetch("/partials/header.html")
+    .then(r => r.text())
+    .then(t => document.getElementById("header").innerHTML = t);
+</script>
 
   <main>
     <!-- PAGE TITLE -->
@@ -481,19 +474,13 @@
 
   </main>
 
-  <!-- FOOTER -->
-  <footer>
-    Jamexus offers a powerful mix of services — technical troubleshooting, internet radio expertise,
-    DJ coaching, documentation support, and more.
-    ©2026 Jawi
-    <nav>
-      <a href="/index.html">Home</a>
-      <a href="/html/services.html">Services</a>
-      <a href="/html/Events.html">Events</a>
-      <a href="/html/about.html">About</a>
-      <a href="/html/contact.html">Contact</a>
-    </nav>
-  </footer>
+  <div id="footer"></div>
+<script>
+  fetch("/partials/footer.html")
+    .then(r => r.text())
+    .then(t => document.getElementById("footer").innerHTML = t);
+</script>
+
 
   <!-- JAVASCRIPT -->
   <script>
