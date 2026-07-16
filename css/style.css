@@ -22,14 +22,20 @@ body {
 }
 
 /* ===========================
-   HEADER — JAMAICAN GLOW
+   HEADER — JAMAICAN GLOW (FIXED)
    =========================== */
-<div id="header"></div>
-<script>
-fetch("/partials/header.html")
-  .then(r => r.text())
-  .then(t => document.getElementById("header").innerHTML = t);
-</script>
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 0;
+    width: 100%;
+}
+
+.site-logo {
+    max-width: 200px;
+    height: auto;
+}
 
 /* ===========================
    NAVIGATION — REGGAE VIBES
@@ -498,7 +504,7 @@ section h2 {
     box-shadow: 0 0 25px #da291c; /* Jamaican Red Glow */
 }
 
-/* Submit Poster Button (reusing your theme) */
+/* Submit Poster Button */
 .event-submit-btn {
     display: inline-block;
     background-color: #da291c;
@@ -523,6 +529,7 @@ section h2 {
     margin: 20px auto;
     padding: 0 25px;
 }
+
 /* ===========================
    UNIVERSAL MOBILE FIXES
    =========================== */
@@ -558,6 +565,10 @@ section h2 {
 
     .site-logo {
         max-width: 160px;
+    }
+
+    header {
+        padding: 10px 0;
     }
 }
 
@@ -601,7 +612,7 @@ section h2 {
 
 /* Show hamburger on mobile */
 @media (max-width: 600px) {
-    .desktop-nav { display: none; }   /* hide desktop nav only */
-    .hamburger { display: block; }    /* show hamburger */
-    #mobile-nav { display: none; }    /* keep mobile menu hidden until tapped */
+    .desktop-nav { display: none; }
+    .hamburger { display: block; }
+    #mobile-nav { display: none; }
 }
