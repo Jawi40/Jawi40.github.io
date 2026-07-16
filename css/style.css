@@ -623,6 +623,7 @@ section h2 {
 
 /* Show hamburger on mobile */
 @media (max-width: 600px) {
-    .desktop-nav { display: none; } /* hide desktop nav only */
-    .hamburger { display: block; }
+    .desktop-nav { display: none; }   /* hide desktop nav only */
+    .hamburger { display: block; }    /* show hamburger */
+    #mobile-nav { display: none; }    /* keep mobile menu hidden until tapped */
 }
