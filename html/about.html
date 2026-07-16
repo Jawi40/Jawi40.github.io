@@ -5,39 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About – JAMEXUS SERVICES</title>
 
-    <!-- FIXED PATH -->
+    <!-- GLOBAL JAMAICAN THEME -->
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
 
+<!-- HEADER PARTIAL -->
 <div id="header"></div>
 <script>
-  // FIXED PATH
   fetch("../partials/header.html")
     .then(r => r.text())
     .then(t => document.getElementById("header").innerHTML = t);
 </script>
 
-<section>
-    <h2>About Me</h2>
-    <p>Hello, I’m <span class="highlight">JAWI</span>. I’ve always been passionate about music, culture, and the digital world. JAMEXUS SERVICES is my space to share what I create, what I learn, and how I help others explore the world of internet radio and digital entertainment.</p>
+<main class="page-wrapper">
 
-    <p>From DJing virtual parties to hosting live streams, I bring energy, vibes, and a love for music to every project. My goal is to connect people through sound and creativity.</p>
-</section>
+    <!-- ABOUT SECTION -->
+    <section>
+        <h2 class="page-title">About Me</h2>
 
-<div class="section-divider"></div>
+        <p style="text-align:center; max-width:900px; margin:0 auto 20px;">
+            Hello, I’m <strong style="color:#fdda24; text-shadow:0 0 8px #009b3a;">JAWI</strong>.
+            I’ve always been passionate about music, culture, and the digital world.
+            JAMEXUS SERVICES is my space to share what I create, what I learn, and how I help others explore
+            the world of internet radio, entertainment, and digital creativity.
+        </p>
 
-<section>
-    <h2>My Mission</h2>
-    <p>To inspire, entertain, and empower others through music, technology, and creativity — while keeping the Jamaican spirit alive with every beat.</p>
-</section>
+        <p style="text-align:center; max-width:900px; margin:0 auto 20px;">
+            From DJing virtual parties to hosting live streams, I bring energy, vibes, and a love for music
+            to every project. My goal is to connect people through sound, culture, and creativity — keeping
+            the Jamaican spirit alive with every beat.
+        </p>
+    </section>
 
-<div class="section-divider"></div>
+    <div class="section-divider"></div>
 
+    <!-- MISSION SECTION -->
+    <section>
+        <h2 class="page-title">My Mission</h2>
+
+        <p style="text-align:center; max-width:900px; margin:0 auto 20px;">
+            To inspire, entertain, and empower others through music, technology, and creativity —
+            while representing the Jamaican spirit with pride, passion, and positive energy.
+        </p>
+    </section>
+
+    <div class="section-divider"></div>
+
+</main>
+
+<!-- FOOTER PARTIAL -->
 <div id="footer"></div>
 <script>
-  // FIXED PATH
   fetch("../partials/footer.html")
     .then(r => r.text())
     .then(t => document.getElementById("footer").innerHTML = t);
