@@ -5,111 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Services – JAMEXUS SERVICES</title>
 
+  <!-- GLOBAL JAMAICAN THEME -->
   <link rel="stylesheet" href="../css/style.css">
-
-  <style>
-    body {
-      background: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
-
-    h1 {
-      color: #0ff;
-      text-shadow: 0 0 6px #0ff;
-    }
-
-    h3 {
-      color: #0ff;
-      text-shadow: 0 0 6px #0ff;
-      margin-top: 10px;
-    }
-
-    .dropdown-btn {
-      width: 100%;
-      background: #222;
-      color: #fff;
-      padding: 14px;
-      text-align: left;
-      border: none;
-      outline: none;
-      font-size: 18px;
-      cursor: pointer;
-      margin-top: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: background 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .dropdown-btn:hover {
-      background: #333;
-      box-shadow: 0 0 6px #0ff;
-    }
-
-    .arrow {
-      transition: transform 0.3s ease;
-    }
-
-    .arrow.rotate {
-      transform: rotate(180deg);
-    }
-
-    .dropdown-content {
-      display: none;
-      background: #111;
-      padding: 15px 20px;
-      color: #ddd;
-      border-left: 3px solid #0ff;
-      margin-top: 5px;
-      box-shadow: 0 0 8px #0ff33;
-    }
-
-    .dropdown-content p {
-      margin: 10px 0;
-      line-height: 1.5;
-    }
-
-    .service {
-      margin-bottom: 15px;
-    }
-
-    nav a {
-      color: #0ff;
-      margin: 0 10px;
-      text-decoration: none;
-    }
-
-    nav a:hover {
-      text-shadow: 0 0 6px #0ff;
-    }
-
-    footer {
-      text-align: center;
-      padding: 15px 0;
-      color: #0ff;
-      margin-top: 40px;
-    }
-  </style>
 </head>
 
 <body>
 
- <div id="header"></div>
+<!-- HEADER PARTIAL -->
+<div id="header"></div>
 <script>
   fetch("/partials/header.html")
     .then(r => r.text())
     .then(t => document.getElementById("header").innerHTML = t);
 </script>
 
-  <main>
-    <!-- PAGE TITLE -->
-    <h1 style="text-align:center;">Services</h1>
+<main class="page-wrapper">
 
-    <!-- INTRO PARAGRAPH -->
+  <!-- PAGE TITLE -->
+  <h1 class="page-title">Services</h1>
+
+  <!-- INTRO PARAGRAPH -->
+  <section>
     <p style="text-align:center; max-width:800px; margin:0 auto 20px;">
       I offer a range of entertainment, creative, and digital services designed to bring energy,
-      professionalism, and style to any project or events.
+      professionalism, and style to any project or event.
     </p>
 
     <!-- ⭐ FULL SERVICES SECTION ⭐ -->
@@ -117,9 +36,9 @@
     <!-- 1. Range Partner -->
     <div class="service">
       <button class="dropdown-btn">
-        🔫🤝 Range Partner<span class="arrow">▼</span>
+        🔫🤝 Range Partner <span class="arrow">▼</span>
       </button>
- 
+
       <div class="dropdown-content">
 
         <h3>A Unique Recreational Shooting Partnership</h3>
@@ -163,7 +82,7 @@
           Supportive feedback and simple insights help you grow at your own pace.
         </p>
 
-        <hr style="border-color:#0ff;">
+        <hr>
 
         <h3>Transparency without hidden Fees</h3>
 
@@ -171,13 +90,14 @@
           • Partner’s time (3 hours)<br>
           • 100 rounds (.40 Cal or 5.56)<br>
           • Range fee<br>
-          </p>
+        </p>
 
         <p><strong>What's included if you do NOT own a weapon:</strong><br>
           Everything is provided — weapon rental, ammo, eye/ear protection, target, score card, range fee,
           and 3 hours of partner time.
         </p>
-        <p> <strong>Email to schedule session:</strong>J_A_W_I@hotmail.com</p>
+
+        <p><strong>Email to schedule session:</strong> J_A_W_I@hotmail.com</p>
 
       </div>
     </div>
@@ -190,7 +110,7 @@
 
       <div class="dropdown-content">
 
-        <h3>. Free Online Consultations.</h3>
+        <h3>Free Online Consultations</h3>
 
         <p>
           JAMEXUS stands as your reliable partner for clarity, confidence, and problem‑solving.
@@ -218,21 +138,19 @@
 
         <p><strong>🔐 Security Awareness</strong><br>
           Smart security made simple.
-          I’ll set up powerful, up‑to‑date protection for your computer so you can browse, work, and connect without worry. 
-          Fast, friendly service with the tech expertise you deserve..
         </p>
 
         <p><strong>🌎 Hablamos Español</strong><br>
           Support available in English and Spanish.
         </p>
 
-        <hr style="border-color:#0ff;">
+        <hr>
 
         <p><strong>Need help with your Windows or Android device?</strong><br>
           JAMEXUS is here to support you with honesty, clarity, and zero hidden fees.
         </p>
 
-        <p>📧 <strong>Email:</strong>J_A_W_I@hotmail.com</p>
+        <p>📧 <strong>Email:</strong> J_A_W_I@hotmail.com</p>
 
       </div>
     </div>
@@ -245,7 +163,7 @@
 
       <div class="dropdown-content">
 
-        <h3>Reliable Tech Support in other areas of Your Digital World</h3>
+        <h3>Reliable Tech Support</h3>
 
         <p>
           JAMEXUS provides clear, patient, and professional support for all your digital needs.
@@ -266,7 +184,7 @@
           Clear solutions for confusing tech issues.
         </p>
 
-        <hr style="border-color:#0ff;">
+        <hr>
 
         <h3>Why Choose JAMEXUS?</h3>
 
@@ -274,11 +192,11 @@
           Friendly, fast, reliable support that keeps you productive and connected.
         </p>
 
-        <p>📧 <strong>Email:</strong>J_A_W_I@hotmail.com</p>
+        <p>📧 <strong>Email:</strong> J_A_W_I@hotmail.com</p>
 
       </div>
     </div>
-    
+
     <!-- 4. Online Remote DJ -->
     <div class="service">
       <button class="dropdown-btn">
@@ -290,14 +208,14 @@
         <h3>Unmatched Energy. Real DJs. Real Vibes.</h3>
 
         <p>
-          JAMEXUS brings you <strong>unparalleled parties</strong> powered by live for events or internet DJs
-          who keep the energy flowing for a full <strong>4-hour celebrating event</strong>.
+          JAMEXUS brings you unparalleled parties powered by live DJs
+          who keep the energy flowing for a full <strong>4‑hour celebrating event</strong>.
         </p>
 
         <h3>What Makes Our Parties Special</h3>
 
         <p><strong>🎧 Live DJs</strong><br>
-          Requests, dedications, shoutouts — Chatroom.
+          Requests, dedications, shoutouts — chatroom interaction.
         </p>
 
         <p><strong>📣 Announcements & Shoutouts</strong><br>
@@ -313,11 +231,8 @@
         </p>
 
         <p><strong>🔊 Big Sound, Big Fun</strong><br>
-          Connect speakers to your tablet, phone, computer or other devices and dance:
+          Connect speakers to your tablet, phone, computer or other devices and dance.
         </p>
-
-        <p style="font-size:18px; color:#0ff; text-shadow:0 0 6px #0ff;">
-         </p>
 
       </div>
     </div>
@@ -359,13 +274,13 @@
           JAMEXUS brings the party to you.
         </p>
 
-        <hr style="border-color:#0ff;">
+        <hr>
 
         <h3>Tune In & Turn Up</h3>
 
         <p>Copy & paste the link below:</p>
 
-        <p style="font-size:18px; color:#0ff; text-shadow:0 0 6px #0ff;">
+        <p style="font-size:18px; color:#fdda24; text-shadow:0 0 6px #009b3a;">
           <strong>www.jamexus.com</strong>
         </p>
 
@@ -409,7 +324,7 @@
           Control the vibe and keep listeners engaged.
         </p>
 
-        <hr style="border-color:#0ff;">
+        <hr>
 
         <h3>This Is Your Moment</h3>
 
@@ -418,11 +333,12 @@
           JAMEXUS gives you the foundation and confidence to begin your DJ journey.
         </p>
 
-        <p>📧 <strong>Email:</strong>J_A_W_I@hotmail.com</p>
+        <p>📧 <strong>Email:</strong> J_A_W_I@hotmail.com</p>
 
       </div>
     </div>
-      <!-- 8. Website & Digital Setup -->
+
+    <!-- 7. Website & Digital Setup -->
     <div class="service">
       <button class="dropdown-btn">
         🌐⚙️ Website & Digital Setup <span class="arrow">▼</span>
@@ -452,14 +368,14 @@
         </p>
 
         <p><strong>🎧 DJ & Music Pages</strong><br>
-          Showcase mixes, playlists, podcast and events.
+          Showcase mixes, playlists, podcasts and events.
         </p>
 
         <p><strong>📡 Broadcasting Setup</strong><br>
           Guidance for online radio and streaming tools.
         </p>
 
-        <hr style="border-color:#0ff;">
+        <hr>
 
         <h3>Why Choose JAMEXUS?</h3>
 
@@ -467,36 +383,38 @@
           Professional, modern, and uniquely yours.
         </p>
 
-        <p>📧 <strong>Email:</strong>J_A_W_I@hotmail.com</p>
+        <p>📧 <strong>Email:</strong> J_A_W_I@hotmail.com</p>
 
       </div>
     </div>
 
-  </main>
+  </section>
 
-  <div id="footer"></div>
+</main>
+
+<!-- FOOTER PARTIAL -->
+<div id="footer"></div>
 <script>
   fetch("/partials/footer.html")
     .then(r => r.text())
     .then(t => document.getElementById("footer").innerHTML = t);
 </script>
 
+<!-- DROPDOWN SCRIPT -->
+<script>
+  const buttons = document.querySelectorAll('.dropdown-btn');
 
-  <!-- JAVASCRIPT -->
-  <script>
-    const buttons = document.querySelectorAll('.dropdown-btn');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const content = btn.nextElementSibling;
+      const arrow = btn.querySelector('.arrow');
+      const isOpen = content.style.display === 'block';
 
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const content = btn.nextElementSibling;
-        const arrow = btn.querySelector('.arrow');
-        const isOpen = content.style.display === 'block';
-
-        content.style.display = isOpen ? 'none' : 'block';
-        arrow.classList.toggle('rotate', !isOpen);
-      });
+      content.style.display = isOpen ? 'none' : 'block';
+      arrow.classList.toggle('rotate', !isOpen);
     });
-  </script>
+  });
+</script>
 
 </body>
 </html>
