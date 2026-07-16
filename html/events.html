@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Events</title>
+    <title>Events – JAMEXUS SERVICES</title>
 
+    <!-- GLOBAL JAMAICAN THEME -->
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
+
+<!-- HEADER PARTIAL -->
 <div id="header"></div>
 <script>
   fetch("/partials/header.html")
@@ -18,24 +21,26 @@
 
 <div class="page-wrapper">
 
-        <!-- POSTER GALLERY -->
+    <!-- POSTER GALLERY -->
     <section class="event-wrapper">
-        <h2>Events Poster Gallery</h2>
+        <h2 class="page-title">Events Poster Gallery</h2>
         <div class="section-divider"></div>
+
         <div id="gallery" class="gallery"></div>
     </section>
-</div>
-    
-      <!-- SUBMIT POSTER BUTTON -->
+
+    <!-- SUBMIT POSTER BUTTON -->
     <section class="event-wrapper" style="text-align:center;">
         <div class="section-divider"></div>
+
         <a href="mailto:j_a_w_i@hotmail.com" class="event-submit-btn">
             Submit Your Poster
         </a>
+
         <div class="section-divider" style="margin-top:25px;"></div>
     </section>
 
-
+</div>
 
 <!-- AUTO‑LOADING POSTERS -->
 <script>
@@ -136,13 +141,14 @@ document.addEventListener("click", function(e) {
     }
 });
 </script>
-    
+
+<!-- FOOTER PARTIAL -->
 <div id="footer"></div>
 <script>
   fetch("/partials/footer.html")
     .then(r => r.text())
     .then(t => document.getElementById("footer").innerHTML = t);
 </script>
-    
+
 </body>
 </html>
