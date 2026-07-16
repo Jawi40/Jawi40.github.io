@@ -584,7 +584,7 @@ section h2 {
 }
 
 /* ===========================
-   HAMBURGER MENU — MOBILE
+   HAMBURGER MENU — MOBILE FIX
    =========================== */
 .hamburger {
     display: none;
@@ -623,7 +623,6 @@ section h2 {
 
 /* Show hamburger on mobile */
 @media (max-width: 600px) {
-    .desktop-nav { display: none; }
+    .desktop-nav { display: none; } /* hide desktop nav only */
     .hamburger { display: block; }
-    #mobile-nav { display: none; } /* default hidden */
 }
