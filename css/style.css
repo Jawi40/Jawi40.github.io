@@ -24,23 +24,12 @@ body {
 /* ===========================
    HEADER — JAMAICAN GLOW
    =========================== */
-header {
-    background: linear-gradient(135deg, #000, #0d2600);
-    padding: 5px 0;
-    text-align: center;
-    border-bottom: 4px solid #009b3a;
-    box-shadow: 0 0 25px #009b3a;
-}
-
-.site-logo {
-    max-width: 250px;
-    width: auto; /* FIXED for Android */
-    height: auto;
-    display: block;
-    margin: 0 auto;
-    opacity: 0.8;
-    filter: drop-shadow(0 0 12px #009b3a);
-}
+<div id="header"></div>
+<script>
+fetch("/partials/header.html")
+  .then(r => r.text())
+  .then(t => document.getElementById("header").innerHTML = t);
+</script>
 
 /* ===========================
    NAVIGATION — REGGAE VIBES
