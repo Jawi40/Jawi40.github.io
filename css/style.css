@@ -582,3 +582,48 @@ section h2 {
         max-width: 160px;
     }
 }
+
+/* ===========================
+   HAMBURGER MENU — MOBILE
+   =========================== */
+.hamburger {
+    display: none;
+    font-size: 32px;
+    color: #fdda24;
+    text-shadow: 0 0 10px #009b3a;
+    cursor: pointer;
+    padding: 12px 20px;
+    background: #0b0b0b;
+    border-bottom: 3px solid #009b3a;
+    box-shadow: 0 0 15px #009b3a;
+}
+
+#mobile-nav {
+    display: none;
+    flex-direction: column;
+    background: #0b0b0b;
+    border-bottom: 3px solid #009b3a;
+    box-shadow: 0 0 15px #009b3a;
+    padding: 10px 0;
+}
+
+#mobile-nav a {
+    color: #fdda24;
+    padding: 12px 20px;
+    text-decoration: none;
+    font-size: 18px;
+    text-shadow: 0 0 8px #009b3a;
+}
+
+#mobile-nav a:hover {
+    background: #111;
+    color: #da291c;
+    text-shadow: 0 0 12px #da291c;
+}
+
+/* Show hamburger on mobile */
+@media (max-width: 600px) {
+    nav { display: none; } /* hide desktop nav */
+    .hamburger { display: block; }
+}
+
