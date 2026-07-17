@@ -13,11 +13,23 @@
 
 <!-- HEADER PARTIAL -->
 <div id="header"></div>
+
 <script>
-  fetch("../partials/header.html")
-    .then(r => r.text())
-    .then(t => document.getElementById("header").innerHTML = t);
+document.addEventListener("DOMContentLoaded", () => {
+    fetch(window.location.origin + "/partials/header.html")
+        .then(response => {
+            if (!response.ok) throw new Error("Header failed to load");
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById("header").innerHTML = html;
+        })
+        .catch(err => {
+            console.error("HEADER LOAD ERROR:", err);
+        });
+});
 </script>
+
 
 <main class="page-wrapper">
 
