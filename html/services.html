@@ -29,6 +29,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 });
 </script>
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("mobile-nav");
+    const current = window.getComputedStyle(menu).display;
+    menu.style.display = (current === "none") ? "flex" : "none";
+}
+</script>
 
 
 <main class="page-wrapper">
