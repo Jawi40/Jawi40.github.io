@@ -40,9 +40,10 @@ let lastListenerCount = null;
 let stallCheckTimer = null;
 let lastTimeUpdate = 0;
 let lastRecover = 0;
+let heartbeatTimer = null;
 
 // =========================
-/* STATUS + UI HELPERS */
+// STATUS + UI HELPERS
 // =========================
 function setStatus(label, detail, type = null) {
     statusLabel.textContent = label;
@@ -79,22 +80,6 @@ function eqStop() {
 }
 
 // =========================
-// INSTANT-START WARM STREAM
-// =========================
-function warmStream() {
-    audio.src = STREAM_URL;
-    audio.muted = true;
-    audio.playsInline = true;
-
-    eqStop();
-    audio.load();
-
-    audio.play().catch(() => {
-        // Autoplay may be blocked; buffering can still begin
-    });
-}
-
-// =========================
 // AUTO-RECOVERY ENGINE
 // =========================
 function startStallWatchdog() {
@@ -104,7 +89,6 @@ function startStallWatchdog() {
 
         const now = audio.currentTime;
 
-        // If time hasn't advanced in 5s → stalled
         if (Math.abs(now - lastTimeUpdate) < 0.01) {
             console.warn("Stream stalled — auto-recovering");
             autoRecover();
@@ -114,32 +98,26 @@ function startStallWatchdog() {
     }, 5000);
 }
 
-// =========================
-// HEARTBEAT — CONFIRMS STREAM IS ALIVE
-// =========================
 function startHeartbeat() {
     clearInterval(heartbeatTimer);
     heartbeatTimer = setInterval(() => {
         if (!isPlaying) return;
 
-        // If audio is paused but user didn't stop it
         if (audio.paused && !manualStop) {
             console.warn("Heartbeat: audio paused unexpectedly — recovering");
             autoRecover();
         }
 
-        // If audio volume is zero but user didn't mute
         if (audio.volume === 0 && !manualStop) {
             console.warn("Heartbeat: silent stream — recovering");
             autoRecover();
         }
     }, 4000);
 }
-let heartbeatTimer = null;
 
 function autoRecover() {
     const now = Date.now();
-    if (now - lastRecover < 2000) return; // 2s cooldown
+    if (now - lastRecover < 2000) return;
     lastRecover = now;
 
     if (manualStop) return;
@@ -151,60 +129,6 @@ function autoRecover() {
     setTimeout(() => startStream(), 1500);
 }
 
-// Network offline/online
-window.addEventListener("offline", () => {
-    setStatus("Offline", "Waiting for network…", "warn");
-});
-
-window.addEventListener("online", () => {
-    autoRecover();
-});
-
-// Playback errors
-audio.addEventListener("error", () => {
-    console.warn("Audio error — auto-recovering");
-    autoRecover();
-});
-
-// Silence / no data
-audio.addEventListener("stalled", () => {
-    console.warn("Stream stalled event — auto-recovering");
-    autoRecover();
-});
-
-// App/tab switching
-document.addEventListener("visibilitychange", () => {
-    if (!document.hidden && isPlaying && audio.paused) {
-        console.warn("Returned to app — stream paused — auto-recovering");
-        autoRecover();
-    }
-});
-
-// Audio focus + device change
-audio.addEventListener("pause", () => {
-    if (manualStop) return;
-    if (!isPlaying) return;
-
-    console.warn("Audio paused externally — auto-recovering");
-    autoRecover();
-});
-
-// Stop stream if user starts other audio
-document.addEventListener("play", (e) => {
-    if (e.target !== audio) {
-        stopStreamInternal(true);
-    }
-}, true);
-
-if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
-    navigator.mediaDevices.addEventListener("devicechange", () => {
-        if (isPlaying) {
-            console.warn("Audio device changed — auto-recovering");
-            autoRecover();
-        }
-    });
-}
-
 // =========================
 // STREAM ENGINE
 // =========================
@@ -212,6 +136,7 @@ export async function startStream() {
     manualStop = false;
     clearTimeout(reconnectTimer);
 
+    audio.src = STREAM_URL; // iPad requires src assignment AFTER gesture
     audio.muted = false;
 
     setStatus("Connecting", "Initializing…", "warn");
@@ -260,9 +185,11 @@ function stopStreamInternal(setManual = true) {
 
 export function stopStream() {
     stopStreamInternal(true);
-    warmStream();
 }
 
+// =========================
+// ERROR HANDLING
+// =========================
 function handleError() {
     if (manualStop) return;
 
@@ -315,7 +242,7 @@ retryBtn.addEventListener("click", () => {
     startStream();
 });
 
-// Volume (simple, compatible)
+// Volume (simple, iPad-safe)
 volumeSlider.addEventListener("input", () => {
     const v = parseFloat(volumeSlider.value);
     audio.volume = v;
@@ -323,6 +250,7 @@ volumeSlider.addEventListener("input", () => {
     localStorage.setItem("consoleVolume", v);
 });
 
+// Diagnostics toggle
 diagToggle.addEventListener("click", () => {
     diagnosticsPanel.classList.toggle("open");
     diagToggle.textContent = diagnosticsPanel.classList.contains("open")
@@ -342,7 +270,7 @@ audio.volume = initVol;
 setStatus("Idle", "Ready");
 
 // =========================
-// MOBILE PLAYBACK UNLOCK
+// MOBILE PLAYBACK UNLOCK (iPad-safe)
 // =========================
 document.addEventListener("touchstart", () => {
     if (isPlaying && audio.paused) {
@@ -355,6 +283,3 @@ document.addEventListener("click", () => {
         audio.play().catch(() => {});
     }
 });
-
-// Warm the stream immediately for instant playback
-warmStream();
