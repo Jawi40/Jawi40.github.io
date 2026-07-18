@@ -42,7 +42,7 @@ let lastTimeUpdate = 0;
 let lastRecover = 0;
 
 // =========================
-// STATUS + UI HELPERS
+/* STATUS + UI HELPERS */
 // =========================
 function setStatus(label, detail, type = null) {
     statusLabel.textContent = label;
@@ -118,7 +118,8 @@ function startStallWatchdog() {
 // HEARTBEAT — CONFIRMS STREAM IS ALIVE
 // =========================
 function startHeartbeat() {
-    setInterval(() => {
+    clearInterval(heartbeatTimer);
+    heartbeatTimer = setInterval(() => {
         if (!isPlaying) return;
 
         // If audio is paused but user didn't stop it
@@ -127,13 +128,14 @@ function startHeartbeat() {
             autoRecover();
         }
 
-        // If audio is silent but user didn't mute
+        // If audio volume is zero but user didn't mute
         if (audio.volume === 0 && !manualStop) {
             console.warn("Heartbeat: silent stream — recovering");
             autoRecover();
         }
     }, 4000);
 }
+let heartbeatTimer = null;
 
 function autoRecover() {
     const now = Date.now();
@@ -313,7 +315,7 @@ retryBtn.addEventListener("click", () => {
     startStream();
 });
 
-// Volume
+// Volume (simple, compatible)
 volumeSlider.addEventListener("input", () => {
     const v = parseFloat(volumeSlider.value);
     audio.volume = v;
@@ -329,7 +331,7 @@ diagToggle.addEventListener("click", () => {
 });
 
 // =========================
-– INITIALIZATION
+// INITIALIZATION
 // =========================
 const savedVol = localStorage.getItem("consoleVolume");
 const initVol = savedVol ? parseFloat(savedVol) : 0.8;
@@ -352,36 +354,6 @@ document.addEventListener("click", () => {
     if (isPlaying && audio.paused) {
         audio.play().catch(() => {});
     }
-});
-
-// =========================
-// PJAX — KEEP PLAYER ALIVE ACROSS NAVIGATION
-// =========================
-document.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", (e) => {
-        const url = link.getAttribute("href");
-
-        // External links behave normally
-        if (!url.startsWith("/") && !url.startsWith("./") && !url.startsWith("../")) return;
-
-        e.preventDefault();
-
-        fetch(url)
-            .then(res => res.text())
-            .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, "text/html");
-
-                // Replace only the main content
-                const newContent = doc.querySelector("main");
-                const currentContent = document.querySelector("main");
-
-                if (newContent && currentContent) {
-                    currentContent.innerHTML = newContent.innerHTML;
-                    history.pushState({}, "", url);
-                }
-            });
-    });
 });
 
 // Warm the stream immediately for instant playback
