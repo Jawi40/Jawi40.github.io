@@ -5,6 +5,11 @@
 import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
 
 // =========================
+// iPad/iPhone detection
+// =========================
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+// =========================
 // DOM ELEMENTS
 // =========================
 const STREAM_URL = "https://stream.zeno.fm/axipqkdhsiitv/listen";
@@ -95,7 +100,6 @@ function warmStream() {
     audio.playsInline = true;
     eqStop();
     audio.load();
-    // No audio.play() here – iPad-safe, waits for user gesture
 }
 
 // =========================
@@ -109,7 +113,6 @@ function startStallWatchdog() {
         const now = audio.currentTime;
 
         if (Math.abs(now - lastTimeUpdate) < 0.01) {
-            console.warn("Stream stalled — auto-recovering");
             autoRecover();
         }
 
@@ -122,15 +125,8 @@ function startHeartbeat() {
     heartbeatTimer = setInterval(() => {
         if (!isPlaying) return;
 
-        if (audio.paused && !manualStop) {
-            console.warn("Heartbeat: audio paused unexpectedly — recovering");
-            autoRecover();
-        }
-
-        if (audio.volume === 0 && !manualStop) {
-            console.warn("Heartbeat: silent stream — recovering");
-            autoRecover();
-        }
+        if (audio.paused && !manualStop) autoRecover();
+        if (audio.volume === 0 && !manualStop) autoRecover();
     }, 4000);
 }
 
@@ -148,60 +144,6 @@ function autoRecover() {
     setTimeout(() => startStream(), 1500);
 }
 
-// Network offline/online
-window.addEventListener("offline", () => {
-    setStatus("Offline", "Waiting for network…", "warn");
-});
-
-window.addEventListener("online", () => {
-    autoRecover();
-});
-
-// Playback errors
-audio.addEventListener("error", () => {
-    console.warn("Audio error — auto-recovering");
-    autoRecover();
-});
-
-// Silence / no data
-audio.addEventListener("stalled", () => {
-    console.warn("Stream stalled event — auto-recovering");
-    autoRecover();
-});
-
-// App/tab switching
-document.addEventListener("visibilitychange", () => {
-    if (!document.hidden && isPlaying && audio.paused) {
-        console.warn("Returned to app — stream paused — auto-recovering");
-        autoRecover();
-    }
-});
-
-// Audio focus + device change
-audio.addEventListener("pause", () => {
-    if (manualStop) return;
-    if (!isPlaying) return;
-
-    console.warn("Audio paused externally — auto-recovering");
-    autoRecover();
-});
-
-// Stop stream if user starts other audio
-document.addEventListener("play", (e) => {
-    if (e.target !== audio) {
-        stopStreamInternal(true);
-    }
-}, true);
-
-if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
-    navigator.mediaDevices.addEventListener("devicechange", () => {
-        if (isPlaying) {
-            console.warn("Audio device changed — auto-recovering");
-            autoRecover();
-        }
-    });
-}
-
 // =========================
 // STREAM ENGINE (iPad-safe)
 // =========================
@@ -209,7 +151,6 @@ export async function startStream() {
     manualStop = false;
     clearTimeout(reconnectTimer);
 
-    // iPad: assign src after user gesture (play button click)
     audio.src = STREAM_URL;
     audio.muted = false;
 
@@ -316,15 +257,25 @@ retryBtn.addEventListener("click", () => {
     startStream();
 });
 
-// Volume
+// =========================
+// VOLUME — iPad-safe fix
+// =========================
 volumeSlider.addEventListener("input", () => {
     const v = parseFloat(volumeSlider.value);
+
+    if (isIOS) {
+        volumeValue.textContent = "Use device volume";
+        return;
+    }
+
     audio.volume = v;
     volumeValue.textContent = Math.round(v * 100) + "%";
     localStorage.setItem("consoleVolume", v);
 });
 
-// Diagnostics toggle
+// =========================
+// DIAGNOSTICS TOGGLE
+// =========================
 diagToggle.addEventListener("click", () => {
     diagnosticsPanel.classList.toggle("open");
     diagToggle.textContent = diagnosticsPanel.classList.contains("open")
@@ -338,51 +289,43 @@ diagToggle.addEventListener("click", () => {
 const savedVol = localStorage.getItem("consoleVolume");
 const initVol = savedVol ? parseFloat(savedVol) : 0.8;
 volumeSlider.value = initVol;
-volumeValue.textContent = Math.round(initVol * 100) + "%";
-audio.volume = initVol;
+volumeValue.textContent = isIOS ? "Use device volume" : Math.round(initVol * 100) + "%";
+
+if (!isIOS) audio.volume = initVol;
 
 setStatus("Idle", "Ready");
 
-// Warm stream (buffer only, no autoplay)
+// Warm stream (buffer only)
 warmStream();
 
 // =========================
 // MOBILE PLAYBACK UNLOCK
 // =========================
 document.addEventListener("touchstart", () => {
-    if (isPlaying && audio.paused) {
-        audio.play().catch(() => {});
-    }
+    if (isPlaying && audio.paused) audio.play().catch(() => {});
 }, { passive: true });
 
 document.addEventListener("click", () => {
-    if (isPlaying && audio.paused) {
-        audio.play().catch(() => {});
-    }
+    if (isPlaying && audio.paused) audio.play().catch(() => {});
 });
 
 // =========================
 // PJAX NAVIGATION (player + chat persistent)
 // =========================
-
-// Helper: is homepage?
 function isHomepage(url) {
     const u = new URL(url, window.location.origin);
     const path = u.pathname.replace(/\/+$/, "");
     return path === "" || path === "/index.html";
 }
 
-// Show/hide player + chat based on page
 function updatePlayerVisibilityForURL(url) {
     const onHome = isHomepage(url);
     if (playerBox) playerBox.style.display = onHome ? "block" : "none";
     if (chatBox) chatBox.style.display = onHome ? "block" : "none";
 }
 
-// Initial visibility
 updatePlayerVisibilityForURL(window.location.href);
 
-// Intercept internal link clicks
 document.addEventListener("click", (e) => {
     const link = e.target.closest("a");
     if (!link) return;
@@ -390,7 +333,6 @@ document.addEventListener("click", (e) => {
     const href = link.getAttribute("href");
     if (!href) return;
 
-    // External links: let browser handle
     const isExternal =
         href.startsWith("http://") ||
         href.startsWith("https://") ||
@@ -398,8 +340,6 @@ document.addEventListener("click", (e) => {
         href.startsWith("tel:");
 
     if (isExternal) return;
-
-    // Same-page anchors: let browser handle
     if (href.startsWith("#")) return;
 
     e.preventDefault();
@@ -421,13 +361,9 @@ document.addEventListener("click", (e) => {
                 updatePlayerVisibilityForURL(targetURL);
             }
         })
-        .catch(err => {
-            console.error("PJAX navigation error:", err);
-            window.location.href = href; // fallback
-        });
+        .catch(() => window.location.href = href);
 });
 
-// Handle back/forward
 window.addEventListener("popstate", () => {
     const url = window.location.href;
 
@@ -444,8 +380,5 @@ window.addEventListener("popstate", () => {
                 currentWrapper.innerHTML = newWrapper.innerHTML;
                 updatePlayerVisibilityForURL(url);
             }
-        })
-        .catch(err => {
-            console.error("PJAX popstate error:", err);
         });
 });
