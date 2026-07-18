@@ -80,6 +80,19 @@ function eqStop() {
 }
 
 // =========================
+// WARM STREAM (NO AUTOPLAY)
+// =========================
+function warmStream() {
+    audio.src = STREAM_URL;
+    audio.muted = true;
+    audio.playsInline = true;
+
+    eqStop();
+    audio.load();
+    // No audio.play() here – iPad-safe, waits for user gesture
+}
+
+// =========================
 // AUTO-RECOVERY ENGINE
 // =========================
 function startStallWatchdog() {
@@ -129,6 +142,60 @@ function autoRecover() {
     setTimeout(() => startStream(), 1500);
 }
 
+// Network offline/online
+window.addEventListener("offline", () => {
+    setStatus("Offline", "Waiting for network…", "warn");
+});
+
+window.addEventListener("online", () => {
+    autoRecover();
+});
+
+// Playback errors
+audio.addEventListener("error", () => {
+    console.warn("Audio error — auto-recovering");
+    autoRecover();
+});
+
+// Silence / no data
+audio.addEventListener("stalled", () => {
+    console.warn("Stream stalled event — auto-recovering");
+    autoRecover();
+});
+
+// App/tab switching
+document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && isPlaying && audio.paused) {
+        console.warn("Returned to app — stream paused — auto-recovering");
+        autoRecover();
+    }
+});
+
+// Audio focus + device change
+audio.addEventListener("pause", () => {
+    if (manualStop) return;
+    if (!isPlaying) return;
+
+    console.warn("Audio paused externally — auto-recovering");
+    autoRecover();
+});
+
+// Stop stream if user starts other audio
+document.addEventListener("play", (e) => {
+    if (e.target !== audio) {
+        stopStreamInternal(true);
+    }
+}, true);
+
+if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
+    navigator.mediaDevices.addEventListener("devicechange", () => {
+        if (isPlaying) {
+            console.warn("Audio device changed — auto-recovering");
+            autoRecover();
+        }
+    });
+}
+
 // =========================
 // STREAM ENGINE (iPad-safe)
 // =========================
@@ -136,7 +203,7 @@ export async function startStream() {
     manualStop = false;
     clearTimeout(reconnectTimer);
 
-    // iPad requires src assignment AFTER user gesture
+    // iPad: assign src after user gesture (play button click)
     audio.src = STREAM_URL;
     audio.muted = false;
 
@@ -243,7 +310,7 @@ retryBtn.addEventListener("click", () => {
     startStream();
 });
 
-// Volume (iPad-safe)
+// Volume
 volumeSlider.addEventListener("input", () => {
     const v = parseFloat(volumeSlider.value);
     audio.volume = v;
@@ -271,7 +338,7 @@ audio.volume = initVol;
 setStatus("Idle", "Ready");
 
 // =========================
-// MOBILE PLAYBACK UNLOCK (iPad-safe)
+// MOBILE PLAYBACK UNLOCK
 // =========================
 document.addEventListener("touchstart", () => {
     if (isPlaying && audio.paused) {
@@ -284,3 +351,5 @@ document.addEventListener("click", () => {
         audio.play().catch(() => {});
     }
 });
+
+// No PJAX here – keeps your existing layout and navigation intact
