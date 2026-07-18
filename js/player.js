@@ -130,13 +130,14 @@ function autoRecover() {
 }
 
 // =========================
-// STREAM ENGINE
+// STREAM ENGINE (iPad-safe)
 // =========================
 export async function startStream() {
     manualStop = false;
     clearTimeout(reconnectTimer);
 
-    audio.src = STREAM_URL; // iPad requires src assignment AFTER gesture
+    // iPad requires src assignment AFTER user gesture
+    audio.src = STREAM_URL;
     audio.muted = false;
 
     setStatus("Connecting", "Initializing…", "warn");
@@ -242,7 +243,7 @@ retryBtn.addEventListener("click", () => {
     startStream();
 });
 
-// Volume (simple, iPad-safe)
+// Volume (iPad-safe)
 volumeSlider.addEventListener("input", () => {
     const v = parseFloat(volumeSlider.value);
     audio.volume = v;
