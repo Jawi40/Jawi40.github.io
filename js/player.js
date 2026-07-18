@@ -114,6 +114,27 @@ function startStallWatchdog() {
     }, 5000);
 }
 
+// =========================
+// HEARTBEAT — CONFIRMS STREAM IS ALIVE
+// =========================
+function startHeartbeat() {
+    setInterval(() => {
+        if (!isPlaying) return;
+
+        // If audio is paused but user didn't stop it
+        if (audio.paused && !manualStop) {
+            console.warn("Heartbeat: audio paused unexpectedly — recovering");
+            autoRecover();
+        }
+
+        // If audio is silent but user didn't mute
+        if (audio.volume === 0 && !manualStop) {
+            console.warn("Heartbeat: silent stream — recovering");
+            autoRecover();
+        }
+    }, 4000);
+}
+
 function autoRecover() {
     const now = Date.now();
     if (now - lastRecover < 2000) return; // 2s cooldown
@@ -166,6 +187,13 @@ audio.addEventListener("pause", () => {
     autoRecover();
 });
 
+// Stop stream if user starts other audio
+document.addEventListener("play", (e) => {
+    if (e.target !== audio) {
+        stopStreamInternal(true);
+    }
+}, true);
+
 if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
     navigator.mediaDevices.addEventListener("devicechange", () => {
         if (isPlaying) {
@@ -202,6 +230,7 @@ export async function startStream() {
         startUptime();
         eqStart();
         startStallWatchdog();
+        startHeartbeat();
 
     } catch (err) {
         handleError();
@@ -300,7 +329,7 @@ diagToggle.addEventListener("click", () => {
 });
 
 // =========================
-// INITIALIZATION
+– INITIALIZATION
 // =========================
 const savedVol = localStorage.getItem("consoleVolume");
 const initVol = savedVol ? parseFloat(savedVol) : 0.8;
@@ -309,6 +338,51 @@ volumeValue.textContent = Math.round(initVol * 100) + "%";
 audio.volume = initVol;
 
 setStatus("Idle", "Ready");
+
+// =========================
+// MOBILE PLAYBACK UNLOCK
+// =========================
+document.addEventListener("touchstart", () => {
+    if (isPlaying && audio.paused) {
+        audio.play().catch(() => {});
+    }
+}, { passive: true });
+
+document.addEventListener("click", () => {
+    if (isPlaying && audio.paused) {
+        audio.play().catch(() => {});
+    }
+});
+
+// =========================
+// PJAX — KEEP PLAYER ALIVE ACROSS NAVIGATION
+// =========================
+document.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", (e) => {
+        const url = link.getAttribute("href");
+
+        // External links behave normally
+        if (!url.startsWith("/") && !url.startsWith("./") && !url.startsWith("../")) return;
+
+        e.preventDefault();
+
+        fetch(url)
+            .then(res => res.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, "text/html");
+
+                // Replace only the main content
+                const newContent = doc.querySelector("main");
+                const currentContent = document.querySelector("main");
+
+                if (newContent && currentContent) {
+                    currentContent.innerHTML = newContent.innerHTML;
+                    history.pushState({}, "", url);
+                }
+            });
+    });
+});
 
 // Warm the stream immediately for instant playback
 warmStream();
