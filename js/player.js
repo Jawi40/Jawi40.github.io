@@ -1,3 +1,6 @@
+// player.js
+// Infin8Radio persistent player + chat with PJAX navigation (homepage: index.html)
+
 // Import listener tracking from Firebase module
 import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
 
@@ -23,6 +26,10 @@ const listenerCountEl = document.getElementById("listenerCount");
 const equalizer = document.getElementById("equalizer");
 const diagToggle = document.getElementById("diagToggle");
 const diagnosticsPanel = document.getElementById("diagnosticsPanel");
+
+// Player + chat containers (for hide/show on non‑homepage)
+const playerBox = document.querySelector(".player-box");
+const chatBox = document.querySelector(".chat-box");
 
 streamUrlText.textContent = STREAM_URL;
 
@@ -86,7 +93,6 @@ function warmStream() {
     audio.src = STREAM_URL;
     audio.muted = true;
     audio.playsInline = true;
-
     eqStop();
     audio.load();
     // No audio.play() here – iPad-safe, waits for user gesture
@@ -337,6 +343,9 @@ audio.volume = initVol;
 
 setStatus("Idle", "Ready");
 
+// Warm stream (buffer only, no autoplay)
+warmStream();
+
 // =========================
 // MOBILE PLAYBACK UNLOCK
 // =========================
@@ -352,4 +361,91 @@ document.addEventListener("click", () => {
     }
 });
 
-// No PJAX here – keeps your existing layout and navigation intact
+// =========================
+// PJAX NAVIGATION (player + chat persistent)
+// =========================
+
+// Helper: is homepage?
+function isHomepage(url) {
+    const u = new URL(url, window.location.origin);
+    const path = u.pathname.replace(/\/+$/, "");
+    return path === "" || path === "/index.html";
+}
+
+// Show/hide player + chat based on page
+function updatePlayerVisibilityForURL(url) {
+    const onHome = isHomepage(url);
+    if (playerBox) playerBox.style.display = onHome ? "block" : "none";
+    if (chatBox) chatBox.style.display = onHome ? "block" : "none";
+}
+
+// Initial visibility
+updatePlayerVisibilityForURL(window.location.href);
+
+// Intercept internal link clicks
+document.addEventListener("click", (e) => {
+    const link = e.target.closest("a");
+    if (!link) return;
+
+    const href = link.getAttribute("href");
+    if (!href) return;
+
+    // External links: let browser handle
+    const isExternal =
+        href.startsWith("http://") ||
+        href.startsWith("https://") ||
+        href.startsWith("mailto:") ||
+        href.startsWith("tel:");
+
+    if (isExternal) return;
+
+    // Same-page anchors: let browser handle
+    if (href.startsWith("#")) return;
+
+    e.preventDefault();
+
+    const targetURL = new URL(href, window.location.origin).toString();
+
+    fetch(targetURL)
+        .then(res => res.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+
+            const newWrapper = doc.querySelector(".page-wrapper");
+            const currentWrapper = document.querySelector(".page-wrapper");
+
+            if (newWrapper && currentWrapper) {
+                currentWrapper.innerHTML = newWrapper.innerHTML;
+                history.pushState({}, "", targetURL);
+                updatePlayerVisibilityForURL(targetURL);
+            }
+        })
+        .catch(err => {
+            console.error("PJAX navigation error:", err);
+            window.location.href = href; // fallback
+        });
+});
+
+// Handle back/forward
+window.addEventListener("popstate", () => {
+    const url = window.location.href;
+
+    fetch(url)
+        .then(res => res.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+
+            const newWrapper = doc.querySelector(".page-wrapper");
+            const currentWrapper = document.querySelector(".page-wrapper");
+
+            if (newWrapper && currentWrapper) {
+                currentWrapper.innerHTML = newWrapper.innerHTML;
+                updatePlayerVisibilityForURL(url);
+            }
+        })
+        .catch(err => {
+            console.error("PJAX popstate error:", err);
+        });
+});
