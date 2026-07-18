@@ -522,22 +522,23 @@ section h2 {
 /* ===========================
    TABLET FIX — iPad spacing
    =========================== */
-@media (max-width: 900px) and (min-width: 601px) {
+@media (max-width: 1100px) and (min-width: 601px) {
 
     header {
-        padding-left: 20px;
-        padding-right: 20px;
+        padding-left: 24px;
+        padding-right: 24px;
     }
 
     nav {
-        padding-left: 20px;
-        padding-right: 20px;
-        gap: 25px; /* slightly tighter for tablets */
+        padding-left: 24px;
+        padding-right: 24px;
+        gap: 28px;
     }
 
+    footer,
     #footer {
-        padding-left: 20px;
-        padding-right: 20px;
+        padding-left: 24px;
+        padding-right: 24px;
     }
 }
 
