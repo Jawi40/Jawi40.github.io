@@ -520,25 +520,42 @@ section h2 {
 }
 
 /* ===========================
-   TABLET FIX — iPad spacing
+   TABLET FIX — iPad spacing (FINAL FIX)
    =========================== */
 @media (max-width: 1200px) and (min-width: 601px) {
 
+    /* HEADER */
     header {
         padding-left: 24px;
         padding-right: 24px;
     }
 
-    nav {
+    /* DESKTOP NAV */
+    nav.desktop-nav {
         padding-left: 24px;
         padding-right: 24px;
-        gap: 28px; /* tighter spacing for tablets */
+        gap: 28px;
     }
 
-    footer,
-    #footer {
-        padding-left: 24px;
-        padding-right: 24px;
+    /* FOOTER */
+    footer {
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+    }
+
+    /* FOOTER NAV */
+    footer nav {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        padding-left: 12px;
+        padding-right: 12px;
+        flex-wrap: wrap;
+    }
+
+    footer nav a {
+        font-size: 18px;
+        text-shadow: 0 0 8px #009b3a;
     }
 }
 
