@@ -1,19 +1,12 @@
 // player.js
-// Infin8Radio persistent player + chat with PJAX navigation (homepage: index.html)
+// Infin8Radio persistent player + chat with PJAX navigation
 
-// Import listener tracking from Firebase module
 import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
 
-// =========================
-// iPad/iPhone detection
-// =========================
+const STREAM_URL = "https://stream.zeno.fm/axipqkdhsiitv/listen";
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
-// =========================
-// DOM ELEMENTS
-// =========================
-const STREAM_URL = "https://stream.zeno.fm/axipqkdhsiitv/listen";
-
+// DOM
 const audio = document.getElementById("radioAudio");
 const playBtn = document.getElementById("playBtn");
 const retryBtn = document.getElementById("retryBtn");
@@ -32,31 +25,27 @@ const equalizer = document.getElementById("equalizer");
 const diagToggle = document.getElementById("diagToggle");
 const diagnosticsPanel = document.getElementById("diagnosticsPanel");
 
-// Player + chat containers (for hide/show on non‑homepage)
 const playerBox = document.querySelector(".player-box");
 const chatBox = document.querySelector(".chat-box");
 
 streamUrlText.textContent = STREAM_URL;
 
-// =========================
-// PLAYER STATE
-// =========================
+// STATE
 let isPlaying = false;
-let reconnectTimer = null;
-let errorCount = 0;
 let manualStop = false;
+let reconnectTimer = null;
+let stallCheckTimer = null;
+let heartbeatTimer = null;
+let lastTimeUpdate = 0;
+let lastRecover = 0;
+let errorCount = 0;
 let uptimeTimer = null;
 let startTime = null;
 let lastListenerCount = null;
 
-let stallCheckTimer = null;
-let lastTimeUpdate = 0;
-let lastRecover = 0;
-let heartbeatTimer = null;
-
-// =========================
-// STATUS + UI HELPERS
-// =========================
+// ===============================
+// STATUS + UI
+// ===============================
 function setStatus(label, detail, type = null) {
     statusLabel.textContent = label;
     statusDetail.textContent = detail;
@@ -70,8 +59,7 @@ function startUptime() {
     startTime = Date.now();
     clearInterval(uptimeTimer);
     uptimeTimer = setInterval(() => {
-        const diff = Math.floor((Date.now() - startTime) / 1000);
-        uptimeEl.textContent = diff + "s";
+        uptimeEl.textContent = Math.floor((Date.now() - startTime) / 1000) + "s";
     }, 1000);
 }
 
@@ -80,9 +68,9 @@ function stopUptime() {
     uptimeEl.textContent = "0s";
 }
 
-// =========================
-// EQUALIZER CONTROL
-// =========================
+// ===============================
+// EQUALIZER
+// ===============================
 function eqStart() {
     equalizer.classList.remove("eq-paused");
 }
@@ -91,9 +79,9 @@ function eqStop() {
     equalizer.classList.add("eq-paused");
 }
 
-// =========================
-// WARM STREAM (NO AUTOPLAY)
-// =========================
+// ===============================
+// WARM STREAM
+// ===============================
 function warmStream() {
     audio.src = STREAM_URL;
     audio.muted = true;
@@ -102,20 +90,16 @@ function warmStream() {
     audio.load();
 }
 
-// =========================
+// ===============================
 // AUTO-RECOVERY ENGINE
-// =========================
+// ===============================
 function startStallWatchdog() {
     clearInterval(stallCheckTimer);
     stallCheckTimer = setInterval(() => {
         if (!isPlaying) return;
 
         const now = audio.currentTime;
-
-        if (Math.abs(now - lastTimeUpdate) < 0.01) {
-            autoRecover();
-        }
-
+        if (Math.abs(now - lastTimeUpdate) < 0.01) autoRecover();
         lastTimeUpdate = now;
     }, 5000);
 }
@@ -124,7 +108,6 @@ function startHeartbeat() {
     clearInterval(heartbeatTimer);
     heartbeatTimer = setInterval(() => {
         if (!isPlaying) return;
-
         if (audio.paused && !manualStop) autoRecover();
         if (audio.volume === 0 && !manualStop) autoRecover();
     }, 4000);
@@ -144,18 +127,18 @@ function autoRecover() {
     setTimeout(() => startStream(), 1500);
 }
 
-// =========================
-// DISABLE ALL RECOVERY (NEW)
-// =========================
+// ===============================
+// DISABLE RECOVERY
+// ===============================
 function disableRecovery() {
     clearInterval(stallCheckTimer);
     clearInterval(heartbeatTimer);
     clearTimeout(reconnectTimer);
 }
 
-// =========================
-// STREAM ENGINE (iPad-safe)
-// =========================
+// ===============================
+// STREAM ENGINE
+// ===============================
 export async function startStream() {
     manualStop = false;
     clearTimeout(reconnectTimer);
@@ -171,7 +154,6 @@ export async function startStream() {
         isPlaying = true;
 
         startListening();
-
         playBtn.textContent = "⏸";
         playBtn.classList.add("pulse");
 
@@ -191,8 +173,7 @@ export async function startStream() {
 function stopStreamInternal(setManual = true) {
     if (setManual) manualStop = true;
 
-    disableRecovery(); // <— NEW
-
+    disableRecovery();
     stopListening();
 
     audio.pause();
@@ -213,9 +194,9 @@ export function stopStream() {
     stopStreamInternal(true);
 }
 
-// =========================
+// ===============================
 // ERROR HANDLING
-// =========================
+// ===============================
 function handleError() {
     if (manualStop) return;
 
@@ -241,9 +222,9 @@ function scheduleReconnect() {
     }, 3000);
 }
 
-// =========================
-// REAL-TIME LISTENER COUNT
-// =========================
+// ===============================
+// LISTENER COUNT
+// ===============================
 onListenerCount((count) => {
     listenerCountEl.textContent = count;
 
@@ -255,9 +236,9 @@ onListenerCount((count) => {
     lastListenerCount = count;
 });
 
-// =========================
-// EVENT LISTENERS
-// =========================
+// ===============================
+// BUTTONS
+// ===============================
 playBtn.addEventListener("click", () => {
     if (!isPlaying) startStream();
     else stopStream();
@@ -268,9 +249,9 @@ retryBtn.addEventListener("click", () => {
     startStream();
 });
 
-// =========================
-// VOLUME — iPad-safe fix
-// =========================
+// ===============================
+// VOLUME
+// ===============================
 volumeSlider.addEventListener("input", () => {
     const v = parseFloat(volumeSlider.value);
 
@@ -284,9 +265,9 @@ volumeSlider.addEventListener("input", () => {
     localStorage.setItem("consoleVolume", v);
 });
 
-// =========================
-// MEDIA INTERRUPTION FIX (UPDATED)
-// =========================
+// ===============================
+// MEDIA INTERRUPTION (basic)
+// ===============================
 document.addEventListener("play", (e) => {
     if (e.target !== audio) {
         manualStop = true;
@@ -295,22 +276,44 @@ document.addEventListener("play", (e) => {
     }
 }, true);
 
-// =========================
-// AUDIO PAUSE FIX (NEW)
-// =========================
-audio.addEventListener("pause", () => {
-    // If radio paused AND user did NOT manually stop it
-    // AND the tab is still visible → another media is playing
-    if (!manualStop && !document.hidden) {
-        manualStop = true;
-        disableRecovery();
-        stopStreamInternal(true);
-    }
-});
+// ===============================
+// WEB AUDIO API FOCUS-LOSS FIX (NEW)
+// ===============================
+let audioCtx = null;
+let sourceNode = null;
+let wasPlayingBeforeFocusLoss = false;
 
-// =========================
-// DIAGNOSTICS TOGGLE
-// =========================
+function setupAudioContext() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    sourceNode = audioCtx.createMediaElementSource(audio);
+    sourceNode.connect(audioCtx.destination);
+
+    audioCtx.onstatechange = () => {
+        if (audioCtx.state === "suspended") {
+            if (isPlaying && !manualStop) {
+                wasPlayingBeforeFocusLoss = true;
+                manualStop = true;
+                disableRecovery();
+                stopStreamInternal(true);
+            }
+        }
+
+        if (audioCtx.state === "running") {
+            if (wasPlayingBeforeFocusLoss) {
+                wasPlayingBeforeFocusLoss = false;
+                setTimeout(() => {
+                    startStream();
+                }, 2000); // Smooth resume (Option 2)
+            }
+        }
+    };
+}
+
+setupAudioContext();
+
+// ===============================
+// DIAGNOSTICS
+// ===============================
 diagToggle.addEventListener("click", () => {
     diagnosticsPanel.classList.toggle("open");
     diagToggle.textContent = diagnosticsPanel.classList.contains("open")
@@ -318,9 +321,9 @@ diagToggle.addEventListener("click", () => {
         : "Show Details ▼";
 });
 
-// =========================
-// INITIALIZATION
-// =========================
+// ===============================
+// INIT
+// ===============================
 const savedVol = localStorage.getItem("consoleVolume");
 const initVol = savedVol ? parseFloat(savedVol) : 0.8;
 volumeSlider.value = initVol;
@@ -329,13 +332,11 @@ volumeValue.textContent = isIOS ? "Use device volume" : Math.round(initVol * 100
 if (!isIOS) audio.volume = initVol;
 
 setStatus("Idle", "Ready");
-
-// Warm stream (buffer only)
 warmStream();
 
-// =========================
+// ===============================
 // MOBILE PLAYBACK UNLOCK
-// =========================
+// ===============================
 document.addEventListener("touchstart", () => {
     if (isPlaying && audio.paused) audio.play().catch(() => {});
 }, { passive: true });
@@ -344,9 +345,9 @@ document.addEventListener("click", () => {
     if (isPlaying && audio.paused) audio.play().catch(() => {});
 });
 
-// =========================
-// PJAX NAVIGATION (player + chat persistent)
-// =========================
+// ===============================
+// PJAX NAVIGATION
+// ===============================
 function isHomepage(url) {
     const u = new URL(url, window.location.origin);
     const path = u.pathname.replace(/\/+$/, "");
@@ -379,7 +380,6 @@ document.addEventListener("click", (e) => {
 
     e.preventDefault();
 
-    // AUTO-CLOSE MOBILE MENU AFTER NAVIGATION
     const mobileNav = document.getElementById("mobile-nav");
     if (mobileNav) mobileNav.style.display = "none";
 
@@ -407,8 +407,6 @@ document.addEventListener("click", (e) => {
 });
 
 window.addEventListener("popstate", () => {
-
-    // AUTO-CLOSE MOBILE MENU ON BACK/FORWARD
     const mobileNav = document.getElementById("mobile-nav");
     if (mobileNav) mobileNav.style.display = "none";
 
