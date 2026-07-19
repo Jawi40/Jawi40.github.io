@@ -274,6 +274,16 @@ volumeSlider.addEventListener("input", () => {
 });
 
 // =========================
+// MEDIA INTERRUPTION FIX
+// =========================
+document.addEventListener("play", (e) => {
+    if (e.target !== audio) {
+        manualStop = true;        // Prevent auto-recovery
+        stopStreamInternal(true); // Stop radio cleanly
+    }
+}, true);
+
+// =========================
 // DIAGNOSTICS TOGGLE
 // =========================
 diagToggle.addEventListener("click", () => {
