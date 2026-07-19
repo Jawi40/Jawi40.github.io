@@ -290,10 +290,23 @@ volumeSlider.addEventListener("input", () => {
 document.addEventListener("play", (e) => {
     if (e.target !== audio) {
         manualStop = true;
-        disableRecovery();        // <— NEW
+        disableRecovery();
         stopStreamInternal(true);
     }
 }, true);
+
+// =========================
+// AUDIO PAUSE FIX (NEW)
+// =========================
+audio.addEventListener("pause", () => {
+    // If radio paused AND user did NOT manually stop it
+    // AND the tab is still visible → another media is playing
+    if (!manualStop && !document.hidden) {
+        manualStop = true;
+        disableRecovery();
+        stopStreamInternal(true);
+    }
+});
 
 // =========================
 // DIAGNOSTICS TOGGLE
