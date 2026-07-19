@@ -145,6 +145,15 @@ function autoRecover() {
 }
 
 // =========================
+// DISABLE ALL RECOVERY (NEW)
+// =========================
+function disableRecovery() {
+    clearInterval(stallCheckTimer);
+    clearInterval(heartbeatTimer);
+    clearTimeout(reconnectTimer);
+}
+
+// =========================
 // STREAM ENGINE (iPad-safe)
 // =========================
 export async function startStream() {
@@ -181,6 +190,8 @@ export async function startStream() {
 
 function stopStreamInternal(setManual = true) {
     if (setManual) manualStop = true;
+
+    disableRecovery(); // <— NEW
 
     stopListening();
 
@@ -274,12 +285,13 @@ volumeSlider.addEventListener("input", () => {
 });
 
 // =========================
-// MEDIA INTERRUPTION FIX
+// MEDIA INTERRUPTION FIX (UPDATED)
 // =========================
 document.addEventListener("play", (e) => {
     if (e.target !== audio) {
-        manualStop = true;        // Prevent auto-recovery
-        stopStreamInternal(true); // Stop radio cleanly
+        manualStop = true;
+        disableRecovery();        // <— NEW
+        stopStreamInternal(true);
     }
 }, true);
 
