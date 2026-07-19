@@ -366,6 +366,13 @@ document.addEventListener("click", (e) => {
 
     e.preventDefault();
 
+    // AUTO-CLOSE MOBILE MENU AFTER NAVIGATION
+    const mobileNav = document.getElementById("mobile-nav");
+    if (mobileNav) mobileNav.style.display = "none";
+
+    const hamburger = document.querySelector(".hamburger");
+    if (hamburger) hamburger.classList.remove("open");
+
     const targetURL = new URL(href, window.location.origin).toString();
 
     fetch(targetURL)
@@ -387,6 +394,14 @@ document.addEventListener("click", (e) => {
 });
 
 window.addEventListener("popstate", () => {
+
+    // AUTO-CLOSE MOBILE MENU ON BACK/FORWARD
+    const mobileNav = document.getElementById("mobile-nav");
+    if (mobileNav) mobileNav.style.display = "none";
+
+    const hamburger = document.querySelector(".hamburger");
+    if (hamburger) hamburger.classList.remove("open");
+
     const url = window.location.href;
 
     fetch(url)
