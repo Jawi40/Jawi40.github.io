@@ -3,7 +3,7 @@
 
 import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
 
-const STREAM_URL = "https://stream.zeno.fm/axipqkdhsiitv/listen";
+const STREAM_URL = "https://stream.zeno.fm/axipqkdhsiitv.mp3";
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 // DOM
