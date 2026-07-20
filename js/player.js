@@ -4,7 +4,7 @@
 import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
 
 const PRIMARY_STREAM = "https://stream.zeno.fm/axipqkdhsiitv.mp3";
-const BACKUP_STREAM = "https://stream.zeno.fm/axipqkdhsiitv.aac"; // fallback
+const BACKUP_STREAM = "https://stream.zeno.fm/axipqkdhsiitv.aac"; // fallback example
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 // DOM
@@ -79,6 +79,15 @@ function eqStart() {
 
 function eqStop() {
     equalizer.classList.add("eq-paused");
+}
+
+function initEqualizer() {
+    if (!equalizer) return;
+    const bars = equalizer.querySelectorAll(".eq-bar");
+    bars.forEach((bar, i) => {
+        bar.style.animationDelay = `${i * 0.1}s`;
+        bar.style.animationDuration = `${0.8 + Math.random() * 0.7}s`;
+    });
 }
 
 // ===============================
@@ -306,6 +315,7 @@ volumeValue.textContent = isIOS ? "Use device volume" : Math.round(initVol * 100
 
 if (!isIOS) audio.volume = initVol;
 
+initEqualizer();
 setStatus("Idle", "Ready");
 warmStream();
 
