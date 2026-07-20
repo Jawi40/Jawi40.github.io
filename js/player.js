@@ -1,5 +1,5 @@
 // player.js
-// Infin8Radio persistent player + chat
+// Infin8Radio persistent player + chat (PJAX-free, final fixes)
 
 import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
 
@@ -102,7 +102,7 @@ function warmStream() {
 function startStallWatchdog() {
     clearInterval(stallCheckTimer);
     stallCheckTimer = setInterval(() => {
-        if (!isPlaying) return;
+        if (!isPlaying || manualStop) return;
 
         const now = audio.currentTime;
         if (Math.abs(now - lastTimeUpdate) < 0.01) autoRecover();
@@ -113,9 +113,10 @@ function startStallWatchdog() {
 function startHeartbeat() {
     clearInterval(heartbeatTimer);
     heartbeatTimer = setInterval(() => {
-        if (!isPlaying) return;
-        if (audio.paused && !manualStop) autoRecover();
-        if (audio.volume === 0 && !manualStop) autoRecover();
+        if (!isPlaying || manualStop) return;
+        if (audio.paused) return; // do not recover paused audio (e.g., video playing)
+
+        if (audio.volume === 0) autoRecover();
     }, 4000);
 }
 
@@ -296,10 +297,8 @@ document.addEventListener("play", (e) => {
 document.addEventListener("visibilitychange", () => {
     if (manualStop) return;
     if (!isPlaying) return;
-
-    if (document.visibilityState === "visible" && audio.paused) {
-        audio.play().catch(() => {});
-    }
+    if (document.visibilityState !== "visible") return;
+    if (audio.paused) return; // do not resume if audio is paused (e.g., video playing)
 });
 
 // ===============================
@@ -320,9 +319,11 @@ warmStream();
 // MOBILE PLAYBACK UNLOCK
 // ===============================
 document.addEventListener("touchstart", () => {
+    if (manualStop) return;
     if (isPlaying && audio.paused) audio.play().catch(() => {});
 }, { passive: true });
 
 document.addEventListener("click", () => {
+    if (manualStop) return;
     if (isPlaying && audio.paused) audio.play().catch(() => {});
 });
