@@ -45,6 +45,9 @@ let startTime = null;
 let lastListenerCount = null;
 let usingBackup = false;
 
+// ⭐ NEW — Prevent PJAX from re-running INIT
+let initialized = false;
+
 // ===============================
 // STATUS + UI
 // ===============================
@@ -289,17 +292,16 @@ volumeSlider.addEventListener("input", () => {
 document.addEventListener("play", (e) => {
     if (e.target !== audio) {
         manualStop = true;
-        isPlaying = false;        // prevents auto-restart
-        disableRecovery();        // stop watchdogs
-        stopStreamInternal(true); // stop radio
+        isPlaying = false;
+        disableRecovery();
+        stopStreamInternal(true);
     }
 }, true);
 
 // ===============================
-// FOCUS LOSS FIX
+// FOCUS LOSS FIX (PJAX-safe)
 // ===============================
 document.addEventListener("visibilitychange", () => {
-    // ✅ Do nothing if the radio was manually stopped (e.g., by external media)
     if (manualStop) return;
 
     if (document.visibilityState === "visible") {
@@ -310,18 +312,22 @@ document.addEventListener("visibilitychange", () => {
 });
 
 // ===============================
-// INIT
+// INIT (PJAX-safe)
 // ===============================
-const savedVol = localStorage.getItem("consoleVolume");
-const initVol = savedVol ? parseFloat(savedVol) : 0.8;
-volumeSlider.value = initVol;
-volumeValue.textContent = isIOS ? "Use device volume" : Math.round(initVol * 100) + "%";
+if (!initialized) {
+    initialized = true;
 
-if (!isIOS) audio.volume = initVol;
+    const savedVol = localStorage.getItem("consoleVolume");
+    const initVol = savedVol ? parseFloat(savedVol) : 0.8;
+    volumeSlider.value = initVol;
+    volumeValue.textContent = isIOS ? "Use device volume" : Math.round(initVol * 100) + "%";
 
-initEqualizer();
-setStatus("Idle", "Ready");
-warmStream();
+    if (!isIOS) audio.volume = initVol;
+
+    initEqualizer();
+    setStatus("Idle", "Ready");
+    warmStream();
+}
 
 // ===============================
 // MOBILE PLAYBACK UNLOCK
