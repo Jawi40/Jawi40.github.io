@@ -1,10 +1,10 @@
 // player.js
-// Infin8Radio persistent player + chat with PJAX navigation
+// Infin8Radio persistent player + chat
 
 import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
 
 const PRIMARY_STREAM = "https://stream.zeno.fm/axipqkdhsiitv.mp3";
-const BACKUP_STREAM = "https://stream.zeno.fm/axipqkdhsiitv.aac"; // fallback example
+const BACKUP_STREAM = "https://stream.zeno.fm/axipqkdhsiitv.aac";
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 // DOM
@@ -23,11 +23,6 @@ const uptimeEl = document.getElementById("uptime");
 const streamUrlText = document.getElementById("streamUrlText");
 const listenerCountEl = document.getElementById("listenerCount");
 const equalizer = document.getElementById("equalizer");
-const diagToggle = document.getElementById("diagToggle");
-const diagnosticsPanel = document.getElementById("diagnosticsPanel");
-
-const playerBox = document.querySelector(".player-box");
-const chatBox = document.querySelector(".chat-box");
 
 streamUrlText.textContent = PRIMARY_STREAM;
 
@@ -44,9 +39,6 @@ let uptimeTimer = null;
 let startTime = null;
 let lastListenerCount = null;
 let usingBackup = false;
-
-// ⭐ NEW — Prevent PJAX from re-running INIT
-let initialized = false;
 
 // ===============================
 // STATUS + UI
@@ -299,35 +291,30 @@ document.addEventListener("play", (e) => {
 }, true);
 
 // ===============================
-// FOCUS LOSS FIX (PJAX-safe)
+// FOCUS LOSS FIX
 // ===============================
 document.addEventListener("visibilitychange", () => {
     if (manualStop) return;
+    if (!isPlaying) return;
 
-    if (document.visibilityState === "visible") {
-        if (isPlaying && audio.paused) {
-            audio.play().catch(() => {});
-        }
+    if (document.visibilityState === "visible" && audio.paused) {
+        audio.play().catch(() => {});
     }
 });
 
 // ===============================
-// INIT (PJAX-safe)
+// INIT
 // ===============================
-if (!initialized) {
-    initialized = true;
+const savedVol = localStorage.getItem("consoleVolume");
+const initVol = savedVol ? parseFloat(savedVol) : 0.8;
+volumeSlider.value = initVol;
+volumeValue.textContent = isIOS ? "Use device volume" : Math.round(initVol * 100) + "%";
 
-    const savedVol = localStorage.getItem("consoleVolume");
-    const initVol = savedVol ? parseFloat(savedVol) : 0.8;
-    volumeSlider.value = initVol;
-    volumeValue.textContent = isIOS ? "Use device volume" : Math.round(initVol * 100) + "%";
+if (!isIOS) audio.volume = initVol;
 
-    if (!isIOS) audio.volume = initVol;
-
-    initEqualizer();
-    setStatus("Idle", "Ready");
-    warmStream();
-}
+initEqualizer();
+setStatus("Idle", "Ready");
+warmStream();
 
 // ===============================
 // MOBILE PLAYBACK UNLOCK
@@ -338,90 +325,4 @@ document.addEventListener("touchstart", () => {
 
 document.addEventListener("click", () => {
     if (isPlaying && audio.paused) audio.play().catch(() => {});
-});
-
-// ===============================
-// PJAX NAVIGATION
-// ===============================
-function isHomepage(url) {
-    const u = new URL(url, window.location.origin);
-    const path = u.pathname.replace(/\/+$/, "");
-    return path === "" || path === "/index.html";
-}
-
-function updatePlayerVisibilityForURL(url) {
-    const onHome = isHomepage(url);
-    if (playerBox) playerBox.style.display = onHome ? "block" : "none";
-    if (chatBox) chatBox.style.display = onHome ? "block" : "none";
-}
-
-updatePlayerVisibilityForURL(window.location.href);
-
-document.addEventListener("click", (e) => {
-    const link = e.target.closest("a");
-    if (!link) return;
-
-    const href = link.getAttribute("href");
-    if (!href) return;
-
-    const isExternal =
-        href.startsWith("http://") ||
-        href.startsWith("https://") ||
-        href.startsWith("mailto:") ||
-        href.startsWith("tel:");
-
-    if (isExternal) return;
-    if (href.startsWith("#")) return;
-
-    e.preventDefault();
-
-    const mobileNav = document.getElementById("mobile-nav");
-    if (mobileNav) mobileNav.style.display = "none";
-
-    const hamburger = document.querySelector(".hamburger");
-    if (hamburger) hamburger.classList.remove("open");
-
-    const targetURL = new URL(href, window.location.origin).toString();
-
-    fetch(targetURL)
-        .then(res => res.text())
-        .then(html => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, "text/html");
-
-            const newWrapper = doc.querySelector(".page-wrapper");
-            const currentWrapper = document.querySelector(".page-wrapper");
-
-            if (newWrapper && currentWrapper) {
-                currentWrapper.innerHTML = newWrapper.innerHTML;
-                history.pushState({}, "", targetURL);
-                updatePlayerVisibilityForURL(targetURL);
-            }
-        })
-        .catch(() => window.location.href = href);
-});
-
-window.addEventListener("popstate", () => {
-    const mobileNav = document.getElementById("mobile-nav");
-    if (mobileNav) mobileNav.style.display = "none";
-
-    const hamburger = document.querySelector(".hamburger");
-    if (hamburger) hamburger.classList.remove("open");
-
-    const url = window.location.href;
-
-    fetch(url)
-        .then(res => res.text())
-        .then(html => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, "text/html");
-
-            const newWrapper = doc.querySelector(".page-wrapper");
-            const currentWrapper = document.querySelector(".page-wrapper");
-
-            if (newWrapper && currentWrapper) {
-                currentWrapper.innerHTML = newWrapper.innerHTML;
-                updatePlayerVisibilityForURL(url);
-            }
-        });
 });
