@@ -3,7 +3,7 @@
 
 import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
 
-const STREAM_URL = "https://stream.zeno.fm/axipqkdhsiitv.mp3"; 
+const STREAM_URL = "https://stream.zeno.fm/axipqkdhsiitv.mp3";
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 // DOM
@@ -277,7 +277,7 @@ document.addEventListener("play", (e) => {
 }, true);
 
 // ===============================
-// WEB AUDIO API FOCUS-LOSS FIX (NEW)
+// WEB AUDIO API FOCUS-LOSS FIX
 // ===============================
 let audioCtx = null;
 let sourceNode = null;
@@ -303,7 +303,7 @@ function setupAudioContext() {
                 wasPlayingBeforeFocusLoss = false;
                 setTimeout(() => {
                     startStream();
-                }, 2000); // Smooth resume (Option 2)
+                }, 2000);
             }
         }
     };
