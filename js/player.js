@@ -3,7 +3,8 @@
 
 import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
 
-const STREAM_URL = "https://stream.zeno.fm/axipqkdhsiitv.mp3";
+const PRIMARY_STREAM = "https://stream.zeno.fm/axipqkdhsiitv.mp3";
+const BACKUP_STREAM = "https://stream.zeno.fm/axipqkdhsiitv.aac"; // fallback
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 // DOM
@@ -28,7 +29,7 @@ const diagnosticsPanel = document.getElementById("diagnosticsPanel");
 const playerBox = document.querySelector(".player-box");
 const chatBox = document.querySelector(".chat-box");
 
-streamUrlText.textContent = STREAM_URL;
+streamUrlText.textContent = PRIMARY_STREAM;
 
 // STATE
 let isPlaying = false;
@@ -42,6 +43,7 @@ let errorCount = 0;
 let uptimeTimer = null;
 let startTime = null;
 let lastListenerCount = null;
+let usingBackup = false;
 
 // ===============================
 // STATUS + UI
@@ -83,7 +85,7 @@ function eqStop() {
 // WARM STREAM
 // ===============================
 function warmStream() {
-    audio.src = STREAM_URL;
+    audio.src = PRIMARY_STREAM;
     audio.muted = true;
     audio.playsInline = true;
     eqStop();
@@ -91,7 +93,7 @@ function warmStream() {
 }
 
 // ===============================
-// AUTO-RECOVERY ENGINE
+// AUTO-RECOVERY ENGINE + FAILOVER
 // ===============================
 function startStallWatchdog() {
     clearInterval(stallCheckTimer);
@@ -120,7 +122,7 @@ function autoRecover() {
 
     if (manualStop) return;
 
-    setStatus("Reconnecting", "Restoring stream…", "warn");
+    setStatus("Reconnecting", usingBackup ? "Backup stream…" : "Restoring stream…", "warn");
     connectionStateEl.textContent = "Reconnecting";
 
     stopStreamInternal(false);
@@ -137,16 +139,16 @@ function disableRecovery() {
 }
 
 // ===============================
-// STREAM ENGINE
+// STREAM ENGINE + FAILOVER
 // ===============================
 export async function startStream() {
     manualStop = false;
     clearTimeout(reconnectTimer);
 
-    audio.src = STREAM_URL;
+    audio.src = usingBackup ? BACKUP_STREAM : PRIMARY_STREAM;
     audio.muted = false;
 
-    setStatus("Connecting", "Initializing…", "warn");
+    setStatus("Connecting", usingBackup ? "Backup stream…" : "Initializing…", "warn");
     connectionStateEl.textContent = "Connecting";
 
     try {
@@ -157,8 +159,8 @@ export async function startStream() {
         playBtn.textContent = "⏸";
         playBtn.classList.add("pulse");
 
-        setStatus("LIVE", "Stream active", "ok");
-        connectionStateEl.textContent = "Playing";
+        setStatus("LIVE", usingBackup ? "Backup active" : "Stream active", "ok");
+        connectionStateEl.textContent = usingBackup ? "Backup" : "Playing";
 
         startUptime();
         eqStart();
@@ -195,7 +197,7 @@ export function stopStream() {
 }
 
 // ===============================
-// ERROR HANDLING
+// ERROR HANDLING + FAILOVER
 // ===============================
 function handleError() {
     if (manualStop) return;
@@ -203,17 +205,23 @@ function handleError() {
     errorCount++;
     errorCountEl.textContent = errorCount;
 
-    setStatus("Error", "Stream failed");
+    setStatus("Error", usingBackup ? "Backup failed" : "Stream failed");
     connectionStateEl.textContent = "Error";
 
     eqStop();
-    scheduleReconnect();
+
+    if (!usingBackup) {
+        usingBackup = true;
+        scheduleReconnect();
+    } else {
+        scheduleReconnect();
+    }
 }
 
 function scheduleReconnect() {
     if (manualStop) return;
 
-    setStatus("Reconnecting", "Retrying…", "warn");
+    setStatus("Reconnecting", usingBackup ? "Trying backup…" : "Retrying…", "warn");
     connectionStateEl.textContent = "Reconnecting";
 
     reconnectTimer = setTimeout(() => {
@@ -246,6 +254,7 @@ playBtn.addEventListener("click", () => {
 
 retryBtn.addEventListener("click", () => {
     stopStream();
+    usingBackup = false;
     startStream();
 });
 
@@ -266,7 +275,7 @@ volumeSlider.addEventListener("input", () => {
 });
 
 // ===============================
-// MEDIA INTERRUPTION (basic)
+// MEDIA INTERRUPTION
 // ===============================
 document.addEventListener("play", (e) => {
     if (e.target !== audio) {
@@ -277,48 +286,14 @@ document.addEventListener("play", (e) => {
 }, true);
 
 // ===============================
-// WEB AUDIO API FOCUS-LOSS FIX
+// FOCUS LOSS FIX
 // ===============================
-let audioCtx = null;
-let sourceNode = null;
-let wasPlayingBeforeFocusLoss = false;
-
-function setupAudioContext() {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    sourceNode = audioCtx.createMediaElementSource(audio);
-    sourceNode.connect(audioCtx.destination);
-
-    audioCtx.onstatechange = () => {
-        if (audioCtx.state === "suspended") {
-            if (isPlaying && !manualStop) {
-                wasPlayingBeforeFocusLoss = true;
-                manualStop = true;
-                disableRecovery();
-                stopStreamInternal(true);
-            }
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+        if (isPlaying && audio.paused && !manualStop) {
+            audio.play().catch(() => {});
         }
-
-        if (audioCtx.state === "running") {
-            if (wasPlayingBeforeFocusLoss) {
-                wasPlayingBeforeFocusLoss = false;
-                setTimeout(() => {
-                    startStream();
-                }, 2000);
-            }
-        }
-    };
-}
-
-setupAudioContext();
-
-// ===============================
-// DIAGNOSTICS
-// ===============================
-diagToggle.addEventListener("click", () => {
-    diagnosticsPanel.classList.toggle("open");
-    diagToggle.textContent = diagnosticsPanel.classList.contains("open")
-        ? "Hide Details ▲"
-        : "Show Details ▼";
+    }
 });
 
 // ===============================
