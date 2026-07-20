@@ -289,10 +289,12 @@ volumeSlider.addEventListener("input", () => {
 document.addEventListener("play", (e) => {
     if (e.target !== audio) {
         manualStop = true;
-        disableRecovery();
-        stopStreamInternal(true);
+        isPlaying = false;        // ⭐ prevents auto-restart
+        disableRecovery();        // stop watchdogs
+        stopStreamInternal(true); // stop radio
     }
 }, true);
+
 
 // ===============================
 // FOCUS LOSS FIX
