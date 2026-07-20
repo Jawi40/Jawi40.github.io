@@ -289,19 +289,21 @@ volumeSlider.addEventListener("input", () => {
 document.addEventListener("play", (e) => {
     if (e.target !== audio) {
         manualStop = true;
-        isPlaying = false;        // ⭐ prevents auto-restart
+        isPlaying = false;        // prevents auto-restart
         disableRecovery();        // stop watchdogs
         stopStreamInternal(true); // stop radio
     }
 }, true);
 
-
 // ===============================
 // FOCUS LOSS FIX
 // ===============================
 document.addEventListener("visibilitychange", () => {
+    // ✅ Do nothing if the radio was manually stopped (e.g., by external media)
+    if (manualStop) return;
+
     if (document.visibilityState === "visible") {
-        if (isPlaying && audio.paused && !manualStop) {
+        if (isPlaying && audio.paused) {
             audio.play().catch(() => {});
         }
     }
