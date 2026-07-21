@@ -640,3 +640,13 @@ section h2 {
     flex-direction: column;
     background: #0b0b0b;
     border-bottom: 3px solid #
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+
+    nav.desktop-nav {
+        display: none;
+    }
+}
