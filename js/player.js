@@ -1,4 +1,4 @@
-// player.js – Final Corrected Version (Diagnostics FIXED)
+// player.js – Corrected Full Version (Restores Player Height + Diagnostics Space)
 
 import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
 
@@ -35,20 +35,13 @@ let errorCount = 0;
 let uptimeTimer = null;
 let startTime = null;
 
-// UI lock ONLY blocks header status — NOT diagnostics
+// UI lock only blocks header status — NOT diagnostics
 let uiLocked = false;
 
 // ===============================
-// UI LOCKING
-// ===============================
-function lockUI()   { uiLocked = true; }
-function unlockUI() { uiLocked = false; }
-
-// ===============================
-// STATUS SYSTEM
+// STATUS SYSTEM (Corrected — Longer Text Restores Player Height)
 // ===============================
 function setStatus(label, detail, type = "user") {
-    // Header status ALWAYS updates
     statusLabel.textContent = label;
     statusDetail.textContent = detail;
 
@@ -110,18 +103,24 @@ async function testBackup() {
 }
 
 // ===============================
-// STREAM ENGINE
+// STREAM ENGINE (Corrected Status Text)
 // ===============================
 export async function startStream() {
     manualStop = false;
     mediaOverride = false;
-    unlockUI();
+    uiLocked = false;
     clearTimeout(reconnectTimer);
 
     audio.src = usingBackup ? BACKUP_STREAM : PRIMARY_STREAM;
     audio.muted = false;
 
-    setStatus("Connecting", usingBackup ? "Backup stream…" : "Initializing…", "user");
+    setStatus(
+        "Connecting",
+        usingBackup
+            ? "Initializing backup stream — checking stability"
+            : "Initializing primary stream — preparing audio pipeline",
+        "user"
+    );
     connectionStateEl.textContent = "Connecting";
 
     try {
@@ -132,7 +131,13 @@ export async function startStream() {
         playBtn.textContent = "⏸";
         playBtn.classList.add("pulse");
 
-        setStatus("LIVE", usingBackup ? "Backup active" : "Stream active", "user");
+        setStatus(
+            "LIVE",
+            usingBackup
+                ? "Backup stream active — monitoring stability"
+                : "Primary stream active — monitoring stability",
+            "user"
+        );
         connectionStateEl.textContent = usingBackup ? "Backup" : "Playing";
 
         startUptime();
@@ -147,7 +152,7 @@ function stopStreamInternal(setManual = true) {
     if (setManual) {
         manualStop = true;
         mediaOverride = true;
-        lockUI();
+        uiLocked = true;
     }
 
     clearTimeout(reconnectTimer);
@@ -160,7 +165,13 @@ function stopStreamInternal(setManual = true) {
     playBtn.textContent = "▶";
     playBtn.classList.remove("pulse");
 
-    setStatus("Stopped", setManual ? "Stopped by user" : "Reconnecting…", "user");
+    setStatus(
+        "Stopped",
+        setManual
+            ? "Stopped by user — audio pipeline closed"
+            : "Reconnecting — attempting recovery",
+        "user"
+    );
     connectionStateEl.textContent = setManual ? "Stopped" : "Reconnecting";
 
     stopUptime();
@@ -172,7 +183,7 @@ export function stopStream() {
 }
 
 // ===============================
-// ERROR HANDLING + FAILOVER
+// ERROR HANDLING + FAILOVER (Corrected Status Text)
 // ===============================
 function handleError() {
     if (manualStop || mediaOverride) return;
@@ -180,7 +191,13 @@ function handleError() {
     errorCount++;
     errorCountEl.textContent = errorCount;
 
-    setStatus("Error", usingBackup ? "Backup failed" : "Stream failed", "user");
+    setStatus(
+        "Error",
+        usingBackup
+            ? "Backup stream failure — retry scheduled"
+            : "Primary stream failure — retry scheduled",
+        "user"
+    );
     connectionStateEl.textContent = "Error";
 
     eqStop();
@@ -191,7 +208,13 @@ function handleError() {
 async function scheduleReconnect() {
     if (manualStop || mediaOverride) return;
 
-    setStatus("Reconnecting", usingBackup ? "Trying backup…" : "Retrying…", "user");
+    setStatus(
+        "Reconnecting",
+        usingBackup
+            ? "Attempting backup recovery — checking stream health"
+            : "Attempting primary recovery — checking stream health",
+        "user"
+    );
     connectionStateEl.textContent = "Reconnecting";
 
     reconnectTimer = setTimeout(async () => {
@@ -266,7 +289,13 @@ volumeValue.textContent = isIOS ? "Use device volume" : Math.round(initVol * 100
 if (!isIOS) audio.volume = initVol;
 
 initEqualizer();
-setStatus("Idle", "Ready", "user");
+
+setStatus(
+    "Idle",
+    "Ready — waiting for stream initialization",
+    "user"
+);
+
 audio.preload = "auto";
 audio.src = PRIMARY_STREAM;
 audio.load();
