@@ -117,6 +117,7 @@ section h2 {
     justify-content: center;
     gap: 35px;
     flex-wrap: nowrap;
+    align-items: flex-start; /* ⭐ FIX #1 */
 }
 
 /* ===========================
@@ -149,10 +150,9 @@ section h2 {
     border: 2px solid #da291c;
     box-shadow: 0 0 18px #da291c;
     text-align: center;
-   align-self: flex-start;
+    align-self: flex-start; /* ⭐ FIX #2 */
+    height: auto;           /* ⭐ FIX #3 */
 }
-    
-
 
 /* ===========================
    CHAT EMBED
@@ -181,6 +181,7 @@ section h2 {
     box-shadow: 0 0 25px #009b3a;
     padding: 12px;
     color: #eee;
+    height: auto; /* ⭐ FIX #4 */
 }
 
 /* HEADER */
@@ -562,7 +563,6 @@ section h2 {
     }
 }
 
-
 /* ===========================
    UNIVERSAL MOBILE FIXES
    =========================== */
@@ -622,41 +622,4 @@ section h2 {
 
 #mobile-nav {
     display: none;
-    flex-direction: column;
-    background: #0b0b0b;
-    border-bottom: 3px solid #009b3a;
-    box-shadow: 0 0 15px #009b3a;
-    padding: 10px 0;
-}
-
-#mobile-nav a {
-    color: #fdda24;
-    padding: 12px 20px;
-    text-decoration: none;
-    font-size: 18px;
-    text-shadow: 0 0 8px #009b3a;
-}
-
-#mobile-nav a:hover {
-    background: #111;
-    color: #da291c;
-    text-shadow: 0 0 12px #da291c;
-}
-
-@media (max-width: 600px) {
-    .desktop-nav { display: none; }
-    .hamburger { display: block; }
-    #mobile-nav { display: none; }
-}
-
-#posterGallery {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-
-.poster-item {
-    width: 180px;
-    height: auto;
-    border-radius: 8px;
-}
+    flex
