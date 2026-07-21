@@ -149,7 +149,10 @@ section h2 {
     border: 2px solid #da291c;
     box-shadow: 0 0 18px #da291c;
     text-align: center;
+   align-self: flex-start;
 }
+    
+
 
 /* ===========================
    CHAT EMBED
