@@ -17,12 +17,16 @@ export function startListening() {
 
     const listenerRef = ref(db, "listeners/" + listenerId);
 
-    // Mark listener as active
-    set(listenerRef, true);
+    // Mark listener as active with timestamp
+    set(listenerRef, {
+        active: true,
+        timestamp: Date.now()
+    });
 
     // Auto-remove if user closes tab or disconnects
     onDisconnect(listenerRef).remove();
 }
+
 
 // =========================
 // STOP LISTENING
@@ -48,5 +52,30 @@ export function onListenerCount(callback) {
         const data = snapshot.val() || {};
         const count = Object.keys(data).length;
         callback(count);
+    });
+}
+
+// =========================
+// GHOST CLEANUP (SAFE)
+// =========================
+export function cleanGhostListeners(maxAgeMinutes = 30) {
+    const listenersRef = ref(db, "listeners");
+
+    onValue(listenersRef, (snapshot) => {
+        const data = snapshot.val() || {};
+
+        const now = Date.now();
+
+        Object.entries(data).forEach(([id, info]) => {
+            // If listener has no timestamp, skip (older code)
+            if (!info || !info.timestamp) return;
+
+            const ageMinutes = (now - info.timestamp) / 60000;
+
+            // Remove ONLY if older than maxAgeMinutes
+            if (ageMinutes > maxAgeMinutes) {
+                remove(ref(db, "listeners/" + id));
+            }
+        });
     });
 }
