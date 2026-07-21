@@ -1,6 +1,9 @@
 // player.js – FINAL CORRECTED VERSION (Diagnostics + Dropdown FIXED)
 
 import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
+import { db } from "./firebase-init.js";
+import { listenerId } from "./listener-counter.js";
+import { set, ref } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
 // Detect passive listeners (screen off, minimized, background)
 document.addEventListener("visibilitychange", () => {
