@@ -1,4 +1,4 @@
-// player.js – Polished Final Version (Professional Radio Mode + Backup Failover + Show Details Fix)
+// player.js – Final Corrected Version (Show Details FIXED + Professional Radio Mode)
 
 import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
 
@@ -42,10 +42,10 @@ let uiLocked = false;
 function lockUI()   { uiLocked = true; }
 function unlockUI() { uiLocked = false; }
 
-// type:
-//  - "ok" / "warn" → internal player status (blocked when uiLocked)
-//  - "user"        → user-facing info (Show Details), always allowed
-function setStatus(label, detail, type = null) {
+// IMPORTANT:
+// type = "user" → ALWAYS updates Show Details
+// type = "ok" or "warn" → internal updates, BLOCKED when uiLocked
+function setStatus(label, detail, type = "user") {
     if (uiLocked && type !== "user") return;
 
     statusLabel.textContent = label;
@@ -265,7 +265,7 @@ volumeValue.textContent = isIOS ? "Use device volume" : Math.round(initVol * 100
 if (!isIOS) audio.volume = initVol;
 
 initEqualizer();
-setStatus("Idle", "Ready", "user"); // ensures Show Details works on load
+setStatus("Idle", "Ready", "user"); // CRITICAL: ensures Show Details works on load
 audio.preload = "auto";
 audio.src = PRIMARY_STREAM;
 audio.load();
