@@ -73,19 +73,19 @@ export function cleanGhostListeners(maxAgeMinutes = 30) {
 
     onValue(listenersRef, (snapshot) => {
         const data = snapshot.val() || {};
-
         const now = Date.now();
 
         Object.entries(data).forEach(([id, info]) => {
-            // If listener has no timestamp, skip (older code)
             if (!info || !info.timestamp) return;
 
             const ageMinutes = (now - info.timestamp) / 60000;
 
-            // Remove ONLY if older than maxAgeMinutes
-            if (ageMinutes > maxAgeMinutes) {
+            // ACTIVE listeners older than maxAgeMinutes → ghost
+            if (info.mode === "active" && ageMinutes > maxAgeMinutes) {
                 remove(ref(db, "listeners/" + id));
             }
+
+            // PASSIVE listeners are NEVER removed
         });
     });
 }
