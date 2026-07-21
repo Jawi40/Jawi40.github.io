@@ -28,3 +28,13 @@
     </nav>
 
 </div>
+
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("mobile-nav");
+    if (!menu) return;
+
+    const current = window.getComputedStyle(menu).display;
+    menu.style.display = (current === "none") ? "flex" : "none";
+}
+</script>
