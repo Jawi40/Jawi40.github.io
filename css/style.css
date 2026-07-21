@@ -413,6 +413,13 @@ section h2 {
     }
 }
 
+.header-wrapper {
+    width: 100%;
+    display: block;
+    position: relative;
+    z-index: 10; /* ⭐ prevents player from sliding behind chat */
+}
+
 /* ===========================
    SERVICES PAGE — JAMAICAN THEME
    =========================== */
