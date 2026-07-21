@@ -29,12 +29,8 @@ streamUrlText.textContent = PRIMARY_STREAM;
 // STATE
 let isPlaying = false;
 let manualStop = false;
-let mediaOverride = false; // NEW: user chose other media, do not auto-recover
+let mediaOverride = false; // user chose other media, do not auto-recover
 let reconnectTimer = null;
-let stallCheckTimer = null;
-let heartbeatTimer = null;
-let lastTimeUpdate = 0;
-let lastRecover = 0;
 let errorCount = 0;
 let uptimeTimer = null;
 let startTime = null;
@@ -98,47 +94,9 @@ function warmStream() {
 }
 
 // ===============================
-// AUTO-RECOVERY ENGINE + FAILOVER
-// ===============================
-function startStallWatchdog() {
-    clearInterval(stallCheckTimer);
-    stallCheckTimer = setInterval(() => {
-        if (!isPlaying || manualStop || mediaOverride) return;
-
-        const now = audio.currentTime;
-        if (Math.abs(now - lastTimeUpdate) < 0.01) autoRecover();
-        lastTimeUpdate = now;
-    }, 5000);
-}
-
-function startHeartbeat() {
-    clearInterval(heartbeatTimer);
-    heartbeatTimer = setInterval(() => {
-        if (!isPlaying || manualStop || mediaOverride) return;
-        if (audio.paused) return;
-    }, 4000);
-}
-
-function autoRecover() {
-    const now = Date.now();
-    if (now - lastRecover < 2000) return;
-    lastRecover = now;
-
-    if (manualStop || mediaOverride) return;
-
-    setStatus("Reconnecting", usingBackup ? "Backup stream…" : "Restoring stream…", "warn");
-    connectionStateEl.textContent = "Reconnecting";
-
-    stopStreamInternal(false);
-    setTimeout(() => startStream(), 1500);
-}
-
-// ===============================
 // DISABLE RECOVERY
 // ===============================
 function disableRecovery() {
-    clearInterval(stallCheckTimer);
-    clearInterval(heartbeatTimer);
     clearTimeout(reconnectTimer);
 }
 
@@ -169,8 +127,6 @@ export async function startStream() {
 
         startUptime();
         eqStart();
-        startStallWatchdog();
-        startHeartbeat();
 
     } catch (err) {
         handleError();
@@ -215,12 +171,7 @@ function handleError() {
 
     eqStop();
 
-    if (!usingBackup) {
-        usingBackup = true;
-        scheduleReconnect();
-    } else {
-        scheduleReconnect();
-    }
+    scheduleReconnect();
 }
 
 function scheduleReconnect() {
