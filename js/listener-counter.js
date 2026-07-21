@@ -17,16 +17,26 @@ export function startListening() {
 
     const listenerRef = ref(db, "listeners/" + listenerId);
 
-    // Mark listener as active with timestamp
+    // Listener starts as active
     set(listenerRef, {
-        active: true,
+        mode: "active",
         timestamp: Date.now()
     });
 
-    // Auto-remove if user closes tab or disconnects
+    // Auto-remove on real disconnect
     onDisconnect(listenerRef).remove();
-}
 
+    // HEARTBEAT — only for active listeners
+    setInterval(() => {
+        if (!listenerId) return;
+
+        // If JS is suspended, this never runs — listener becomes passive
+        set(listenerRef, {
+            mode: "active",
+            timestamp: Date.now()
+        });
+    }, 30000);
+}
 
 // =========================
 // STOP LISTENING
