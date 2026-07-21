@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 });
 </script>
+
 <script>
 function toggleMenu() {
     const menu = document.getElementById("mobile-nav");
@@ -106,16 +107,13 @@ function toggleMenu() {
                         <div class="diag-toggle" id="diagToggle">Show Details ▼</div>
 
                         <div class="diagnostics" id="diagnosticsPanel">
-    <div>Status: <span id="diagStatusLabel">Idle</span></div>
-    <div>Detail: <span id="diagStatusDetail">Ready</span></div>
-
-    <div>Stream URL: <span id="streamUrlText"></span></div>
-    <div>Connection: <span id="connectionState">Idle</span></div>
-    <div>Uptime: <span id="uptime">0s</span></div>
-    <div>Listeners: <span id="listenerCount">--</span></div>
-</div>
-
-
+                            <div>Status: <span id="diagStatusLabel">Idle</span></div>
+                            <div>Detail: <span id="diagStatusDetail">Ready</span></div>
+                            <div>Stream URL: <span id="streamUrlText"></span></div>
+                            <div>Connection: <span id="connectionState">Idle</span></div>
+                            <div>Uptime: <span id="uptime">0s</span></div>
+                            <div>Listeners: <span id="listenerCount">--</span></div>
+                        </div>
 
                         <div class="console-footer">
                             <span>Engine: Jamexus-style</span>
@@ -134,13 +132,12 @@ function toggleMenu() {
                     </div>
 
                     <!-- AUDIO ELEMENT -->
-                  <audio 
-    id="radioAudio"
-    playsinline
-    webkit-playsinline
-    preload="none"
-></audio>
-
+                    <audio 
+                        id="radioAudio"
+                        playsinline
+                        webkit-playsinline
+                        preload="none">
+                    </audio>
 
                 </div>
             </div>
@@ -171,7 +168,7 @@ function toggleMenu() {
 <!-- FOOTER -->
 <div id="footer"></div>
 <script>
-  fetch("partials/footer.html")
+fetch("partials/footer.html")
     .then(r => r.text())
     .then(t => document.getElementById("footer").innerHTML = t);
 </script>
@@ -181,7 +178,8 @@ function toggleMenu() {
 <script type="module" src="js/listener-counter.js"></script>
 <script type="module" src="js/player.js"></script>
 
-    <script>
+<!-- CLEAN DIAGNOSTICS TOGGLE SCRIPT -->
+<script>
 document.addEventListener("DOMContentLoaded", () => {
     const toggle = document.getElementById("diagToggle");
     const panel  = document.getElementById("diagnosticsPanel");
@@ -193,14 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
             : "Show Details ▼";
     });
 });
-
 </script>
 
-
-// start collapsed if you want:
-panel.style.display = "none";
-});
-</script>
-        
 </body>
 </html>
