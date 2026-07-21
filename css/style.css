@@ -420,6 +420,14 @@ section h2 {
     z-index: 10; /* ⭐ prevents player from sliding behind chat */
 }
 
+.footer-wrapper {
+    width: 100%;
+    display: block;
+    position: relative;
+    z-index: 10;
+    margin-top: 20px;
+}
+
 /* ===========================
    SERVICES PAGE — JAMAICAN THEME
    =========================== */
