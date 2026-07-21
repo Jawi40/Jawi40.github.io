@@ -641,6 +641,9 @@ section h2 {
     background: #0b0b0b;
     border-bottom: 3px solid #
 
+/* ===========================
+   MOBILE NAV + HAMBURGER FIX
+   =========================== */
 @media (max-width: 768px) {
     .hamburger {
         display: block;
@@ -648,5 +651,10 @@ section h2 {
 
     nav.desktop-nav {
         display: none;
+    }
+
+    #mobile-nav {
+        display: none; /* stays hidden until toggleMenu() runs */
+        flex-direction: column;
     }
 }
