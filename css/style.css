@@ -645,3 +645,15 @@ section h2 {
     .hamburger { display: block; }
     #mobile-nav { display: none; }
 }
+
+#posterGallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.poster-item {
+    width: 180px;
+    height: auto;
+    border-radius: 8px;
+}
