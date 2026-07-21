@@ -1,4 +1,4 @@
-// player.js – Professional Radio‑Grade Rewrite (Option A + Backup Failover)
+// player.js – Professional Radio‑Grade Rewrite (Option A + Backup Failover + Show Details fix)
 
 import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
 
@@ -42,8 +42,11 @@ let uiLocked = false;
 function lockUI()   { uiLocked = true; }
 function unlockUI() { uiLocked = false; }
 
+// type:
+//  - "ok"   / "warn"  → internal player status (affected by uiLocked)
+//  - "user"          → user-facing info (Show Details), always allowed
 function setStatus(label, detail, type = null) {
-    if (uiLocked) return;
+    if (uiLocked && type !== "user") return;
 
     statusLabel.textContent = label;
     statusDetail.textContent = detail;
@@ -76,6 +79,7 @@ function eqStart() { equalizer.classList.remove("eq-paused"); }
 function eqStop()  { equalizer.classList.add("eq-paused"); }
 
 function initEqualizer() {
+    if (!equalizer) return;
     const bars = equalizer.querySelectorAll(".eq-bar");
     bars.forEach((bar, i) => {
         bar.style.animationDelay = `${i * 0.1}s`;
@@ -155,7 +159,7 @@ function stopStreamInternal(setManual = true) {
     playBtn.textContent = "▶";
     playBtn.classList.remove("pulse");
 
-    setStatus("Stopped", setManual ? "Stopped by user" : "Reconnecting…");
+    setStatus("Stopped", setManual ? "Stopped by user" : "Reconnecting…", "warn");
     connectionStateEl.textContent = setManual ? "Stopped" : "Reconnecting";
 
     stopUptime();
@@ -192,7 +196,7 @@ async function scheduleReconnect() {
     reconnectTimer = setTimeout(async () => {
         lastReconnectEl.textContent = new Date().toLocaleTimeString();
 
-        if (!usingBackup && !(await streamHealthy())) {
+        if (!usingBackup && !streamHealthy()) {
             if (await testBackup()) usingBackup = true;
         }
 
@@ -216,10 +220,8 @@ audio.addEventListener("pause", () => {
 onListenerCount((count) => {
     listenerCountEl.textContent = count;
 
-    if (listenerCountEl.textContent !== count) {
-        listenerCountEl.classList.add("pop");
-        setTimeout(() => listenerCountEl.classList.remove("pop"), 350);
-    }
+    listenerCountEl.classList.add("pop");
+    setTimeout(() => listenerCountEl.classList.remove("pop"), 350);
 });
 
 // ===============================
@@ -263,7 +265,7 @@ volumeValue.textContent = isIOS ? "Use device volume" : Math.round(initVol * 100
 if (!isIOS) audio.volume = initVol;
 
 initEqualizer();
-setStatus("Idle", "Ready");
+setStatus("Idle", "Ready", "user"); // user-facing idle status so Show Details works
 audio.preload = "auto";
 audio.src = PRIMARY_STREAM;
 audio.load();
