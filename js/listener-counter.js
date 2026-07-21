@@ -7,7 +7,7 @@ import {
     onValue
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
-let listenerId = null;
+export let listenerId = null;
 
 // =========================
 // START LISTENING
