@@ -2,6 +2,18 @@
 
 import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
 
+// Detect passive listeners (screen off, minimized, background)
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden && listenerId) {
+        const listenerRef = ref(db, "listeners/" + listenerId);
+        set(listenerRef, {
+            mode: "passive",
+            timestamp: Date.now()
+        });
+    }
+});
+
+
 const PRIMARY_STREAM = "https://stream.zeno.fm/axipqkdhsiitv.mp3";
 const BACKUP_STREAM  = "https://stream.zeno.fm/axipqkdhsiitv.aac";
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -304,3 +316,4 @@ setStatus(
 audio.preload = "auto";
 audio.src = PRIMARY_STREAM;
 audio.load();
+
