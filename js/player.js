@@ -29,6 +29,7 @@ streamUrlText.textContent = PRIMARY_STREAM;
 // STATE
 let isPlaying = false;
 let manualStop = false;
+let mediaOverride = false; // NEW: user chose other media, do not auto-recover
 let reconnectTimer = null;
 let stallCheckTimer = null;
 let heartbeatTimer = null;
@@ -102,7 +103,7 @@ function warmStream() {
 function startStallWatchdog() {
     clearInterval(stallCheckTimer);
     stallCheckTimer = setInterval(() => {
-        if (!isPlaying || manualStop) return;
+        if (!isPlaying || manualStop || mediaOverride) return;
 
         const now = audio.currentTime;
         if (Math.abs(now - lastTimeUpdate) < 0.01) autoRecover();
@@ -113,10 +114,11 @@ function startStallWatchdog() {
 function startHeartbeat() {
     clearInterval(heartbeatTimer);
     heartbeatTimer = setInterval(() => {
-        if (!isPlaying || manualStop) return;
-        if (audio.paused) return; // do not recover paused audio (e.g., video playing)
+        if (!isPlaying || manualStop || mediaOverride) return;
 
-        if (audio.volume === 0) autoRecover();
+        // We no longer try to auto-recover on pause/volume=0,
+        // because that can be intentional or due to other media.
+        if (audio.paused) return;
     }, 4000);
 }
 
@@ -125,7 +127,8 @@ function autoRecover() {
     if (now - lastRecover < 2000) return;
     lastRecover = now;
 
-    if (manualStop) return;
+    // Do NOT recover if user stopped or chose other media
+    if (manualStop || mediaOverride) return;
 
     setStatus("Reconnecting", usingBackup ? "Backup stream…" : "Restoring stream…", "warn");
     connectionStateEl.textContent = "Reconnecting";
@@ -147,7 +150,9 @@ function disableRecovery() {
 // STREAM ENGINE + FAILOVER
 // ===============================
 export async function startStream() {
+    // User explicitly pressed play again: clear overrides
     manualStop = false;
+    mediaOverride = false;
     clearTimeout(reconnectTimer);
 
     audio.src = usingBackup ? BACKUP_STREAM : PRIMARY_STREAM;
@@ -205,7 +210,7 @@ export function stopStream() {
 // ERROR HANDLING + FAILOVER
 // ===============================
 function handleError() {
-    if (manualStop) return;
+    if (manualStop || mediaOverride) return;
 
     errorCount++;
     errorCountEl.textContent = errorCount;
@@ -224,7 +229,7 @@ function handleError() {
 }
 
 function scheduleReconnect() {
-    if (manualStop) return;
+    if (manualStop || mediaOverride) return;
 
     setStatus("Reconnecting", usingBackup ? "Trying backup…" : "Retrying…", "warn");
     connectionStateEl.textContent = "Reconnecting";
@@ -284,6 +289,8 @@ volumeSlider.addEventListener("input", () => {
 // ===============================
 document.addEventListener("play", (e) => {
     if (e.target !== audio) {
+        // User started other media: treat as override, stop radio, no auto-recover
+        mediaOverride = true;
         manualStop = true;
         isPlaying = false;
         disableRecovery();
@@ -295,7 +302,7 @@ document.addEventListener("play", (e) => {
 // FOCUS LOSS FIX
 // ===============================
 document.addEventListener("visibilitychange", () => {
-    if (manualStop) return;
+    if (manualStop || mediaOverride) return;
     if (!isPlaying) return;
     if (document.visibilityState !== "visible") return;
     if (audio.paused) return; // do not resume if audio is paused (e.g., video playing)
@@ -319,11 +326,11 @@ warmStream();
 // MOBILE PLAYBACK UNLOCK
 // ===============================
 document.addEventListener("touchstart", () => {
-    if (manualStop) return;
+    if (manualStop || mediaOverride) return;
     if (isPlaying && audio.paused) audio.play().catch(() => {});
 }, { passive: true });
 
 document.addEventListener("click", () => {
-    if (manualStop) return;
+    if (manualStop || mediaOverride) return;
     if (isPlaying && audio.paused) audio.play().catch(() => {});
 });
