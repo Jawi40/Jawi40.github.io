@@ -8,7 +8,15 @@
     <div class="hamburger" onclick="toggleMenu()">
         ☰ MENU
     </div>
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("mobile-nav");
+    if (!menu) return;
 
+    const current = window.getComputedStyle(menu).display;
+    menu.style.display = (current === "none") ? "flex" : "none";
+}
+</script>
     <!-- MOBILE NAV MENU -->
     <nav id="mobile-nav">
         <a href="/index.html">Home</a>
@@ -28,13 +36,3 @@
     </nav>
 
 </div>
-
-<script>
-function toggleMenu() {
-    const menu = document.getElementById("mobile-nav");
-    if (!menu) return;
-
-    const current = window.getComputedStyle(menu).display;
-    menu.style.display = (current === "none") ? "flex" : "none";
-}
-</script>
