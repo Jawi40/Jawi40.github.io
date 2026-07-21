@@ -1,4 +1,4 @@
-// player.js – Final Corrected Version (Show Details FIXED + Professional Radio Mode)
+// player.js – Final Corrected Version (Diagnostics FIXED)
 
 import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
 
@@ -34,6 +34,8 @@ let reconnectTimer = null;
 let errorCount = 0;
 let uptimeTimer = null;
 let startTime = null;
+
+// UI lock ONLY blocks header status — NOT diagnostics
 let uiLocked = false;
 
 // ===============================
@@ -42,12 +44,11 @@ let uiLocked = false;
 function lockUI()   { uiLocked = true; }
 function unlockUI() { uiLocked = false; }
 
-// IMPORTANT:
-// type = "user" → ALWAYS updates Show Details
-// type = "ok" or "warn" → internal updates, BLOCKED when uiLocked
+// ===============================
+// STATUS SYSTEM
+// ===============================
 function setStatus(label, detail, type = "user") {
-    if (uiLocked && type !== "user") return;
-
+    // Header status ALWAYS updates
     statusLabel.textContent = label;
     statusDetail.textContent = detail;
 
@@ -201,7 +202,7 @@ async function scheduleReconnect() {
         }
 
         startStream();
-    }, 2000); // Immediate reconnect (Option A)
+    }, 2000);
 }
 
 // ===============================
@@ -265,7 +266,7 @@ volumeValue.textContent = isIOS ? "Use device volume" : Math.round(initVol * 100
 if (!isIOS) audio.volume = initVol;
 
 initEqualizer();
-setStatus("Idle", "Ready", "user"); // CRITICAL: ensures Show Details works on load
+setStatus("Idle", "Ready", "user");
 audio.preload = "auto";
 audio.src = PRIMARY_STREAM;
 audio.load();
