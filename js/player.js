@@ -1,10 +1,9 @@
-// player.js
-// Infin8Radio persistent player + chat (PJAX-free, final fixes)
+// player.js – Professional Radio‑Grade Rewrite (Option A + Backup Failover)
 
 import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
 
 const PRIMARY_STREAM = "https://stream.zeno.fm/axipqkdhsiitv.mp3";
-const BACKUP_STREAM = "https://stream.zeno.fm/axipqkdhsiitv.aac";
+const BACKUP_STREAM  = "https://stream.zeno.fm/axipqkdhsiitv.aac";
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 // DOM
@@ -29,26 +28,34 @@ streamUrlText.textContent = PRIMARY_STREAM;
 // STATE
 let isPlaying = false;
 let manualStop = false;
-let mediaOverride = false; // user chose other media, do not auto-recover
+let mediaOverride = false;
+let usingBackup = false;
 let reconnectTimer = null;
 let errorCount = 0;
 let uptimeTimer = null;
 let startTime = null;
-let lastListenerCount = null;
-let usingBackup = false;
+let uiLocked = false;
 
 // ===============================
-// STATUS + UI
+// UI LOCKING
 // ===============================
+function lockUI()   { uiLocked = true; }
+function unlockUI() { uiLocked = false; }
+
 function setStatus(label, detail, type = null) {
+    if (uiLocked) return;
+
     statusLabel.textContent = label;
     statusDetail.textContent = detail;
 
     liveIndicator.className = "live-indicator";
-    if (type === "ok") liveIndicator.classList.add("live-ok");
+    if (type === "ok")   liveIndicator.classList.add("live-ok");
     if (type === "warn") liveIndicator.classList.add("live-warn");
 }
 
+// ===============================
+// UPTIME
+// ===============================
 function startUptime() {
     startTime = Date.now();
     clearInterval(uptimeTimer);
@@ -65,16 +72,10 @@ function stopUptime() {
 // ===============================
 // EQUALIZER
 // ===============================
-function eqStart() {
-    equalizer.classList.remove("eq-paused");
-}
-
-function eqStop() {
-    equalizer.classList.add("eq-paused");
-}
+function eqStart() { equalizer.classList.remove("eq-paused"); }
+function eqStop()  { equalizer.classList.add("eq-paused"); }
 
 function initEqualizer() {
-    if (!equalizer) return;
     const bars = equalizer.querySelectorAll(".eq-bar");
     bars.forEach((bar, i) => {
         bar.style.animationDelay = `${i * 0.1}s`;
@@ -83,29 +84,33 @@ function initEqualizer() {
 }
 
 // ===============================
-// WARM STREAM
+// STREAM HEALTH CHECK
 // ===============================
-function warmStream() {
-    audio.src = PRIMARY_STREAM;
-    audio.muted = true;
-    audio.playsInline = true;
-    eqStop();
-    audio.load();
+function streamHealthy() {
+    return audio.readyState >= 2 && audio.buffered.length > 0;
 }
 
 // ===============================
-// DISABLE RECOVERY
+// BACKUP STREAM TEST
 // ===============================
-function disableRecovery() {
-    clearTimeout(reconnectTimer);
+async function testBackup() {
+    const test = new Audio(BACKUP_STREAM);
+    try {
+        await test.play();
+        test.pause();
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 // ===============================
-// STREAM ENGINE + FAILOVER
+// STREAM ENGINE
 // ===============================
 export async function startStream() {
     manualStop = false;
     mediaOverride = false;
+    unlockUI();
     clearTimeout(reconnectTimer);
 
     audio.src = usingBackup ? BACKUP_STREAM : PRIMARY_STREAM;
@@ -134,9 +139,13 @@ export async function startStream() {
 }
 
 function stopStreamInternal(setManual = true) {
-    if (setManual) manualStop = true;
+    if (setManual) {
+        manualStop = true;
+        mediaOverride = true;
+        lockUI();
+    }
 
-    disableRecovery();
+    clearTimeout(reconnectTimer);
     stopListening();
 
     audio.pause();
@@ -166,7 +175,7 @@ function handleError() {
     errorCount++;
     errorCountEl.textContent = errorCount;
 
-    setStatus("Error", usingBackup ? "Backup failed" : "Stream failed");
+    setStatus("Error", usingBackup ? "Backup failed" : "Stream failed", "warn");
     connectionStateEl.textContent = "Error";
 
     eqStop();
@@ -174,17 +183,32 @@ function handleError() {
     scheduleReconnect();
 }
 
-function scheduleReconnect() {
+async function scheduleReconnect() {
     if (manualStop || mediaOverride) return;
 
     setStatus("Reconnecting", usingBackup ? "Trying backup…" : "Retrying…", "warn");
     connectionStateEl.textContent = "Reconnecting";
 
-    reconnectTimer = setTimeout(() => {
+    reconnectTimer = setTimeout(async () => {
         lastReconnectEl.textContent = new Date().toLocaleTimeString();
+
+        if (!usingBackup && !(await streamHealthy())) {
+            if (await testBackup()) usingBackup = true;
+        }
+
         startStream();
-    }, 3000);
+    }, 2000); // Immediate reconnect (Option A)
 }
+
+// ===============================
+// MEDIA INTERRUPTION
+// ===============================
+audio.addEventListener("pause", () => {
+    if (!manualStop && !mediaOverride) {
+        mediaOverride = true;
+        stopStreamInternal(true);
+    }
+});
 
 // ===============================
 // LISTENER COUNT
@@ -192,12 +216,10 @@ function scheduleReconnect() {
 onListenerCount((count) => {
     listenerCountEl.textContent = count;
 
-    if (lastListenerCount !== null && count !== lastListenerCount) {
+    if (listenerCountEl.textContent !== count) {
         listenerCountEl.classList.add("pop");
         setTimeout(() => listenerCountEl.classList.remove("pop"), 350);
     }
-
-    lastListenerCount = count;
 });
 
 // ===============================
@@ -231,29 +253,6 @@ volumeSlider.addEventListener("input", () => {
 });
 
 // ===============================
-// MEDIA INTERRUPTION
-// ===============================
-document.addEventListener("play", (e) => {
-    if (e.target !== audio) {
-        mediaOverride = true;
-        manualStop = true;
-        isPlaying = false;
-        disableRecovery();
-        stopStreamInternal(true);
-    }
-}, true);
-
-// ===============================
-// FOCUS LOSS FIX
-// ===============================
-document.addEventListener("visibilitychange", () => {
-    if (manualStop || mediaOverride) return;
-    if (!isPlaying) return;
-    if (document.visibilityState !== "visible") return;
-    if (audio.paused) return;
-});
-
-// ===============================
 // INIT
 // ===============================
 const savedVol = localStorage.getItem("consoleVolume");
@@ -265,17 +264,6 @@ if (!isIOS) audio.volume = initVol;
 
 initEqualizer();
 setStatus("Idle", "Ready");
-warmStream();
-
-// ===============================
-// MOBILE PLAYBACK UNLOCK
-// ===============================
-document.addEventListener("touchstart", () => {
-    if (manualStop || mediaOverride) return;
-    if (isPlaying && audio.paused) audio.play().catch(() => {});
-}, { passive: true });
-
-document.addEventListener("click", () => {
-    if (manualStop || mediaOverride) return;
-    if (isPlaying && audio.paused) audio.play().catch(() => {});
-});
+audio.preload = "auto";
+audio.src = PRIMARY_STREAM;
+audio.load();
