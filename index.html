@@ -105,14 +105,14 @@ function toggleMenu() {
                         <div class="diag-toggle" id="diagToggle">Show Details ▼</div>
 
                         <div class="diagnostics" id="diagnosticsPanel">
-    <div>Status: <span id="statusLabel"></span></div>
-    <div>Detail: <span id="statusDetail"></span></div>
+                        <div>Status: <span id="diagstatusLabel"></span></div>
+                        <div>Detail: <span id="diadstatusDetail"></span></div>
 
-    <div>Stream URL: <span id="streamUrlText"></span></div>
-    <div>Connection: <span id="connectionState">Idle</span></div>
-    <div>Uptime: <span id="uptime">0s</span></div>
-    <div>Ear5: <span id="listenerCount">--</span></div>
-</div>
+                        <div>Stream URL: <span id="streamUrlText"></span></div>
+                        <div>Connection: <span id="connectionState">Idle</span></div>
+                        <div>Uptime: <span id="uptime">0s</span></div>
+                        <div>Ear5: <span id="listenerCount">--</span></div>
+                        </div>
 
 
                         <div class="console-footer">
@@ -184,13 +184,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const toggle = document.getElementById("diagToggle");
     const panel  = document.getElementById("diagnosticsPanel");
 
-    if (!toggle || !panel) return;
-
     toggle.addEventListener("click", () => {
-        const isHidden = window.getComputedStyle(panel).display === "none";
-        panel.style.display = isHidden ? "block" : "none";
-        toggle.textContent = isHidden ? "Hide Details ▲" : "Show Details ▼";
+        panel.classList.toggle("open");
+        toggle.textContent = panel.classList.contains("open")
+            ? "Hide Details ▲"
+            : "Show Details ▼";
     });
+});
+</script>
+
 
     // start collapsed if you want:
     panel.style.display = "none";
