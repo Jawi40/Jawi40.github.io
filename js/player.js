@@ -115,9 +115,6 @@ function startHeartbeat() {
     clearInterval(heartbeatTimer);
     heartbeatTimer = setInterval(() => {
         if (!isPlaying || manualStop || mediaOverride) return;
-
-        // We no longer try to auto-recover on pause/volume=0,
-        // because that can be intentional or due to other media.
         if (audio.paused) return;
     }, 4000);
 }
@@ -127,7 +124,6 @@ function autoRecover() {
     if (now - lastRecover < 2000) return;
     lastRecover = now;
 
-    // Do NOT recover if user stopped or chose other media
     if (manualStop || mediaOverride) return;
 
     setStatus("Reconnecting", usingBackup ? "Backup stream…" : "Restoring stream…", "warn");
@@ -150,7 +146,6 @@ function disableRecovery() {
 // STREAM ENGINE + FAILOVER
 // ===============================
 export async function startStream() {
-    // User explicitly pressed play again: clear overrides
     manualStop = false;
     mediaOverride = false;
     clearTimeout(reconnectTimer);
@@ -289,7 +284,6 @@ volumeSlider.addEventListener("input", () => {
 // ===============================
 document.addEventListener("play", (e) => {
     if (e.target !== audio) {
-        // User started other media: treat as override, stop radio, no auto-recover
         mediaOverride = true;
         manualStop = true;
         isPlaying = false;
@@ -305,7 +299,7 @@ document.addEventListener("visibilitychange", () => {
     if (manualStop || mediaOverride) return;
     if (!isPlaying) return;
     if (document.visibilityState !== "visible") return;
-    if (audio.paused) return; // do not resume if audio is paused (e.g., video playing)
+    if (audio.paused) return;
 });
 
 // ===============================
