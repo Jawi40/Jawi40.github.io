@@ -175,5 +175,23 @@ function toggleMenu() {
 <script type="module" src="js/listener-counter.js"></script>
 <script type="module" src="js/player.js"></script>
 
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+    const toggle = document.getElementById("diagToggle");
+    const panel  = document.getElementById("diagnosticsPanel");
+
+    if (!toggle || !panel) return;
+
+    toggle.addEventListener("click", () => {
+        const isHidden = window.getComputedStyle(panel).display === "none";
+        panel.style.display = isHidden ? "block" : "none";
+        toggle.textContent = isHidden ? "Hide Details ▲" : "Show Details ▼";
+    });
+
+    // start collapsed if you want:
+    panel.style.display = "none";
+});
+</script>
+
 </body>
 </html>
