@@ -1,4 +1,4 @@
-// player.js – Corrected Full Version (Restores Player Height + Diagnostics Space)
+// player.js – FINAL CORRECTED VERSION (Diagnostics + Dropdown FIXED)
 
 import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
 
@@ -12,9 +12,15 @@ const playBtn = document.getElementById("playBtn");
 const retryBtn = document.getElementById("retryBtn");
 const volumeSlider = document.getElementById("volumeSlider");
 const volumeValue = document.getElementById("volumeValue");
+
 const liveIndicator = document.getElementById("liveIndicator");
 const statusLabel = document.getElementById("statusLabel");
 const statusDetail = document.getElementById("statusDetail");
+
+// DIAGNOSTICS PANEL IDs (NEW — FIXES DUPLICATE ID PROBLEM)
+const diagStatusLabel = document.getElementById("diagStatusLabel");
+const diagStatusDetail = document.getElementById("diagStatusDetail");
+
 const errorCountEl = document.getElementById("errorCount");
 const lastReconnectEl = document.getElementById("lastReconnect");
 const connectionStateEl = document.getElementById("connectionState");
@@ -35,15 +41,16 @@ let errorCount = 0;
 let uptimeTimer = null;
 let startTime = null;
 
-// UI lock only blocks header status — NOT diagnostics
-let uiLocked = false;
-
 // ===============================
-// STATUS SYSTEM (Corrected — Longer Text Restores Player Height)
+// STATUS SYSTEM (Corrected)
 // ===============================
 function setStatus(label, detail, type = "user") {
     statusLabel.textContent = label;
     statusDetail.textContent = detail;
+
+    // UPDATE DIAGNOSTICS PANEL (THIS FIXES THE DROPDOWN HEIGHT)
+    diagStatusLabel.textContent = label;
+    diagStatusDetail.textContent = detail;
 
     liveIndicator.className = "live-indicator";
     if (type === "ok")   liveIndicator.classList.add("live-ok");
@@ -57,7 +64,8 @@ function startUptime() {
     startTime = Date.now();
     clearInterval(uptimeTimer);
     uptimeTimer = setInterval(() => {
-        uptimeEl.textContent = Math.floor((Date.now() - startTime) / 1000) + "s";
+        const seconds = Math.floor((Date.now() - startTime) / 1000);
+        uptimeEl.textContent = seconds + "s";
     }, 1000);
 }
 
@@ -73,7 +81,6 @@ function eqStart() { equalizer.classList.remove("eq-paused"); }
 function eqStop()  { equalizer.classList.add("eq-paused"); }
 
 function initEqualizer() {
-    if (!equalizer) return;
     const bars = equalizer.querySelectorAll(".eq-bar");
     bars.forEach((bar, i) => {
         bar.style.animationDelay = `${i * 0.1}s`;
@@ -103,12 +110,11 @@ async function testBackup() {
 }
 
 // ===============================
-// STREAM ENGINE (Corrected Status Text)
+// STREAM ENGINE
 // ===============================
 export async function startStream() {
     manualStop = false;
     mediaOverride = false;
-    uiLocked = false;
     clearTimeout(reconnectTimer);
 
     audio.src = usingBackup ? BACKUP_STREAM : PRIMARY_STREAM;
@@ -152,7 +158,6 @@ function stopStreamInternal(setManual = true) {
     if (setManual) {
         manualStop = true;
         mediaOverride = true;
-        uiLocked = true;
     }
 
     clearTimeout(reconnectTimer);
@@ -183,7 +188,7 @@ export function stopStream() {
 }
 
 // ===============================
-// ERROR HANDLING + FAILOVER (Corrected Status Text)
+// ERROR HANDLING + FAILOVER
 // ===============================
 function handleError() {
     if (manualStop || mediaOverride) return;
