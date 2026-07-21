@@ -7,6 +7,19 @@
 
     <!-- GLOBAL JAMAICAN THEME -->
     <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* Center the contact button */
+        .event-submit-btn {
+            display: inline-block;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .center {
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
@@ -29,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 });
 </script>
+
 <script>
 function toggleMenu() {
     const menu = document.getElementById("mobile-nav");
@@ -36,7 +50,6 @@ function toggleMenu() {
     menu.style.display = (current === "none") ? "flex" : "none";
 }
 </script>
-
 
 <main class="page-wrapper">
 
@@ -48,14 +61,14 @@ function toggleMenu() {
             If you’d like to connect, collaborate, or ask a question, feel free to reach out anytime.
         </p>
 
-        <!-- SUBMIT POSTER BUTTON -->
-       <a href="mailto:j_a_w_i@hotmail.com" class="event-submit-btn">
-            Contact Jamexus
-        </a>
+        <!-- CENTERED CONTACT BUTTON -->
+        <div class="center">
+            <a href="mailto:j_a_w_i@hotmail.com" class="event-submit-btn">
+                Contact Jamexus
+            </a>
+        </div>
 
         <div class="section-divider" style="margin-top:25px;"></div>
-    </section>
-
     </section>
 
     <div class="section-divider"></div>
