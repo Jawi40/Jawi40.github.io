@@ -1,258 +1,105 @@
 /* ===========================
-   GLOBAL THEME — JAMAICAN EDITION
+   GLOBAL RESET & BASE STYLES
    =========================== */
-* { box-sizing: border-box; }
 
-body {
+* {
     margin: 0;
     padding: 0;
-    background: #050505;
-    color: #fdda24;
+    box-sizing: border-box;
+}
+
+body {
+    background: #0b0b0b;
+    color: #fff;
     font-family: Arial, sans-serif;
-    line-height: 1.7;
 }
 
 /* ===========================
-   PAGE WRAPPER
+   HEADER WRAPPER
    =========================== */
-.page-wrapper {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
 
-/* ===========================
-   HEADER
-   =========================== */
-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 15px 0;
+.header-wrapper {
     width: 100%;
+    background: #0b0b0b;
+    border-bottom: 3px solid #009b3a;
+    padding: 10px 0;
 }
 
 .site-logo {
-    max-width: 200px;
-    height: auto;
+    width: 180px;
+    display: block;
+    margin: 0 auto;
 }
 
 /* ===========================
-   NAVIGATION — REGGAE VIBES
+   DESKTOP NAV
    =========================== */
-nav {
+
+.desktop-nav {
     display: flex;
     justify-content: center;
-    gap: 35px;
-    padding: 20px 0;
-    background: #0b0b0b;
-    border-bottom: 3px solid #009b3a;
-    box-shadow: 0 0 15px #009b3a;
+    gap: 30px;
+    margin-top: 15px;
 }
 
-nav a {
-    color: #fdda24;
+.desktop-nav a {
+    color: #fff;
     text-decoration: none;
-    font-size: 20px;
-    font-weight: bold;
-    text-shadow: 0 0 8px #009b3a;
-    transition: 0.25s ease;
-}
-
-nav a:hover {
-    color: #da291c;
-    text-shadow: 0 0 15px #da291c;
-    transform: translateY(-2px);
+    font-size: 18px;
 }
 
 /* ===========================
-   SECTIONS
+   MOBILE HAMBURGER
    =========================== */
-section {
-    max-width: 900px;
-    margin: 10px auto;
-    padding: 0 25px;
-}
 
-@media (min-width: 900px) {
-    section {
-        padding: 0 10px;
-    }
-}
-
-.page-title {
-    text-align: center;
-    font-size: 36px;
-    margin: 20px 0 30px;
-    color: #fdda24;
-    text-shadow: 0 0 12px #fdda24, 0 0 15px #009b3a;
-}
-
-section h2 {
-    text-align: center;
-    font-size: 36px;
-    margin-bottom: 20px;
-    color: #fdda24;
-    text-shadow: 0 0 12px #fdda24, 0 0 15px #009b3a;
-}
-
-/* ===========================
-   SECTION DIVIDER
-   =========================== */
-.section-divider {
-    width: 100%;
-    height: 5px;
-    background: linear-gradient(90deg, #009b3a, #fdda24, #da291c);
-    box-shadow: 0 0 20px #009b3a, 0 0 20px #da291c;
-    margin: 10px 0;
-}
-
-/* ===========================
-   FLEX ROW (PLAYER + CHAT)
-   =========================== */
-.flex-row {
-    display: flex;
-    justify-content: center;
-    gap: 35px;
-    flex-wrap: nowrap;
-    align-items: flex-start;
-}
-
-/* ===========================
-   PLAYER + CHAT
-   =========================== */
-.player-box,
-.chat-box {
-    width: 460px;
-    max-width: 100%;
-}
-
-.chat-box {
-    background: #0d0d0d;
-    padding: 15px;
-    border-radius: 14px;
-    border: 2px solid #009b3a;
-    box-shadow: 0 0 18px #009b3a;
-}
-
-.player-box {
-    background: #0d0d0d;
-    padding: 15px;
-    border-radius: 14px;
-    border: 2px solid #da291c;
-    box-shadow: 0 0 18px #da291c;
-    text-align: center;
-    align-self: flex-start;
-    height: auto;
-}
-
-/* Console styles (your original) */
-#infin8-console {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 10px 0;
-    font-family: system-ui, sans-serif;
-}
-
-.console-wrapper {
-    width: 100%;
-    max-width: 450px;
-    background: rgba(10,10,10,0.95);
-    border-radius: 14px;
-    border: 2px solid #009b3a;
-    box-shadow: 0 0 25px #009b3a;
-    padding: 12px;
-    color: #eee;
-    height: auto;
-}
-
-/* ... (I kept the structure but to save space here, paste the rest of your console, equalizer, volume, dropdown, gallery styles from your original CSS) ... */
-
-/* ===========================
-   HAMBURGER MENU — FIXED
-   =========================== */
-#hamburger {
+.hamburger {
     display: none;
-    font-size: 32px;
-    color: #fdda24;
-    text-shadow: 0 0 10px #009b3a;
+    font-size: 22px;
+    color: #fff;
+    background: #009b3a;
+    padding: 12px 18px;
+    width: fit-content;
+    margin: 10px auto;
+    border-radius: 6px;
     cursor: pointer;
-    padding: 10px 20px;
-    background: #0b0b0b;
-    border: none;
-    border-bottom: 3px solid #009b3a;
-    box-shadow: 0 0 15px #009b3a;
-    z-index: 100;
 }
 
-#hamburger:hover {
-    color: #da291c;
-    text-shadow: 0 0 15px #da291c;
-}
-
-@media (min-width: 769px) {
-    #hamburger {
-        display: none;
-    }
-    nav.desktop-nav {
-        display: flex !important;
-    }
-}
-
-@media (max-width: 768px) {
-    #hamburger {
-        display: block;
-    }
-    nav.desktop-nav {
-        display: none !important;
-    }
-}
+/* ===========================
+   MOBILE NAV MENU
+   =========================== */
 
 #mobile-nav {
-    display: none;
+    display: none; /* hidden by default */
     flex-direction: column;
     background: #0b0b0b;
     border-bottom: 3px solid #009b3a;
-    box-shadow: 0 0 15px #009b3a;
-    padding: 20px 0;
-    gap: 20px;
-    text-align: center;
+    padding-bottom: 10px;
 }
 
-#mobile-nav a.mobile-link {
-    color: #fdda24;
-    text-decoration: none;
-    font-size: 20px;
-    font-weight: bold;
-    padding: 10px 0;
-    text-shadow: 0 0 8px #009b3a;
-}
-
-#mobile-nav a.mobile-link:hover {
-    color: #da291c;
-    text-shadow: 0 0 15px #da291c;
-}
-
-#mobile-nav {
-    transition: all 0.4s ease;
-    max-height: 0;
-    overflow: hidden;
-}
-
+/* ⭐ THIS IS THE FIX — ALWAYS WORKS */
 #mobile-nav.open {
     display: flex !important;
-    max-height: 500px;
 }
 
-/* Mobile Fixes */
+#mobile-nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 20px;
+    font-size: 18px;
+    border-top: 1px solid #009b3a;
+}
+
+/* ===========================
+   MOBILE BREAKPOINT
+   =========================== */
+
 @media (max-width: 768px) {
-    .flex-row {
-        flex-direction: column;
-        gap: 25px;
+
+    .hamburger {
+        display: block;
     }
-    .player-box, .chat-box {
-        width: 100%;
-        max-width: 500px;
+
+    .desktop-nav {
+        display: none;
     }
 }
