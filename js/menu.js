@@ -1,25 +1,29 @@
-function toggleMenu() {
-    const menu = document.getElementById("mobile-nav");
-    menu.classList.toggle("open");
-}
+document.addEventListener("DOMContentLoaded", () => {
 
-function closeMenu(event) {
-    event.preventDefault();
-    const menu = document.getElementById("mobile-nav");
-    menu.classList.remove("open");
+    function toggleMenu() {
+        const menu = document.getElementById("mobile-nav");
+        menu.classList.toggle("open");
+    }
 
-    const url = event.target.getAttribute("href");
+    function closeMenu(event) {
+        event.preventDefault();
+        const menu = document.getElementById("mobile-nav");
+        menu.classList.remove("open");
 
-    // Delay navigation so collapse is visible
-    setTimeout(() => {
-        window.location.href = url;
-    }, 150);
-}
+        const url = event.target.getAttribute("href");
 
-// Hamburger click
-document.getElementById("hamburger").addEventListener("click", toggleMenu);
+        setTimeout(() => {
+            window.location.href = url;
+        }, 150);
+    }
 
-// Mobile nav link clicks
-document.querySelectorAll(".mobile-link").forEach(link => {
-    link.addEventListener("click", closeMenu);
+    const hamburger = document.getElementById("hamburger");
+    if (hamburger) {
+        hamburger.addEventListener("click", toggleMenu);
+    }
+
+    document.querySelectorAll(".mobile-link").forEach(link => {
+        link.addEventListener("click", closeMenu);
+    });
+
 });
