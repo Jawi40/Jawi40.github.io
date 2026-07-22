@@ -622,8 +622,8 @@ section h2 {
 /* ===========================
    MOBILE NAV + HAMBURGER FIX
    =========================== */
-#mobile-nav {
-    display: none;
+#mobile-nav.open {
+    display: flex;
     flex-direction: column;
     background: #0b0b0b;
     border-bottom: 3px solid #009b3a;
