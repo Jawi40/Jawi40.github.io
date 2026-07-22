@@ -647,3 +647,12 @@ section h2 {
         display: flex;
     }
 }
+
+#mobile-nav {
+    display: none;
+    flex-direction: column;
+}
+
+#mobile-nav.open {
+    display: flex;
+}
