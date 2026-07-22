@@ -619,9 +619,7 @@ section h2 {
     }
 }
 
-/* ===========================
-   MOBILE NAV + HAMBURGER FIX
-   =========================== */
+/* MOBILE NAV — CLEAN WORKING VERSION */
 #mobile-nav {
     display: none;
     flex-direction: column;
@@ -629,6 +627,12 @@ section h2 {
     border-bottom: 3px solid #009b3a;
 }
 
+/* When JS toggles .open */
+#mobile-nav.open {
+    display: flex;
+}
+
+/* MOBILE BREAKPOINT */
 @media (max-width: 768px) {
     .hamburger {
         display: block;
@@ -637,22 +641,4 @@ section h2 {
     nav.desktop-nav {
         display: none;
     }
-
-    #mobile-nav {
-        display: none;
-        flex-direction: column;
-    }
-
-    #mobile-nav.open {
-        display: flex;
-    }
-}
-
-#mobile-nav {
-    display: none;
-    flex-direction: column;
-}
-
-#mobile-nav.open {
-    display: flex;
 }
