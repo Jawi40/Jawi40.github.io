@@ -623,8 +623,9 @@ section h2 {
 /* ===========================
    HAMBURGER MENU — MOBILE FIX
    =========================== */
+/* Base: show hamburger everywhere */
 .hamburger {
-    display: none;
+    display: block;
     font-size: 32px;
     color: #fdda24;
     text-shadow: 0 0 10px #009b3a;
@@ -634,6 +635,18 @@ section h2 {
     border-bottom: 3px solid #009b3a;
     box-shadow: 0 0 15px #009b3a;
 }
+
+/* Desktop only: hide hamburger, show desktop nav */
+@media (min-width: 769px) {
+    .hamburger {
+        display: none;
+    }
+
+    nav.desktop-nav {
+        display: flex;
+    }
+}
+
 
 #mobile-nav {
     display: none;
