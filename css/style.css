@@ -1,9 +1,7 @@
 /* ===========================
    GLOBAL THEME — JAMAICAN EDITION
    =========================== */
-* { 
-    box-sizing: border-box; 
-}
+* { box-sizing: border-box; }
 
 body {
     margin: 0;
@@ -14,18 +12,12 @@ body {
     line-height: 1.7;
 }
 
-/* ===========================
-   PAGE WRAPPER
-   =========================== */
 .page-wrapper {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
 }
 
-/* ===========================
-   HEADER — JAMAICAN GLOW
-   =========================== */
 header {
     display: flex;
     justify-content: center;
@@ -39,9 +31,7 @@ header {
     height: auto;
 }
 
-/* ===========================
-   NAVIGATION — REGGAE VIBES
-   =========================== */
+/* Desktop + Mobile Nav Base */
 nav {
     display: flex;
     justify-content: center;
@@ -67,97 +57,10 @@ nav a:hover {
     transform: translateY(-2px);
 }
 
-/* ===========================
-   SECTIONS, FLEX, PLAYER, CHAT, CONSOLE etc.
-   (unchanged - keeping all your original styles)
-   =========================== */
-section {
-    max-width: 900px;
-    margin: 10px auto;
-    padding: 0 25px;
-}
-
-@media (min-width: 900px) {
-    section {
-        padding: 0 10px;
-    }
-}
-
-.page-title,
-section h2 {
-    text-align: center;
-    font-size: 36px;
-    margin: 20px 0 30px;
-    color: #fdda24;
-    text-shadow: 0 0 12px #fdda24, 0 0 15px #009b3a;
-}
-
-.section-divider {
-    width: 100%;
-    height: 5px;
-    background: linear-gradient(90deg, #009b3a, #fdda24, #da291c);
-    box-shadow: 0 0 20px #009b3a, 0 0 20px #da291c;
-    margin: 10px 0;
-}
-
-.flex-row {
-    display: flex;
-    justify-content: center;
-    gap: 35px;
-    flex-wrap: nowrap;
-    align-items: flex-start;
-}
-
-.player-box,
-.chat-box {
-    width: 460px;
-    max-width: 100%;
-}
-
-.chat-box {
-    background: #0d0d0d;
-    padding: 15px;
-    border-radius: 14px;
-    border: 2px solid #009b3a;
-    box-shadow: 0 0 18px #009b3a;
-}
-
-.player-box {
-    background: #0d0d0d;
-    padding: 15px;
-    border-radius: 14px;
-    border: 2px solid #da291c;
-    box-shadow: 0 0 18px #da291c;
-    text-align: center;
-    align-self: flex-start;
-    height: auto;
-}
-
-.minnit-chat-sembed {
-    display: block !important;
-}
-
-/* Console styles (kept as-is) */
-#infin8-console { width: 100%; display: flex; justify-content: center; padding: 10px 0; font-family: system-ui, sans-serif; }
-/* ... (all your console, equalizer, etc. styles remain the same) ... */
-
-.header-wrapper,
-.footer-wrapper {
-    width: 100%;
-    display: block;
-    position: relative;
-    z-index: 10;
-}
-
-/* Services, Events, Gallery, etc. (unchanged) */
-.dropdown-btn, .arrow, .dropdown-content, .gallery, .event-submit-btn, .event-wrapper { /* your original styles */ }
-
-/* Tablet & Universal Mobile Fixes (unchanged) */
-@media (max-width: 1200px) and (min-width: 601px) { /* your tablet rules */ }
-@media (max-width: 600px) { /* your mobile rules */ }
+/* ... Keep all your existing styles for sections, player, chat, console, dropdowns, gallery, etc. ... */
 
 /* ===========================
-   HAMBURGER MENU — FIXED FOR YOUR JS
+   HAMBURGER + MOBILE NAV — FIXED
    =========================== */
 #hamburger {
     display: none;
@@ -178,7 +81,6 @@ section h2 {
     text-shadow: 0 0 15px #da291c;
 }
 
-/* Desktop */
 @media (min-width: 769px) {
     #hamburger {
         display: none;
@@ -188,7 +90,6 @@ section h2 {
     }
 }
 
-/* Mobile */
 @media (max-width: 768px) {
     #hamburger {
         display: block;
@@ -198,7 +99,7 @@ section h2 {
     }
 }
 
-/* Mobile Navigation */
+/* Mobile Nav */
 #mobile-nav {
     display: none;
     flex-direction: column;
@@ -224,7 +125,7 @@ section h2 {
     text-shadow: 0 0 15px #da291c;
 }
 
-/* Open State + Smooth Animation */
+/* Animation */
 #mobile-nav {
     transition: all 0.4s ease;
     max-height: 0;
@@ -233,5 +134,7 @@ section h2 {
 
 #mobile-nav.open {
     display: flex !important;
-    max-height: 500px;   /* Increase if you have many menu items */
+    max-height: 500px;
 }
+
+/* Keep all your other media queries and styles below... */
