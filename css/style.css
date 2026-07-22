@@ -31,7 +31,9 @@ header {
     height: auto;
 }
 
-/* Desktop + Mobile Nav Base */
+/* ===========================
+   NAVIGATION
+   =========================== */
 nav {
     display: flex;
     justify-content: center;
@@ -57,10 +59,8 @@ nav a:hover {
     transform: translateY(-2px);
 }
 
-/* ... Keep all your existing styles for sections, player, chat, console, dropdowns, gallery, etc. ... */
-
 /* ===========================
-   HAMBURGER + MOBILE NAV — FIXED
+   HAMBURGER MENU + MOBILE NAV (FIXED)
    =========================== */
 #hamburger {
     display: none;
@@ -125,7 +125,7 @@ nav a:hover {
     text-shadow: 0 0 15px #da291c;
 }
 
-/* Animation */
+/* Smooth Animation */
 #mobile-nav {
     transition: all 0.4s ease;
     max-height: 0;
@@ -137,4 +137,23 @@ nav a:hover {
     max-height: 500px;
 }
 
-/* Keep all your other media queries and styles below... */
+/* ===========================
+   ALL YOUR OTHER STYLES (Player, Chat, Console, etc.)
+   =========================== */
+/* Paste the rest of your original CSS here (flex-row, player-box, chat-box, console styles, media queries, dropdowns, gallery, etc.) */
+
+.flex-row { display: flex; justify-content: center; gap: 35px; flex-wrap: nowrap; align-items: flex-start; }
+.player-box, .chat-box { width: 460px; max-width: 100%; }
+/* ... add all remaining styles from your original CSS ... */
+
+/* Mobile Layout Fixes */
+@media (max-width: 768px) {
+    .flex-row {
+        flex-direction: column;
+        gap: 25px;
+    }
+    .player-box, .chat-box {
+        width: 100%;
+        max-width: 500px;
+    }
+}
