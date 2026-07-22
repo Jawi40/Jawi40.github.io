@@ -5,14 +5,15 @@
     </header>
 
     <!-- MOBILE HAMBURGER -->
-    <script src="/js/menu.js"></script>
+    <div class="hamburger" id="hamburger">☰ MENU</div>
+
     <!-- MOBILE NAV MENU -->
     <nav id="mobile-nav">
-        <a href="/index.html">Home</a>
-        <a href="/html/services.html">Services</a>
-        <a href="/html/events.html">Events</a>
-        <a href="/html/about.html">About</a>
-        <a href="/html/contact.html">Contact</a>
+        <a href="/index.html" class="mobile-link">Home</a>
+        <a href="/html/services.html" class="mobile-link">Services</a>
+        <a href="/html/events.html" class="mobile-link">Events</a>
+        <a href="/html/about.html" class="mobile-link">About</a>
+        <a href="/html/contact.html" class="mobile-link">Contact</a>
     </nav>
 
     <!-- DESKTOP NAV -->
@@ -26,9 +27,5 @@
 
 </div>
 
-<script>
-function toggleMenu() {
-    const menu = document.getElementById("mobile-nav");
-    menu.classList.toggle("open");
-}
-</script>
+<!-- EXTERNAL JS (CSP-SAFE) -->
+<script src="/js/menu.js"></script>
