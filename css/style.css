@@ -622,11 +622,16 @@ section h2 {
 /* ===========================
    MOBILE NAV + HAMBURGER FIX
    =========================== */
-#mobile-nav .open {
-    display: flex;
+#mobile-nav {
+    display: none;
     flex-direction: column;
     background: #0b0b0b;
     border-bottom: 3px solid #009b3a;
+}
+
+/* GLOBAL OVERRIDE — ALWAYS WORKS */
+#mobile-nav.open {
+    display: flex !important;
 }
 
 @media (max-width: 768px) {
@@ -637,13 +642,8 @@ section h2 {
     nav.desktop-nav {
         display: none;
     }
+}
 
-    #mobile-nav {
-        display: none;
-        flex-direction: column;
-    }
-
-    #mobile-nav.open {
-        display: flex;
-    }
+#mobile-nav.open {
+    display: flex !important;
 }
