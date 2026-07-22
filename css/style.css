@@ -1,105 +1,59 @@
-/* ===========================
-   GLOBAL RESET & BASE STYLES
-   =========================== */
+1. <div class="header-wrapper">
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    <header>
+        <img src="/images/transparent.png" class="site-logo">
+    </header>
+
+    <!-- MOBILE HAMBURGER -->
+    <div class="hamburger" id="hamburger">☰ MENU</div>
+
+    <!-- MOBILE NAV MENU -->
+    <nav id="mobile-nav">
+        <a href="/index.html" class="mobile-link">Home</a>
+        <a href="/html/services.html" class="mobile-link">Services</a>
+        <a href="/html/events.html" class="mobile-link">Events</a>
+        <a href="/html/about.html" class="mobile-link">About</a>
+        <a href="/html/contact.html" class="mobile-link">Contact</a>
+    </nav>
+
+    <!-- DESKTOP NAV -->
+    <nav class="desktop-nav">
+        <a href="/index.html">Home</a>
+        <a href="/html/services.html">Services</a>
+        <a href="/html/events.html">Events</a>
+        <a href="/html/about.html">About</a>
+        <a href="/html/contact.html">Contact</a>
+    </nav>
+
+</div>
+
+<!-- EXTERNAL JS (CSP-SAFE) -->
+<script src="/js/menu.js"></script>
+
+2. function toggleMenu() {
+    const menu = document.getElementById("mobile-nav");
+    menu.classList.toggle("open");
 }
 
-body {
-    background: #0b0b0b;
-    color: #fff;
-    font-family: Arial, sans-serif;
+function closeMenu(event) {
+    event.preventDefault();
+    const menu = document.getElementById("mobile-nav");
+    menu.classList.remove("open");
+
+    const url = event.target.getAttribute("href");
+
+    // Delay navigation so collapse is visible
+    setTimeout(() => {
+        window.location.href = url;
+    }, 150);
 }
 
-/* ===========================
-   HEADER WRAPPER
-   =========================== */
+// Hamburger click
+document.getElementById("hamburger").addEventListener("click", toggleMenu);
 
-.header-wrapper {
-    width: 100%;
-    background: #0b0b0b;
-    border-bottom: 3px solid #009b3a;
-    padding: 10px 0;
-}
+// Mobile nav link clicks
+document.querySelectorAll(".mobile-link").forEach(link => {
+    link.addEventListener("click", closeMenu);
+});
 
-.site-logo {
-    width: 180px;
-    display: block;
-    margin: 0 auto;
-}
-
-/* ===========================
-   DESKTOP NAV
-   =========================== */
-
-.desktop-nav {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-top: 15px;
-}
-
-.desktop-nav a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 18px;
-}
-
-/* ===========================
-   MOBILE HAMBURGER
-   =========================== */
-
-.hamburger {
-    display: none;
-    font-size: 22px;
-    color: #fff;
-    background: #009b3a;
-    padding: 12px 18px;
-    width: fit-content;
-    margin: 10px auto;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-/* ===========================
-   MOBILE NAV MENU
-   =========================== */
-
-#mobile-nav {
-    display: none; /* hidden by default */
-    flex-direction: column;
-    background: #0b0b0b;
-    border-bottom: 3px solid #009b3a;
-    padding-bottom: 10px;
-}
-
-/* ⭐ THIS IS THE FIX — ALWAYS WORKS */
-#mobile-nav.open {
-    display: flex !important;
-}
-
-#mobile-nav a {
-    color: #fff;
-    text-decoration: none;
-    padding: 12px 20px;
-    font-size: 18px;
-    border-top: 1px solid #009b3a;
-}
-
-/* ===========================
-   MOBILE BREAKPOINT
-   =========================== */
-
-@media (max-width: 768px) {
-
-    .hamburger {
-        display: block;
-    }
-
-    .desktop-nav {
-        display: none;
-    }
-}
+3. I don't have a csp header
