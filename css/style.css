@@ -666,8 +666,11 @@ section h2 {
         display: none;
     }
 
-    #mobile-nav {
-        display: none; /* stays hidden until toggleMenu() runs */
-        flex-direction: column;
-    }
+   #mobile-nav {
+    display: none;
+    flex-direction: column;
+}
+
+#mobile-nav.open {
+    display: flex;
 }
