@@ -80,7 +80,6 @@ section {
     }
 }
 
-/* Page Titles (H1) */
 .page-title {
     text-align: center;
     font-size: 36px;
@@ -89,7 +88,6 @@ section {
     text-shadow: 0 0 12px #fdda24, 0 0 15px #009b3a;
 }
 
-/* Section Titles (H2) */
 section h2 {
     text-align: center;
     font-size: 36px;
@@ -184,7 +182,6 @@ section h2 {
     height: auto;
 }
 
-/* HEADER */
 .console-header {
     display: flex;
     justify-content: space-between;
@@ -201,7 +198,6 @@ section h2 {
     color: #fdda24;
 }
 
-/* FLAGS */
 .flag {
     display: inline-block;
     width: 18px;
@@ -216,7 +212,6 @@ section h2 {
 .flag-mx { background-image: url('https://flagcdn.com/w20/mx.png'); }
 .flag-us { background-image: url('https://flagcdn.com/w20/us.png'); }
 
-/* LIVE INDICATOR */
 .live-indicator {
     width: 10px;
     height: 10px;
@@ -228,9 +223,6 @@ section h2 {
 .live-ok { background: #009b3a !important; }
 .live-warn { background: #fdda24 !important; }
 
-/* ===========================
-   CONTROLS — iOS FIX
-   =========================== */
 .controls-row {
     display: flex;
     align-items: center;
@@ -255,9 +247,6 @@ section h2 {
     background: #ffe55c;
 }
 
-/* ===========================
-   EQUALIZER — FIXED + ALIGNED
-   =========================== */
 .equalizer {
     display: flex;
     justify-content: center;
@@ -293,9 +282,6 @@ section h2 {
     height: 6px !important;
 }
 
-/* ===========================
-   VOLUME — iOS slider fix
-   =========================== */
 .volume-row {
     margin-top: 12px;
     display: flex;
@@ -316,9 +302,6 @@ section h2 {
     border-radius: 50%;
 }
 
-/* ===========================
-   DIAGNOSTICS
-   =========================== */
 .diag-toggle {
     margin-top: 12px;
     cursor: pointer;
@@ -344,9 +327,6 @@ section h2 {
     max-height: 600px;
 }
 
-/* ===========================
-   FOOTER
-   =========================== */
 .console-footer {
     margin-top: 16px;
     padding: 10px 12px;
@@ -359,9 +339,6 @@ section h2 {
     border-radius: 0 0 10px 10px;
 }
 
-/* ===========================
-   RSS BUTTON
-   =========================== */
 .rss-wrapper {
     text-align: center;
     margin-top: 18px;
@@ -385,7 +362,7 @@ section h2 {
 }
 
 /* ===========================
-   MOBILE FIX — iOS Safari Alignment (⭐ FULL FIX)
+   MOBILE FIX — iOS Safari Alignment
    =========================== */
 @media (max-width: 768px) {
 
@@ -400,16 +377,16 @@ section h2 {
     .chat-box {
         width: 100%;
         max-width: 500px;
-        margin: 0 auto; /* ⭐ centers on Safari */
+        margin: 0 auto;
     }
 
     .player-box {
-        order: 1;        /* ⭐ player always on top */
-        margin-bottom: 25px; /* ⭐ spacing fix */
+        order: 1;
+        margin-bottom: 25px;
     }
 
     .chat-box {
-        order: 2;        /* ⭐ chat always below */
+        order: 2;
     }
 }
 
@@ -417,7 +394,7 @@ section h2 {
     width: 100%;
     display: block;
     position: relative;
-    z-index: 10; /* ⭐ prevents player from sliding behind chat */
+    z-index: 10;
 }
 
 .footer-wrapper {
@@ -539,30 +516,26 @@ section h2 {
 }
 
 /* ===========================
-   TABLET FIX — iPad spacing (FINAL FIX)
+   TABLET FIX — iPad spacing
    =========================== */
 @media (max-width: 1200px) and (min-width: 601px) {
 
-    /* HEADER */
     header {
         padding-left: 24px;
         padding-right: 24px;
     }
 
-    /* DESKTOP NAV */
     nav.desktop-nav {
         padding-left: 24px;
         padding-right: 24px;
         gap: 28px;
     }
 
-    /* FOOTER */
     footer {
         padding-left: 24px !important;
         padding-right: 24px !important;
     }
 
-    /* FOOTER NAV */
     footer nav {
         display: flex;
         justify-content: center;
@@ -623,7 +596,6 @@ section h2 {
 /* ===========================
    HAMBURGER MENU — MOBILE FIX
    =========================== */
-/* Base: show hamburger everywhere */
 .hamburger {
     display: block;
     font-size: 32px;
@@ -646,13 +618,6 @@ section h2 {
         display: flex;
     }
 }
-
-
-#mobile-nav {
-    display: none;
-    flex-direction: column;
-    background: #0b0b0b;
-    border-bottom: 3px solid #009b3a;
 
 /* ===========================
    MOBILE NAV + HAMBURGER FIX
