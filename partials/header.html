@@ -1,21 +1,37 @@
-<header class="header-wrapper">
-    <img src="images/logo.png" class="site-logo">
+<header class="site-header">
+
+    <!-- LOGO -->
+    <div class="logo-container">
+        <a href="/">
+            <img src="images/logo.png" alt="Jamexus Logo" class="site-logo">
+        </a>
+    </div>
+
+    <!-- HAMBURGER (mobile only) -->
+    <div class="hamburger" id="hamburger">☰</div>
+
+    <!-- DESKTOP NAV -->
+    <nav class="desktop-nav">
+        <a href="/">Home</a>
+        <a href="/services.html">Services</a>
+        <a href="/events.html">Events</a>
+        <a href="/about.html">About</a>
+        <a href="/contact.html">Contact</a>
+    </nav>
+
+    <!-- MOBILE NAV -->
+    <nav class="mobile-nav" id="mobile-nav">
+        <a href="/">Home</a>
+        <a href="/services.html">Services</a>
+        <a href="/events.html">Events</a>
+        <a href="/about.html">About</a>
+        <a href="/contact.html">Contact</a>
+    </nav>
+
 </header>
 
-<div class="hamburger" id="hamburger">☰ MENU</div>
-
-<nav class="desktop-nav">
-    <a href="/">Home</a>
-    <a href="/services.html">Services</a>
-    <a href="/events.html">Events</a>
-    <a href="/about.html">About</a>
-    <a href="/contact.html">Contact</a>
-</nav>
-
-<nav id="mobile-nav">
-    <a class="mobile-link" href="/">Home</a>
-    <a class="mobile-link" href="/services.html">Services</a>
-    <a class="mobile-link" href="/events.html">Events</a>
-    <a class="mobile-link" href="/about.html">About</a>
-    <a class="mobile-link" href="/contact.html">Contact</a>
-</nav>
+<script>
+document.getElementById("hamburger").addEventListener("click", () => {
+    document.getElementById("mobile-nav").classList.toggle("open");
+});
+</script>
