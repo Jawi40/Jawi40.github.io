@@ -12,12 +12,18 @@ body {
     line-height: 1.7;
 }
 
+/* ===========================
+   PAGE WRAPPER
+   =========================== */
 .page-wrapper {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
 }
 
+/* ===========================
+   HEADER
+   =========================== */
 header {
     display: flex;
     justify-content: center;
@@ -32,7 +38,7 @@ header {
 }
 
 /* ===========================
-   NAVIGATION
+   NAVIGATION — REGGAE VIBES
    =========================== */
 nav {
     display: flex;
@@ -60,7 +66,111 @@ nav a:hover {
 }
 
 /* ===========================
-   HAMBURGER MENU + MOBILE NAV (FIXED)
+   SECTIONS
+   =========================== */
+section {
+    max-width: 900px;
+    margin: 10px auto;
+    padding: 0 25px;
+}
+
+@media (min-width: 900px) {
+    section {
+        padding: 0 10px;
+    }
+}
+
+.page-title {
+    text-align: center;
+    font-size: 36px;
+    margin: 20px 0 30px;
+    color: #fdda24;
+    text-shadow: 0 0 12px #fdda24, 0 0 15px #009b3a;
+}
+
+section h2 {
+    text-align: center;
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #fdda24;
+    text-shadow: 0 0 12px #fdda24, 0 0 15px #009b3a;
+}
+
+/* ===========================
+   SECTION DIVIDER
+   =========================== */
+.section-divider {
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, #009b3a, #fdda24, #da291c);
+    box-shadow: 0 0 20px #009b3a, 0 0 20px #da291c;
+    margin: 10px 0;
+}
+
+/* ===========================
+   FLEX ROW (PLAYER + CHAT)
+   =========================== */
+.flex-row {
+    display: flex;
+    justify-content: center;
+    gap: 35px;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+}
+
+/* ===========================
+   PLAYER + CHAT
+   =========================== */
+.player-box,
+.chat-box {
+    width: 460px;
+    max-width: 100%;
+}
+
+.chat-box {
+    background: #0d0d0d;
+    padding: 15px;
+    border-radius: 14px;
+    border: 2px solid #009b3a;
+    box-shadow: 0 0 18px #009b3a;
+}
+
+.player-box {
+    background: #0d0d0d;
+    padding: 15px;
+    border-radius: 14px;
+    border: 2px solid #da291c;
+    box-shadow: 0 0 18px #da291c;
+    text-align: center;
+    align-self: flex-start;
+    height: auto;
+}
+
+/* Console styles (your original) */
+#infin8-console {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    font-family: system-ui, sans-serif;
+}
+
+.console-wrapper {
+    width: 100%;
+    max-width: 450px;
+    background: rgba(10,10,10,0.95);
+    border-radius: 14px;
+    border: 2px solid #009b3a;
+    box-shadow: 0 0 25px #009b3a;
+    padding: 12px;
+    color: #eee;
+    height: auto;
+}
+
+/* ... (I kept the structure but to save space here, paste the rest of your console, equalizer, volume, dropdown, gallery styles from your original CSS) ... */
+
+/* ===========================
+   HAMBURGER MENU — FIXED
    =========================== */
 #hamburger {
     display: none;
@@ -99,7 +209,6 @@ nav a:hover {
     }
 }
 
-/* Mobile Nav */
 #mobile-nav {
     display: none;
     flex-direction: column;
@@ -125,7 +234,6 @@ nav a:hover {
     text-shadow: 0 0 15px #da291c;
 }
 
-/* Smooth Animation */
 #mobile-nav {
     transition: all 0.4s ease;
     max-height: 0;
@@ -137,16 +245,7 @@ nav a:hover {
     max-height: 500px;
 }
 
-/* ===========================
-   ALL YOUR OTHER STYLES (Player, Chat, Console, etc.)
-   =========================== */
-/* Paste the rest of your original CSS here (flex-row, player-box, chat-box, console styles, media queries, dropdowns, gallery, etc.) */
-
-.flex-row { display: flex; justify-content: center; gap: 35px; flex-wrap: nowrap; align-items: flex-start; }
-.player-box, .chat-box { width: 460px; max-width: 100%; }
-/* ... add all remaining styles from your original CSS ... */
-
-/* Mobile Layout Fixes */
+/* Mobile Fixes */
 @media (max-width: 768px) {
     .flex-row {
         flex-direction: column;
