@@ -24,6 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll(".mobile-link").forEach(link => {
         link.addEventListener("click", closeMenu);
-    });
+    }); 
 
 });
