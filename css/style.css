@@ -657,6 +657,13 @@ section h2 {
 /* ===========================
    MOBILE NAV + HAMBURGER FIX
    =========================== */
+#mobile-nav {
+    display: none;
+    flex-direction: column;
+    background: #0b0b0b;
+    border-bottom: 3px solid #009b3a;
+}
+
 @media (max-width: 768px) {
     .hamburger {
         display: block;
@@ -666,11 +673,12 @@ section h2 {
         display: none;
     }
 
-   #mobile-nav {
-    display: none;
-    flex-direction: column;
-}
+    #mobile-nav {
+        display: none;
+        flex-direction: column;
+    }
 
-#mobile-nav.open {
-    display: flex;
+    #mobile-nav.open {
+        display: flex;
+    }
 }
