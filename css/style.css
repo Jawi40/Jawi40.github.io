@@ -4,7 +4,235 @@
 * { box-sizing: border-box; }
 
 body {
+    margin: 0;/* ===========================
+   GLOBAL THEME
+   =========================== */
+* { box-sizing: border-box; }
+
+body {
     margin: 0;
+    padding: 0;
+    background: #050505;
+    color: #fdda24;
+    font-family: Arial, sans-serif;
+    line-height: 1.7;
+}
+
+/* ===========================
+   PAGE WRAPPER
+   =========================== */
+.page-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ===========================
+   HEADER
+   =========================== */
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px 0;
+}
+
+.site-logo {
+    max-width: 200px;
+    height: auto;
+}
+
+/* ===========================
+   NAVIGATION (BASE STYLE)
+   =========================== */
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 35px;
+    padding: 25px 0;
+    background: #0b0b0b;
+    border-bottom: 3px solid #009b3a;
+    box-shadow: 0 0 15px #009b3a;
+}
+
+nav a {
+    color: #fdda24;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 0 8px #009b3a;
+    transition: 0.25s ease;
+}
+
+nav a:hover {
+    color: #da291c;
+    text-shadow: 0 0 15px #da291c;
+    transform: translateY(-2px);
+}
+
+/* ===========================
+   MOBILE NAV ALWAYS VISIBLE
+   =========================== */
+#mobile-nav {
+    display: none; /* hidden on desktop */
+    flex-direction: column;
+    background: #0b0b0b;
+    border-bottom: 3px solid #009b3a;
+    padding: 15px 0;
+}
+
+/* ===========================
+   DESKTOP NAV DEFAULT
+   =========================== */
+nav.desktop-nav {
+    display: flex;
+}
+
+/* ===========================
+   MOBILE BREAKPOINT
+   =========================== */
+@media (max-width: 768px) {
+
+    /* Show mobile nav */
+    #mobile-nav {
+        display: flex !important;
+    }
+
+    /* Hide desktop nav */
+    nav.desktop-nav {
+        display: none !important;
+    }
+
+    header {
+        padding: 10px 0;
+    }
+
+    .site-logo {
+        max-width: 160px;
+    }
+}
+
+/* ===========================
+   SECTIONS
+   =========================== */
+section {
+    max-width: 900px;
+    margin: 10px auto;
+    padding: 0 25px;
+}
+
+@media (min-width: 900px) {
+    section { padding: 0 10px; }
+}
+
+.page-title,
+section h2 {
+    text-align: center;
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #fdda24;
+    text-shadow: 0 0 12px #fdda24, 0 0 15px #009b3a;
+}
+
+/* ===========================
+   SECTION DIVIDER
+   =========================== */
+.section-divider {
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, #009b3a, #fdda24, #da291c);
+    box-shadow: 0 0 20px #009b3a, 0 0 20px #da291c;
+    margin: 10px 0;
+}
+
+/* ===========================
+   FLEX ROW
+   =========================== */
+.flex-row {
+    display: flex;
+    justify-content: center;
+    gap: 35px;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+}
+
+@media (max-width: 768px) {
+    .flex-row {
+        flex-direction: column;
+        gap: 25px;
+        align-items: center;
+    }
+}
+
+/* ===========================
+   PLAYER + CHAT BOXES
+   =========================== */
+.player-box,
+.chat-box {
+    width: 460px;
+    max-width: 100%;
+}
+
+.chat-box {
+    background: #0d0d0d;
+    padding: 15px;
+    border-radius: 14px;
+    border: 2px solid #009b3a;
+    box-shadow: 0 0 18px #009b3a;
+}
+
+.player-box {
+    background: #0d0d0d;
+    padding: 15px;
+    border-radius: 14px;
+    border: 2px solid #da291c;
+    box-shadow: 0 0 18px #da291c;
+    text-align: center;
+}
+
+/* ===========================
+   GALLERY
+   =========================== */
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+    margin: 25px auto;
+}
+
+.gallery img {
+    width: 100%;
+    border-radius: 10px;
+    border: 2px solid #009b3a;
+    box-shadow: 0 0 18px #009b3a;
+    transition: 0.25s ease;
+}
+
+.gallery img:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 25px #da291c;
+}
+
+/* ===========================
+   SMALL MOBILE FIXES
+   =========================== */
+@media (max-width: 550px) {
+
+    nav a {
+        font-size: clamp(14px, 4vw, 18px);
+    }
+
+    .page-title,
+    section h2 {
+        font-size: clamp(22px, 6vw, 32px);
+    }
+
+    .gallery {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+}
+
     padding: 0;
     background: #050505;
     color: #fdda24;
