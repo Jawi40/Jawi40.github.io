@@ -670,15 +670,16 @@ section h2 {
     font-weight: bold;
     border-left: 6px solid var(--jamaica-green);
     border-right: 6px solid var(--jamaica-green);
-    text-align: center;
+    text-align: left; /* aligned left by default */
     letter-spacing: 1px;
     transition: background 0.3s, transform 0.2s;
 }
 
-/* Right‑aligned option (use .hamburger.right if you prefer) */
+/* Right‑aligned option */
 .hamburger.right {
     margin-left: auto;
 }
+
 /* Hover / tap effect */
 .hamburger:hover {
     background: var(--jamaica-green);
@@ -686,37 +687,35 @@ section h2 {
     transform: scale(1.05);
 }
 
-/* Hover effect */
-.hamburger:hover {
-    background: var(--usa-red);
-}
 /* Mobile nav menu – Jamaican theme */
 #mobile-nav {
-   flex: 1 1 45%; /* two items per row */ 
-   display: none;
-    flex-direction: column;
+    display: none;
+    flex-wrap: wrap;          /* allows two rows */
+    gap: 10px;                /* spacing between items */
     background: var(--jamaica-black);
     border-top: 4px solid var(--jamaica-yellow);
     border-bottom: 4px solid var(--jamaica-green);
     padding: 10px;
+    border-radius: 6px;
 }
 
+/* Mobile nav links – two per row */
 #mobile-nav a {
-    color: var(--jamaica-yellow);
+    flex: 1 1 45%;            /* two items per row */
+    background: var(--jamaica-yellow);
+    color: var(--jamaica-black);
     padding: 14px;
     text-decoration: none;
-    border-bottom: 1px solid var(--jamaica-green);
     font-weight: bold;
+    text-align: center;
+    border-radius: 4px;
+    transition: background 0.2s ease;
 }
 
+/* Hover effect */
 #mobile-nav a:hover {
     background: var(--jamaica-green);
     color: var(--jamaica-black);
-}
-
-/* Last item no border */
-#mobile-nav a:last-child {
-    border-bottom: none;
 }
 
 /* Desktop nav stays normal */
