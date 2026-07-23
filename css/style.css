@@ -668,14 +668,19 @@ section h2 {
     cursor: pointer;
     font-size: 22px;
     font-weight: bold;
-    border-left: 6px solid var(--jamaica-green);
-    border-right: 6px solid var(--jamaica-green);
+
+    /* Thin green border around entire hamburger */
+    border: 2px solid var(--jamaica-green);
+
+    /* Keep your thicker Jamaican accent bars */
+    border-left-width: 6px;
+    border-right-width: 6px;
+
     text-align: left; /* aligned left by default */
     letter-spacing: 1px;
+    border-radius: 4px; /* optional but looks cleaner */
     transition: background 0.3s, transform 0.2s;
 }
-/* Thin green border around the entire hamburger */
-    border: 2px solid var(--jamaica-green);
 
 /* Right‑aligned option */
 .hamburger.right {
