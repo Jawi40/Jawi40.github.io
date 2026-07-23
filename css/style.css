@@ -652,65 +652,62 @@ section h2 {
     }
 }
 
-/* Professional American Theme */
+/* JAMAICAN THEME COLORS */
 :root {
-    --usa-red: #C53030;
-    --usa-blue: #2B4C7E;
-    --usa-white: #FFFFFF;
+    --jamaica-green: #009B3A;
+    --jamaica-yellow: #FED100;
+    --jamaica-black: #000000;
 }
 
-/* Hamburger button – subtle, professional */
+/* Hamburger button – Jamaican style */
 .hamburger {
     display: none;
-    background: var(--usa-blue);
-    color: var(--usa-white);
-    padding: 12px 16px;
+    background: var(--jamaica-black);
+    color: var(--jamaica-yellow);
+    padding: 14px 18px;
     cursor: pointer;
-    font-size: 20px;
-    font-weight: 600;
-    text-align: left; /* align left by default */
-    border-radius: 4px;
-    width: fit-content;
-    transition: background 0.2s ease;
+    font-size: 22px;
+    font-weight: bold;
+    border-left: 6px solid var(--jamaica-green);
+    border-right: 6px solid var(--jamaica-green);
+    text-align: center;
+    letter-spacing: 1px;
+    transition: background 0.3s, transform 0.2s;
 }
 
-/* Right‑aligned option (use .hamburger.right if you prefer) */
-.hamburger.right {
-    margin-left: auto;
-}
-
-/* Hover effect */
+/* Hover / tap effect */
 .hamburger:hover {
-    background: var(--usa-red);
+    background: var(--jamaica-green);
+    color: var(--jamaica-black);
+    transform: scale(1.05);
 }
 
-/* Mobile nav – clean two‑row layout */
+/* Mobile nav menu – Jamaican theme */
 #mobile-nav {
     display: none;
-    flex-wrap: wrap; /* allows two rows */
-    gap: 10px;
-    background: var(--usa-blue);
-    padding: 12px;
-    border-radius: 6px;
+    flex-direction: column;
+    background: var(--jamaica-black);
+    border-top: 4px solid var(--jamaica-yellow);
+    border-bottom: 4px solid var(--jamaica-green);
+    padding: 10px;
 }
 
-/* Mobile nav links */
 #mobile-nav a {
-    flex: 1 1 45%; /* two items per row */
-    background: var(--usa-white);
-    color: var(--usa-blue);
-    padding: 12px;
-    text-align: center;
+    color: var(--jamaica-yellow);
+    padding: 14px;
     text-decoration: none;
-    font-weight: 600;
-    border-radius: 4px;
-    transition: background 0.2s ease;
+    border-bottom: 1px solid var(--jamaica-green);
+    font-weight: bold;
 }
 
-/* Hover */
 #mobile-nav a:hover {
-    background: var(--usa-red);
-    color: var(--usa-white);
+    background: var(--jamaica-green);
+    color: var(--jamaica-black);
+}
+
+/* Last item no border */
+#mobile-nav a:last-child {
+    border-bottom: none;
 }
 
 /* Desktop nav stays normal */
@@ -733,3 +730,5 @@ section h2 {
         display: flex;
     }
 }
+
+<div class="hamburger right" onclick="toggleMenu()">
