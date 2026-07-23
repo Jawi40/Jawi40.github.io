@@ -8,6 +8,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
 export let listenerId = null;
+let lastHeartbeat = Date.now();
+let heartbeatInterval = null;
 
 // =========================
 // START LISTENING
@@ -17,23 +19,30 @@ export function startListening() {
 
     const listenerRef = ref(db, "listeners/" + listenerId);
 
-    // Listener starts as active
+    // Initial state
     set(listenerRef, {
         mode: "active",
         timestamp: Date.now()
     });
 
-    // Auto-remove on real disconnect
+    // Auto-remove on clean disconnect
     onDisconnect(listenerRef).remove();
 
-    // HEARTBEAT — only for active listeners
-    setInterval(() => {
+    // HEARTBEAT — detects passive mode
+    heartbeatInterval = setInterval(() => {
         if (!listenerId) return;
 
-        // If JS is suspended, this never runs — listener becomes passive
+        const now = Date.now();
+        const diff = now - lastHeartbeat;
+
+        // If JS was suspended, diff will be large
+        const mode = diff > 60000 ? "passive" : "active";
+
+        lastHeartbeat = now;
+
         set(listenerRef, {
-            mode: "active",
-            timestamp: Date.now()
+            mode,
+            timestamp: now
         });
     }, 30000);
 }
@@ -46,10 +55,14 @@ export function stopListening() {
 
     const listenerRef = ref(db, "listeners/" + listenerId);
 
-    // Remove listener entry
     remove(listenerRef);
 
     listenerId = null;
+
+    if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = null;
+    }
 }
 
 // =========================
@@ -62,30 +75,5 @@ export function onListenerCount(callback) {
         const data = snapshot.val() || {};
         const count = Object.keys(data).length;
         callback(count);
-    });
-}
-
-// =========================
-// GHOST CLEANUP (SAFE)
-// =========================
-export function cleanGhostListeners(maxAgeMinutes = 30) {
-    const listenersRef = ref(db, "listeners");
-
-    onValue(listenersRef, (snapshot) => {
-        const data = snapshot.val() || {};
-        const now = Date.now();
-
-        Object.entries(data).forEach(([id, info]) => {
-            if (!info || !info.timestamp) return;
-
-            const ageMinutes = (now - info.timestamp) / 60000;
-
-            // ACTIVE listeners older than maxAgeMinutes → ghost
-            if (info.mode === "active" && ageMinutes > maxAgeMinutes) {
-                remove(ref(db, "listeners/" + id));
-            }
-
-            // PASSIVE listeners are NEVER removed
-        });
     });
 }
