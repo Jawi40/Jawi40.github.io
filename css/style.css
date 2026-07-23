@@ -1,5 +1,5 @@
 /* ===========================
-   GLOBAL THEME — JAMAICAN EDITION
+   GLOBAL THEME
    =========================== */
 * { box-sizing: border-box; }
 
@@ -22,14 +22,13 @@ body {
 }
 
 /* ===========================
-   HEADER — JAMAICAN GLOW
+   HEADER
    =========================== */
 header {
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 25px 0;
-    width: 100%;
 }
 
 .site-logo {
@@ -38,13 +37,13 @@ header {
 }
 
 /* ===========================
-   NAVIGATION — REGGAE VIBES
+   NAVIGATION (BASE STYLE)
    =========================== */
 nav {
     display: flex;
     justify-content: center;
     gap: 35px;
-    padding: 30px 0;
+    padding: 25px 0;
     background: #0b0b0b;
     border-bottom: 3px solid #009b3a;
     box-shadow: 0 0 15px #009b3a;
@@ -66,36 +65,49 @@ nav a:hover {
 }
 
 /* ===========================
-   DESKTOP VS MOBILE NAV
+   MOBILE NAV ALWAYS VISIBLE
    =========================== */
-
-/* mobile nav: hidden on desktop */
 #mobile-nav {
-    display: none;
+    display: none; /* hidden on desktop */
     flex-direction: column;
     background: #0b0b0b;
     border-bottom: 3px solid #009b3a;
     padding: 15px 0;
 }
 
-/* desktop nav: default visible */
+/* ===========================
+   DESKTOP NAV DEFAULT
+   =========================== */
 nav.desktop-nav {
     display: flex;
 }
 
-/* MOBILE BREAKPOINT: show mobile nav, hide desktop nav */
+/* ===========================
+   MOBILE BREAKPOINT
+   =========================== */
 @media (max-width: 768px) {
+
+    /* Show mobile nav */
     #mobile-nav {
         display: flex !important;
     }
 
+    /* Hide desktop nav */
     nav.desktop-nav {
         display: none !important;
+    }
+
+    header {
+        padding: 10px 0;
+    }
+
+    .site-logo {
+        max-width: 160px;
     }
 }
 
 /* ===========================
-   SECTIONS — CLEAN + CENTERED
+   SECTIONS
    =========================== */
 section {
     max-width: 900px;
@@ -104,19 +116,10 @@ section {
 }
 
 @media (min-width: 900px) {
-    section {
-        padding: 0 10px;
-    }
+    section { padding: 0 10px; }
 }
 
-.page-title {
-    text-align: center;
-    font-size: 36px;
-    margin: 20px 0 30px;
-    color: #fdda24;
-    text-shadow: 0 0 12px #fdda24, 0 0 15px #009b3a;
-}
-
+.page-title,
 section h2 {
     text-align: center;
     font-size: 36px;
@@ -126,7 +129,7 @@ section h2 {
 }
 
 /* ===========================
-   SECTION DIVIDER — RASTA STRIPE
+   SECTION DIVIDER
    =========================== */
 .section-divider {
     width: 100%;
@@ -137,7 +140,7 @@ section h2 {
 }
 
 /* ===========================
-   FLEX ROW (PLAYER + CHAT)
+   FLEX ROW
    =========================== */
 .flex-row {
     display: flex;
@@ -147,8 +150,16 @@ section h2 {
     align-items: flex-start;
 }
 
+@media (max-width: 768px) {
+    .flex-row {
+        flex-direction: column;
+        gap: 25px;
+        align-items: center;
+    }
+}
+
 /* ===========================
-   PLAYER + CHAT WIDTH
+   PLAYER + CHAT BOXES
    =========================== */
 .player-box,
 .chat-box {
@@ -156,9 +167,6 @@ section h2 {
     max-width: 100%;
 }
 
-/* ===========================
-   CHAT BOX
-   =========================== */
 .chat-box {
     background: #0d0d0d;
     padding: 15px;
@@ -167,9 +175,6 @@ section h2 {
     box-shadow: 0 0 18px #009b3a;
 }
 
-/* ===========================
-   PLAYER BOX
-   =========================== */
 .player-box {
     background: #0d0d0d;
     padding: 15px;
@@ -177,132 +182,16 @@ section h2 {
     border: 2px solid #da291c;
     box-shadow: 0 0 18px #da291c;
     text-align: center;
-    align-self: flex-start;
-    height: auto;
 }
 
 /* ===========================
-   CHAT EMBED
-   =========================== */
-.minnit-chat-sembed {
-    display: block !important;
-}
-
-/* ===========================
-   MOBILE FIX — iOS Safari Alignment
-   =========================== */
-@media (max-width: 768px) {
-
-    .flex-row {
-        flex-direction: column;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 25px;
-    }
-
-    .player-box,
-    .chat-box {
-        width: 100%;
-        max-width: 500px;
-        margin: 0 auto;
-    }
-
-    .player-box {
-        order: 1;
-        margin-bottom: 25px;
-    }
-
-    .chat-box {
-        order: 2;
-    }
-}
-
-.header-wrapper {
-    width: 100%;
-    display: block;
-    position: relative;
-    z-index: 10;
-}
-
-.footer-wrapper {
-    width: 100%;
-    display: block;
-    position: relative;
-    z-index: 10;
-    margin-top: 20px;
-}
-
-/* ===========================
-   SERVICES PAGE — JAMAICAN THEME
-   =========================== */
-.dropdown-btn {
-    width: 100%;
-    background: #0b0b0b;
-    color: #fdda24;
-    padding: 14px;
-    text-align: left;
-    border: 2px solid #009b3a;
-    outline: none;
-    font-size: 20px;
-    cursor: pointer;
-    margin-top: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 8px;
-    transition: 0.25s ease;
-    text-shadow: 0 0 8px #009b3a;
-}
-
-.dropdown-btn:hover {
-    background: #111;
-    box-shadow: 0 0 12px #009b3a;
-    transform: translateY(-2px);
-}
-
-.arrow {
-    transition: transform 0.3s ease;
-    color: #fdda24;
-}
-
-.arrow.rotate {
-    transform: rotate(180deg);
-}
-
-.dropdown-content {
-    display: none;
-    background: #0d0d0d;
-    padding: 18px 22px;
-    color: #eee;
-    border-left: 5px solid #009b3a;
-    border-radius: 0 0 8px 8px;
-    margin-top: 5px;
-    box-shadow: 0 0 18px #009b3a;
-}
-
-.dropdown-content p {
-    margin: 12px 0;
-    line-height: 1.6;
-    color: #fdda24;
-}
-
-.dropdown-content hr {
-    border: none;
-    height: 4px;
-    background: linear-gradient(90deg, #009b3a, #fdda24, #da291c);
-    box-shadow: 0 0 12px #009b3a;
-    margin: 18px 0;
-}
-
-/* ===========================
-   EVENT PAGE — JAMAICAN THEME
+   GALLERY
    =========================== */
 .gallery {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 25px;
     margin: 25px auto;
-    padding-bottom: 20px;
 }
 
 .gallery img {
@@ -319,49 +208,9 @@ section h2 {
 }
 
 /* ===========================
-   TABLET FIX — iPad spacing
-   =========================== */
-@media (max-width: 1000px) and (min-width: 601px) {
-
-    header {
-        padding-left: 30px;
-        padding-right: 30px;
-    }
-
-    nav.desktop-nav {
-        padding-left: 24px;
-        padding-right: 24px;
-        gap: 28px;
-    }
-
-    footer {
-        padding-left: 30px !important;
-        padding-right: 30px !important;
-    }
-
-    footer nav {
-        display: flex;
-        justify-content: center;
-        gap: 24px;
-        padding-left: 15px;
-        padding-right: 15px;
-        flex-wrap: wrap;
-    }
-
-    footer nav a {
-        font-size: 18px;
-        text-shadow: 0 0 8px #009b3a;
-    }
-}
-
-/* ===========================
-   UNIVERSAL MOBILE FIXES
+   SMALL MOBILE FIXES
    =========================== */
 @media (max-width: 550px) {
-
-    .page-wrapper {
-        padding: 0 12px;
-    }
 
     nav a {
         font-size: clamp(14px, 4vw, 18px);
@@ -372,26 +221,8 @@ section h2 {
         font-size: clamp(22px, 6vw, 32px);
     }
 
-    .dropdown-btn {
-        font-size: clamp(16px, 5vw, 20px);
-        padding: 12px;
-    }
-
-    .dropdown-content {
-        padding: 14px 16px;
-        font-size: clamp(14px, 4vw, 17px);
-    }
-
     .gallery {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 15px;
-    }
-
-    .site-logo {
-        max-width: 160px;
-    }
-
-    header {
-        padding: 10px 0;
     }
 }
