@@ -704,8 +704,8 @@ section h2 {
 /* Mobile nav menu – Jamaican theme */
 #mobile-nav {
     display: none;
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-wrap: wrap;          /* allows two rows */
+    gap: 10px;                /* spacing between items */
     background: var(--jamaica-black);
     border-top: 4px solid var(--jamaica-yellow);
     border-bottom: 4px solid var(--jamaica-green);
@@ -715,7 +715,7 @@ section h2 {
 
 /* Mobile nav links – two per row */
 #mobile-nav a {
-    flex: 1 1 45%;
+    flex: 1 1 45%;            /* two items per row */
     background: var(--jamaica-yellow);
     color: var(--jamaica-black);
     padding: 14px;
@@ -752,4 +752,3 @@ section h2 {
         display: flex;
     }
 }
-
