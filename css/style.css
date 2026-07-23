@@ -752,3 +752,50 @@ section h2 {
         display: flex;
     }
 }
+
+.footer-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    padding: 0 15px; /* adds safe spacing on mobile */
+    box-sizing: border-box;
+}
+
+.footer-wrapper footer {
+    text-align: center;
+    padding: 15px 0;
+    color: #0ff;
+    font-size: 14px; /* slightly smaller for mobile */
+    line-height: 1.4;
+}
+
+/* Footer nav links */
+.footer-wrapper footer nav {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.footer-wrapper footer nav a {
+    color: #0ff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* MOBILE FIX */
+@media (max-width: 768px) {
+    .footer-wrapper footer {
+        padding: 20px 10px;
+    }
+
+    .footer-wrapper footer nav {
+        gap: 10px;
+    }
+
+    .footer-wrapper footer nav a {
+        font-size: 13px;
+    }
+}
