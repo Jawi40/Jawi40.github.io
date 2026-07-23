@@ -672,13 +672,17 @@ section h2 {
     /* Thin green border around entire hamburger */
     border: 2px solid var(--jamaica-green);
 
-    /* Keep your thicker Jamaican accent bars */
+    /* Thicker Jamaican accent bars */
     border-left-width: 6px;
     border-right-width: 6px;
 
     text-align: left;
     letter-spacing: 1px;
     border-radius: 4px;
+
+    /* Always-on low glow */
+    box-shadow: 0 0 4px var(--jamaica-green);
+
     transition: background 0.3s, transform 0.2s;
 }
 
@@ -687,18 +691,21 @@ section h2 {
     margin-left: auto;
 }
 
-/* Hover / tap effect */
+/* Hover / tap effect — NO stronger glow */
 .hamburger:hover {
     background: var(--jamaica-green);
     color: var(--jamaica-black);
     transform: scale(1.05);
+
+    /* Keep the same low glow */
+    box-shadow: 0 0 4px var(--jamaica-green);
 }
 
 /* Mobile nav menu – Jamaican theme */
 #mobile-nav {
     display: none;
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-wrap: wrap;          /* allows two rows */
+    gap: 10px;                /* spacing between items */
     background: var(--jamaica-black);
     border-top: 4px solid var(--jamaica-yellow);
     border-bottom: 4px solid var(--jamaica-green);
@@ -708,7 +715,7 @@ section h2 {
 
 /* Mobile nav links – two per row */
 #mobile-nav a {
-    flex: 1 1 45%;
+    flex: 1 1 45%;            /* two items per row */
     background: var(--jamaica-yellow);
     color: var(--jamaica-black);
     padding: 14px;
