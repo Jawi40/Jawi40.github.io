@@ -434,6 +434,18 @@ function toggleMenu() {
     });
   });
 </script>
-  
+
+  <script>
+function toggleMenu() {
+    const nav = document.getElementById("mobile-nav");
+    nav.classList.toggle("show");
+}
+
+function closeMenu() {
+    const nav = document.getElementById("mobile-nav");
+    nav.classList.remove("show");
+}
+</script>
+
 </body>
 </html>
