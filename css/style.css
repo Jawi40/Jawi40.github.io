@@ -89,7 +89,7 @@ nav.desktop-nav {
 
     /* Show mobile nav */
     #mobile-nav {
-        display: flex-row !important;
+        display: flex !important;
     }
 
     /* Hide desktop nav */
