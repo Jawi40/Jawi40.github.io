@@ -676,9 +676,9 @@ section h2 {
     border-left-width: 6px;
     border-right-width: 6px;
 
-    text-align: left; /* aligned left by default */
+    text-align: left;
     letter-spacing: 1px;
-    border-radius: 4px; /* optional but looks cleaner */
+    border-radius: 4px;
     transition: background 0.3s, transform 0.2s;
 }
 
@@ -697,8 +697,8 @@ section h2 {
 /* Mobile nav menu – Jamaican theme */
 #mobile-nav {
     display: none;
-    flex-wrap: wrap;          /* allows two rows */
-    gap: 10px;                /* spacing between items */
+    flex-wrap: wrap;
+    gap: 10px;
     background: var(--jamaica-black);
     border-top: 4px solid var(--jamaica-yellow);
     border-bottom: 4px solid var(--jamaica-green);
@@ -708,7 +708,7 @@ section h2 {
 
 /* Mobile nav links – two per row */
 #mobile-nav a {
-    flex: 1 1 45%;            /* two items per row */
+    flex: 1 1 45%;
     background: var(--jamaica-yellow);
     color: var(--jamaica-black);
     padding: 14px;
