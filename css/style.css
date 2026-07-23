@@ -674,6 +674,8 @@ section h2 {
     letter-spacing: 1px;
     transition: background 0.3s, transform 0.2s;
 }
+/* Thin green border around the entire hamburger */
+    border: 2px solid var(--jamaica-green);
 
 /* Right‑aligned option */
 .hamburger.right {
