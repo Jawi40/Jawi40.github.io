@@ -651,3 +651,83 @@ section h2 {
         display: flex;
     }
 }
+
+/* AMERICAN THEME COLORS */
+:root {
+    --usa-red: #B22234;
+    --usa-blue: #3C3B6E;
+    --usa-white: #FFFFFF;
+}
+
+/* Hamburger button – American style */
+.hamburger {
+    display: none;
+    background: var(--usa-blue);
+    color: var(--usa-white);
+    padding: 14px 18px;
+    cursor: pointer;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 1px;
+    border-top: 5px solid var(--usa-red);
+    border-bottom: 5px solid var(--usa-red);
+    transition: background 0.3s, transform 0.2s;
+}
+
+/* Hover / tap effect */
+.hamburger:hover {
+    background: var(--usa-red);
+    color: var(--usa-white);
+    transform: scale(1.05);
+}
+
+/* Mobile nav menu – American theme */
+#mobile-nav {
+    display: none;
+    flex-direction: column;
+    background: var(--usa-blue);
+    border-top: 4px solid var(--usa-red);
+    border-bottom: 4px solid var(--usa-red);
+    padding: 10px;
+}
+
+#mobile-nav a {
+    color: var(--usa-white);
+    padding: 14px;
+    text-decoration: none;
+    border-bottom: 1px solid var(--usa-red);
+    font-weight: bold;
+}
+
+#mobile-nav a:hover {
+    background: var(--usa-red);
+    color: var(--usa-white);
+}
+
+/* Last item no border */
+#mobile-nav a:last-child {
+    border-bottom: none;
+}
+
+/* Desktop nav stays normal */
+.desktop-nav {
+    display: flex;
+    gap: 20px;
+}
+
+/* MOBILE RULES */
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+
+    .desktop-nav {
+        display: none;
+    }
+
+    #mobile-nav.show {
+        display: flex;
+    }
+}
+
