@@ -602,46 +602,52 @@ section h2 {
     }
 }
 
-/* ===========================
-   HAMBURGER MENU — MOBILE FIX
-   =========================== */
-.hamburger {
-    display: none;
-    font-size: 32px;
-    color: #fdda24;
-    text-shadow: 0 0 10px #009b3a;
-    cursor: pointer;
-    padding: 12px 20px;
-    background: #0b0b0b;
-    border-bottom: 3px solid #009b3a;
-    box-shadow: 0 0 15px #009b3a;
-}
-
+/* Base reset */
 #mobile-nav {
     display: none;
     flex-direction: column;
-    background: #0b0b0b;
-    border-bottom: 3px solid #009b3a;
-    box-shadow: 0 0 15px #009b3a;
-    padding: 10px 0;
+    background: #222;
+    padding: 10px;
 }
 
 #mobile-nav a {
-    color: #fdda24;
-    padding: 12px 20px;
+    color: white;
+    padding: 12px;
     text-decoration: none;
-    font-size: 18px;
-    text-shadow: 0 0 8px #009b3a;
+    border-bottom: 1px solid #444;
 }
 
-#mobile-nav a:hover {
-    background: #111;
-    color: #da291c;
-    text-shadow: 0 0 12px #da291c;
+#mobile-nav a:last-child {
+    border-bottom: none;
 }
 
-@media (max-width: 600px) {
-    .desktop-nav { display: none; }
-    .hamburger { display: block; }
-    #mobile-nav { display: none; }
+/* Hamburger button */
+.hamburger {
+    display: none;
+    background: #222;
+    color: white;
+    padding: 12px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* Desktop nav */
+.desktop-nav {
+    display: flex;
+    gap: 20px;
+}
+
+/* MOBILE RULES */
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+
+    .desktop-nav {
+        display: none;
+    }
+
+    #mobile-nav.show {
+        display: flex;
+    }
 }
