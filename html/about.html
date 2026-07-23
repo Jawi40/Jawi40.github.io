@@ -82,17 +82,24 @@ function toggleMenu() {
     .then(t => document.getElementById("footer").innerHTML = t);
 </script>
 
-   <script>
+<script>
 function toggleMenu() {
     const nav = document.getElementById("mobile-nav");
     nav.classList.toggle("show");
+
+    // Prevent stuck green hover on mobile
+    document.querySelector(".hamburger").blur();
 }
 
 function closeMenu() {
     const nav = document.getElementById("mobile-nav");
     nav.classList.remove("show");
+
+    // Reset hamburger color
+    document.querySelector(".hamburger").blur();
 }
 </script>
+
 
 </body>
 </html>
