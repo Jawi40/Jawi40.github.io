@@ -659,19 +659,31 @@ section h2 {
     --usa-white: #FFFFFF;
 }
 
-/* Hamburger button – American style */
+/* Hamburger button – bold American style */
 .hamburger {
     display: none;
     background: var(--usa-blue);
     color: var(--usa-white);
-    padding: 14px 18px;
+    padding: 16px 20px;
     cursor: pointer;
-    font-size: 22px;
-    font-weight: bold;
+    font-size: 24px;
+    font-weight: 900;
     text-align: center;
-    letter-spacing: 1px;
-    border-top: 5px solid var(--usa-red);
-    border-bottom: 5px solid var(--usa-red);
+    letter-spacing: 2px;
+
+    /* STRONG borders */
+    border-top: 8px solid var(--usa-red);
+    border-bottom: 8px solid var(--usa-red);
+
+    /* Add stars for flair */
+    background-image: repeating-linear-gradient(
+        45deg,
+        var(--usa-blue),
+        var(--usa-blue) 10px,
+        #2a2a6e 10px,
+        #2a2a6e 20px
+    );
+
     transition: background 0.3s, transform 0.2s;
 }
 
@@ -679,27 +691,31 @@ section h2 {
 .hamburger:hover {
     background: var(--usa-red);
     color: var(--usa-white);
-    transform: scale(1.05);
+    transform: scale(1.08);
 }
 
-/* Mobile nav menu – American theme */
+/* Mobile nav menu – bold American theme */
 #mobile-nav {
     display: none;
     flex-direction: column;
+
     background: var(--usa-blue);
-    border-top: 4px solid var(--usa-red);
-    border-bottom: 4px solid var(--usa-red);
-    padding: 10px;
+    border-top: 6px solid var(--usa-red);
+    border-bottom: 6px solid var(--usa-red);
+
+    padding: 12px;
 }
 
+/* Menu links */
 #mobile-nav a {
     color: var(--usa-white);
-    padding: 14px;
+    padding: 16px;
     text-decoration: none;
-    border-bottom: 1px solid var(--usa-red);
-    font-weight: bold;
+    font-weight: 700;
+    border-bottom: 2px solid var(--usa-red);
 }
 
+/* Hover effect */
 #mobile-nav a:hover {
     background: var(--usa-red);
     color: var(--usa-white);
@@ -730,4 +746,3 @@ section h2 {
         display: flex;
     }
 }
-
