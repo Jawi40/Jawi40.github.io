@@ -170,15 +170,18 @@ document.addEventListener("click", function(e) {
 </script>
 
     <script>
-document.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("load", () => {
     const hamburger = document.getElementById("hamburger");
     const mobileNav = document.getElementById("mobile-nav");
 
-    hamburger.addEventListener("click", () => {
-        mobileNav.classList.toggle("open");
-    });
+    if (hamburger && mobileNav) {
+        hamburger.addEventListener("click", () => {
+            mobileNav.classList.toggle("open");
+        });
+    }
 });
 </script>
+
 
     
 </body>
