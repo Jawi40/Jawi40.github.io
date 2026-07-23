@@ -675,6 +675,10 @@ section h2 {
     transition: background 0.3s, transform 0.2s;
 }
 
+/* Right‑aligned option (use .hamburger.right if you prefer) */
+.hamburger.right {
+    margin-left: auto;
+}
 /* Hover / tap effect */
 .hamburger:hover {
     background: var(--jamaica-green);
@@ -682,9 +686,14 @@ section h2 {
     transform: scale(1.05);
 }
 
+/* Hover effect */
+.hamburger:hover {
+    background: var(--usa-red);
+}
 /* Mobile nav menu – Jamaican theme */
 #mobile-nav {
-    display: none;
+   flex: 1 1 45%; /* two items per row */ 
+   display: none;
     flex-direction: column;
     background: var(--jamaica-black);
     border-top: 4px solid var(--jamaica-yellow);
@@ -730,5 +739,3 @@ section h2 {
         display: flex;
     }
 }
-
-<div class="hamburger right" onclick="toggleMenu()">
