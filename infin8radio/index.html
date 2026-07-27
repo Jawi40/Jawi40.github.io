@@ -162,15 +162,15 @@ document.addEventListener("DOMContentLoaded", () => {
 <!-- FOOTER -->
 <div id="footer"></div>
 <script>
-fetch("partials/footer.html")
+fetch("/partials/footer.html")
     .then(r => r.text())
     .then(t => document.getElementById("footer").innerHTML = t);
 </script>
 
 <!-- MODULE SCRIPTS -->
-<script type="module" src="js/firebase-init.js"></script>
-<script type="module" src="js/listener-counter.js"></script>
-<script type="module" src="js/player.js"></script>
+<script type="module" src="/infin8radio/js/firebase-init.js"></script>
+<script type="module" src="/infin8radio/js/listener-counter.js"></script>
+<script type="module" src="/infin8radio/js/player.js"></script>
 
 <!-- CLEAN DIAGNOSTICS TOGGLE SCRIPT -->
 <script>
@@ -207,8 +207,8 @@ function closeMenu() {
 
 
 <script type="module">
-    import "./listener-counter.js";
-    import "./listener-cleaner.js";
+    import "/infin8radio./listener-counter.js";
+    import ".infin8radio/listener-cleaner.js";
 </script>
 
 </body>
