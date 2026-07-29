@@ -2,10 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Jitsi Embed – Improved</title>
-
-    <!-- Load Jitsi/JaaS External API -->
-    <script src="https://8x8.vc/vpaas-magic-cookie-3e1b3be57d9c4595be4a66f74c20a33a/external_api.js"></script>
+    <title>Jitsi Embed – Fixed</title>
 
     <style>
         html, body {
@@ -20,56 +17,40 @@
             background: #000;
         }
     </style>
+
+    <!-- Load Jitsi/JaaS External API -->
+    <script src="https://8x8.vc/vpaas-magic-cookie-3e1b3be57d9c4595be4a66f74c20a33a/external_api.js"></script>
 </head>
 
 <body>
     <div id="jaas-container"></div>
 
     <script>
-        function startJitsi() {
-            const domain = "8x8.vc";
-
-            const options = {
-                roomName: "vpaas-magic-cookie-3e1b3be57d9c4595be4a66f74c20a33a/SampleAppBlankWallsMinimizeReally",
-                parentNode: document.getElementById("jaas-container"),
-
-                // Optional UI customizations
-                interfaceConfigOverwrite: {
-                    // Example: hide some buttons
-                    // TOOLBAR_BUTTONS: ["microphone", "camera", "chat", "hangup"]
-                },
-
-                configOverwrite: {
-                    // Example: start muted
-                    // startWithAudioMuted: true,
-                    // startWithVideoMuted: true
-                },
-
-                // Optional: JWT for premium features (recording, SIP, outbound calls)
-                // jwt: "YOUR_JWT_HERE"
-            };
-
-            try {
-                const api = new JitsiMeetExternalAPI(domain, options);
-
-                // Example event listeners
-                api.addEventListener("videoConferenceJoined", () => {
-                    console.log("Joined the meeting");
-                });
-
-                api.addEventListener("readyToClose", () => {
-                    console.log("Meeting ended");
-                });
-
-            } catch (error) {
-                console.error("Jitsi API failed to load:", error);
-                document.getElementById("jaas-container").innerHTML =
-                    "<p style='color:white; text-align:center; padding-top:20px;'>Failed to load Jitsi meeting.</p>";
+        function waitForJitsiAPI(callback) {
+            if (window.JitsiMeetExternalAPI) {
+                callback();
+            } else {
+                setTimeout(() => waitForJitsiAPI(callback), 50);
             }
         }
 
-        // Ensure API loads after DOM is ready
-        window.onload = startJitsi;
+        waitForJitsiAPI(() => {
+            try {
+                const api = new JitsiMeetExternalAPI("8x8.vc", {
+                    roomName: "vpaas-magic-cookie-3e1b3be57d9c4595be4a66f74c20a33a/SampleAppBlankWallsMinimizeReally",
+                    parentNode: document.getElementById("jaas-container")
+                });
+
+                api.addEventListener("videoConferenceJoined", () => {
+                    console.log("Joined meeting");
+                });
+
+            } catch (err) {
+                console.error("Jitsi failed:", err);
+                document.getElementById("jaas-container").innerHTML =
+                    "<p style='color:white; text-align:center; padding-top:20px;'>Failed to load Jitsi meeting.</p>";
+            }
+        });
     </script>
 </body>
 </html>
