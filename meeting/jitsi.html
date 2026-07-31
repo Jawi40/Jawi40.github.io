@@ -1,19 +1,36 @@
 <!DOCTYPE html>
-    <html>
-      <head>
-        <script src='https://8x8.vc/vpaas-magic-cookie-3e1b3be57d9c4595be4a66f74c20a33a/external_api.js' async></script>
-        <style>html, body, #jaas-container { height: 100%; }</style>
-        <script type="text/javascript">
-          window.onload = () => {
-            const api = new JitsiMeetExternalAPI("8x8.vc", {
-              roomName: "vpaas-magic-cookie-3e1b3be57d9c4595be4a66f74c20a33a/SampleAppBlankWallsMinimizeReally",
-              parentNode: document.querySelector('#jaas-container'),
-							// Make sure to include a JWT if you intend to record,
-							// make outbound calls or use any other premium features!
-							// jwt: "eyJraWQiOiJ2cGFhcy1tYWdpYy1jb29raWUtM2UxYjNiZTU3ZDljNDU5NWJlNGE2NmY3NGMyMGEzM2EvMDg2MGM4LVNBTVBMRV9BUFAiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJqaXRzaSIsImlzcyI6ImNoYXQiLCJpYXQiOjE3ODUzNjQ4MjEsImV4cCI6MTc4NTM3MjAyMSwibmJmIjoxNzg1MzY0ODE2LCJzdWIiOiJ2cGFhcy1tYWdpYy1jb29raWUtM2UxYjNiZTU3ZDljNDU5NWJlNGE2NmY3NGMyMGEzM2EiLCJjb250ZXh0Ijp7ImZlYXR1cmVzIjp7ImxpdmVzdHJlYW1pbmciOmZhbHNlLCJmaWxlLXVwbG9hZCI6ZmFsc2UsIm91dGJvdW5kLWNhbGwiOmZhbHNlLCJzaXAtb3V0Ym91bmQtY2FsbCI6ZmFsc2UsInRyYW5zY3JpcHRpb24iOmZhbHNlLCJsaXN0LXZpc2l0b3JzIjpmYWxzZSwicmVjb3JkaW5nIjpmYWxzZSwiZmxpcCI6ZmFsc2V9LCJ1c2VyIjp7ImhpZGRlbi1mcm9tLXJlY29yZGVyIjpmYWxzZSwibW9kZXJhdG9yIjp0cnVlLCJuYW1lIjoiVGVzdCBVc2VyIiwiaWQiOiJhdXRoMHw2YTZhODEyNDg2OGUyNTNmNTU1ODE1ODUiLCJhdmF0YXIiOiIiLCJlbWFpbCI6InRlc3QudXNlckBjb21wYW55LmNvbSJ9fSwicm9vbSI6IioifQ.pKVh8GDrrItyrAZGm_d-6u96AclTfk-Ds5abz1KrJCv1EWNYEt7WkY3traKa6em1W2NUV2A-M66i-wky71ygl5JGwFlye__yQFWeD6ZtclhhU0OE0R8lm9iIVx9WYXk5Cg1ZCrNJUuBlo0qNxWNtBuDRc1CEh5IJlCgqUI77N7cp4LDZcSl5zpStwjW6F9FOAuxwEvZuMoa0V_IyptA56ibRMeP9Vo1UcUS89dapNJb2YaEcXmuargTHj6nnzX0jv-n4h0ucLkqOjQSgsbenRU8wJ9A6IPFjH5jxw65lDf_cMm3ttAbGb4a2SqHllHx64QgTNOFWzQYwJB7HACpWPA"
-            });
-          }
-        </script>
-      </head>
-      <body><div id="jaas-container" /></body>
-    </html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <script src="https://8x8.vc/vpaas-magic-cookie-3e1b3be57d9c4595be4a66f74c20a33a/external_api.js" async></script>
+
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      #jaas-container {
+        height: 100vh;
+        width: 100vw;
+      }
+    </style>
+
+    <script>
+      window.onload = () => {
+        const api = new JitsiMeetExternalAPI("8x8.vc", {
+          roomName: "vpaas-magic-cookie-3e1b3be57d9c4595be4a66f74c20a33a/SampleAppBlankWallsMinimizeReally",
+          parentNode: document.querySelector('#jaas-container')
+        });
+      };
+    </script>
+  </head>
+
+  <body>
+    <div id="jaas-container"></div>
+  </body>
+</html>
