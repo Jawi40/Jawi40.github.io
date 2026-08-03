@@ -1,0 +1,192 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events</title>
+
+    <!-- GLOBAL JAMAICAN THEME -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<!-- HEADER PARTIAL -->
+<div id="header"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    fetch(window.location.origin + "/partials/header.html")
+        .then(response => {
+            if (!response.ok) throw new Error("Header failed to load");
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById("header").innerHTML = html;
+        })
+        .catch(err => {
+            console.error("HEADER LOAD ERROR:", err);
+        });
+});
+</script>
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("mobile-nav");
+    const current = window.getComputedStyle(menu).display;
+    menu.style.display = (current === "none") ? "flex" : "none";
+}
+</script>
+
+
+<div class="page-wrapper">
+
+    <!-- POSTER GALLERY -->
+    <section class="event-wrapper">
+        <h2 class="page-title">Local Events & Resources</h2>
+        <div class="section-divider"></div>
+
+        <div id="gallery" class="gallery"></div>
+    </section>
+
+    <!-- SUBMIT POSTER BUTTON -->
+    <section class="event-wrapper" style="text-align:center;">
+        <div class="section-divider"></div>
+
+        <a href="mailto:j_a_w_i@hotmail.com" class="event-submit-btn">
+            Submit Your Poster
+        </a>
+
+        <div class="section-divider" style="margin-top:25px;"></div>
+    </section>
+
+</div>
+
+<!-- AUTO‑LOADING POSTERS -->
+<script>
+async function loadGallery() {
+    const gallery = document.getElementById("gallery");
+
+    try {
+        const response = await fetch("/js/posters/list.json");
+        const posters = await response.json();
+
+        posters.forEach(file => {
+            const img = document.createElement("img");
+            img.src = "/js/posters/" + file;
+            img.alt = "Event Poster";
+            img.setAttribute("data-src", img.src);
+            gallery.appendChild(img);
+        });
+
+    } catch (error) {
+        gallery.innerHTML = "<p style='color:#fdda24;'>Could not load posters. Check list.json.</p>";
+    }
+}
+
+loadGallery();
+</script>
+
+<!-- UNIVERSAL FULLSCREEN VIEWER -->
+<div id="viewer" style="
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:rgba(0,0,0,0.9);
+    backdrop-filter: blur(4px);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+">
+    <div id="viewer-content"></div>
+</div>
+
+<script>
+document.addEventListener("click", function(e) {
+    if (e.target.tagName === "IMG" && e.target.closest(".gallery")) {
+
+        const viewer = document.getElementById("viewer");
+        const content = document.getElementById("viewer-content");
+
+        const src = e.target.getAttribute("data-src") || e.target.src;
+
+        content.innerHTML = "";
+
+        if (src.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+            content.innerHTML = `
+                <img src="${src}" style="
+                    max-width:90%;
+                    max-height:90%;
+                    border:3px solid #009b3a;
+                    box-shadow:0 0 25px #da291c;
+                    border-radius:10px;
+                ">
+            `;
+        } 
+        else if (src.match(/\.(mp4|webm|mov)$/i)) {
+            content.innerHTML = `
+                <video controls autoplay style="
+                    max-width:90%;
+                    max-height:90%;
+                    border:3px solid #009b3a;
+                    box-shadow:0 0 25px #da291c;
+                    border-radius:10px;
+                ">
+                    <source src="${src}">
+                </video>
+            `;
+        } 
+        else if (src.match(/\.(mp3|wav|ogg)$/i)) {
+            content.innerHTML = `
+                <audio controls autoplay style="
+                    width:80%;
+                    border:3px solid #009b3a;
+                    box-shadow:0 0 25px #da291c;
+                    border-radius:10px;
+                    background:black;
+                    padding:20px;
+                ">
+                    <source src="${src}">
+                </audio>
+            `;
+        }
+
+        viewer.style.display = "flex";
+    }
+
+    if (e.target.id === "viewer") {
+        e.target.style.display = "none";
+        document.getElementById("viewer-content").innerHTML = "";
+    }
+});
+</script>
+
+<!-- FOOTER PARTIAL -->
+<div id="footer"></div>
+<script>
+  fetch("/partials/footer.html")
+    .then(r => r.text())
+    .then(t => document.getElementById("footer").innerHTML = t);
+</script>
+
+<script>
+function toggleMenu() {
+    const nav = document.getElementById("mobile-nav");
+    nav.classList.toggle("show");
+
+    // Prevent stuck green hover on mobile
+    document.querySelector(".hamburger").blur();
+}
+
+function closeMenu() {
+    const nav = document.getElementById("mobile-nav");
+    nav.classList.remove("show");
+
+    // Reset hamburger color
+    document.querySelector(".hamburger").blur();
+}
+</script>
+
+    
+</body>
+</html>
