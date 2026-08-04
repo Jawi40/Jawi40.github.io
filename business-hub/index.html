@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>business hub</title>
+    <title>business-hub</title>
 
     <!-- GLOBAL JAMAICAN THEME -->
     <link rel="stylesheet" href="/css/style.css">
@@ -42,7 +42,7 @@ function toggleMenu() {
 
     <!-- POSTER GALLERY -->
     <section class="event-wrapper">
-        <h2 class="page-title">Business Hub</h2>
+        <h2 class="page-title">business-hub</h2>
         <div class="section-divider"></div>
 
         <div id="gallery" class="gallery"></div>
@@ -72,7 +72,7 @@ async function loadGallery() {
 
         posters.forEach(file => {
             const img = document.createElement("img");
-            img.src = "/js/business promotion/" + file;
+            img.src = "/js/business-promotion/" + file;
             img.alt = "Business Hub";
             img.setAttribute("data-src", img.src);
             gallery.appendChild(img);
