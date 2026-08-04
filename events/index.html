@@ -86,7 +86,7 @@ async function loadGallery() {
 loadGallery();
 </script>
 
-<!-- UNIVERSAL FULLSCREEN VIEWER -->
+<!-- UNIVERSAL FULLSCREEN VIEWER -->    
 <div id="viewer" style="
     display:none;
     position:fixed;
@@ -94,9 +94,14 @@ loadGallery();
     width:100%; height:100%;
     background:rgba(0,0,0,0.9);
     backdrop-filter: blur(4px);
-    justify-content:center;
-    align-items:center;
+    overflow:auto;
+    padding:20px;
     z-index:9999;
+
+    /* Center horizontally, allow vertical scroll */
+    display:none;
+    justify-content:center;
+    align-items:flex-start;
 ">
     <div id="viewer-content"></div>
 </div>
