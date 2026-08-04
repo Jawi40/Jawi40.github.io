@@ -67,7 +67,7 @@ async function loadGallery() {
     const gallery = document.getElementById("gallery");
 
     try {
-        const response = await fetch("/js/business promotion/list.json");
+        const response = await fetch("/js/business-promotion/list.json");
         const posters = await response.json();
 
         posters.forEach(file => {
