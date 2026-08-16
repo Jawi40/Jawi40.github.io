@@ -4,50 +4,89 @@
   <meta charset="UTF-8"> 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome</title>
+
+  <!-- Your existing Jamaican theme CSS -->
   <link rel="stylesheet" href="../css/style.css">
+</head>
 
-  <style>
-    /* --- Landing Page Enhancements --- */
+<body>
 
-    .landing-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 60px 20px;
-      text-align: center;
-    }
+<!-- HEADER PARTIAL -->
+<div id="header"></div>
 
-    .landing-title {
-      font-size: 48px;
-      margin-bottom: 40px;
-      font-weight: bold;
-    }
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    fetch(window.location.origin + "/partials/header.html")
+        .then(response => {
+            if (!response.ok) throw new Error("Header failed to load");
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById("header").innerHTML = html;
+        })
+        .catch(err => {
+            console.error("HEADER LOAD ERROR:", err);
+        });
+});
+</script>
 
-    .button-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      width: 100%;
-      max-width: 320px;
-    }
+<main class="page-wrapper">
 
-    .nav-button {
-      display: block;
-      padding: 15px;
-      background: #111;
-      color: #fff;
-      border-radius: 10px;
-      font-size: 22px;
-      text-decoration: none;
-      text-align: center;
-      transition: 0.25s ease;
-      border: 2px solid #111;
-    }
+  <!-- LANDING PAGE TITLE -->
+  <h1 class="page-title" style="text-align:center; margin-top:40px;">
+    Welcome
+  </h1>
 
-    .nav-button:hover {
-      background: #28a745;
-      border-color: #28a745;
-      transform: scale(1.05);
-    }
+  <!-- BUTTON SECTION -->
+  <section style="margin-top:40px; display:flex; flex-direction:column; align-items:center; gap:20px;">
 
-    @media (min-width: 700px
+      <a class="event-submit-btn" href="/infin8radio/" style="width:260px; text-align:center;">
+        iRadio
+      </a>
+
+      <a class="event-submit-btn" href="/events/" style="width:260px; text-align:center;">
+        Events
+      </a>
+
+      <a class="event-submit-btn" href="/business-hub/" style="width:260px; text-align:center;">
+        Business-Hub
+      </a>
+
+      <a class="event-submit-btn" href="/about/" style="width:260px; text-align:center;">
+        About
+      </a>
+
+      <a class="event-submit-btn" href="/contact/" style="width:260px; text-align:center;">
+        Contact
+      </a>
+
+  </section>
+
+</main>
+
+<!-- FOOTER PARTIAL -->
+<div id="footer"></div>
+
+<script>
+  fetch("/partials/footer.html")
+    .then(r => r.text())
+    .then(t => document.getElementById("footer").innerHTML = t);
+</script>
+
+<!-- Your existing mobile menu scripts -->
+<script>
+function toggleMenu() {
+    const nav = document.getElementById("mobile-nav");
+    nav.classList.toggle("show");
+    document.querySelector(".hamburger").blur();
+}
+
+function closeMenu() {
+    const nav = document.getElementById("mobile-nav");
+    nav.classList.remove("show");
+    document.querySelector(".hamburger").blur();
+}
+</script>
+
+</body>
+</html>
