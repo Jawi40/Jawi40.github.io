@@ -5,8 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome</title>
 
-  <!-- Your existing Jamaican theme CSS -->
+  <!-- Jamaican Theme CSS -->
   <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    /* --- Jamaican-Themed Button Enhancements --- */
+
+    .nav-button {
+      display: block;
+      width: 260px;
+      padding: 15px;
+      background: #111; /* Black base */
+      color: #fff;
+      border-radius: 10px;
+      font-size: 22px;
+      text-decoration: none;
+      text-align: center;
+      transition: 0.25s ease;
+      border: 2px solid #111;
+    }
+
+    .nav-button:hover {
+      background: #FFD700; /* Gold hover */
+      border-color: #FFD700;
+      color: #111;
+      transform: scale(1.05);
+    }
+
+    .intro-text {
+      max-width: 700px;
+      margin: 20px auto 40px;
+      text-align: center;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+  </style>
 </head>
 
 <body>
@@ -37,26 +70,36 @@ document.addEventListener("DOMContentLoaded", () => {
     Welcome
   </h1>
 
-  <!-- BUTTON SECTION -->
-  <section style="margin-top:40px; display:flex; flex-direction:column; align-items:center; gap:20px;">
+  <!-- POETIC INTRODUCTION -->
+  <div class="intro-text">
+    Welcome to <strong>JAMEXUS</strong> — a place shaped by rhythm, intention, and quiet sparks of possibility.<br>
+    Each path ahead opens into its own world: some filled with sound, some with movement, some with ideas waiting to be awakened.<br><br>
 
-      <a class="event-submit-btn" href="/infin8radio/" style="width:260px; text-align:center;">
+    Nothing here reveals itself all at once.<br>
+    Step into the sections, follow the flow, and let each space unfold in its own time.<br>
+    What you find may surprise you.
+  </div>
+
+  <!-- BUTTON SECTION -->
+  <section style="display:flex; flex-direction:column; align-items:center; gap:20px;">
+
+      <a class="nav-button" href="/infin8radio/">
         iRadio
       </a>
 
-      <a class="event-submit-btn" href="/events/" style="width:260px; text-align:center;">
+      <a class="nav-button" href="/events/">
         Events
       </a>
 
-      <a class="event-submit-btn" href="/business-hub/" style="width:260px; text-align:center;">
+      <a class="nav-button" href="/business-hub/">
         Business-Hub
       </a>
 
-      <a class="event-submit-btn" href="/about/" style="width:260px; text-align:center;">
+      <a class="nav-button" href="/about/">
         About
       </a>
 
-      <a class="event-submit-btn" href="/contact/" style="width:260px; text-align:center;">
+      <a class="nav-button" href="/contact/">
         Contact
       </a>
 
@@ -73,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(t => document.getElementById("footer").innerHTML = t);
 </script>
 
-<!-- Your existing mobile menu scripts -->
+<!-- MOBILE MENU SCRIPTS -->
 <script>
 function toggleMenu() {
     const nav = document.getElementById("mobile-nav");
