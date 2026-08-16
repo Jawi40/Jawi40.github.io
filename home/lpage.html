@@ -5,30 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome</title>
 
-  <!-- Jamaican Theme CSS -->
+  <!-- Your existing CSS -->
   <link rel="stylesheet" href="../css/style.css">
 
   <style>
-    /* --- Jamaican-Themed Button Enhancements --- */
+    /* --- Jamaican-Themed Button Enhancements (Gold Buttons) --- */
 
     .nav-button {
       display: block;
       width: 260px;
       padding: 15px;
-      background: #111; /* Black base */
-      color: #fff;
+      background: #FFD700; /* Gold base */
+      color: #111; /* Dark text */
       border-radius: 10px;
       font-size: 22px;
       text-decoration: none;
       text-align: center;
       transition: 0.25s ease;
-      border: 2px solid #111;
+      border: 2px solid #FFD700;
+      font-weight: bold;
     }
 
     .nav-button:hover {
-      background: #FFD700; /* Gold hover */
+      background: #111; /* Black hover */
       border-color: #FFD700;
-      color: #111;
+      color: #FFD700; /* Gold text */
       transform: scale(1.05);
     }
 
@@ -38,6 +39,7 @@
       text-align: center;
       font-size: 18px;
       line-height: 1.6;
+      color: #fff; /* Ensures visibility on dark backgrounds */
     }
   </style>
 </head>
@@ -66,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <main class="page-wrapper">
 
   <!-- LANDING PAGE TITLE -->
-  <h1 class="page-title" style="text-align:center; margin-top:40px;">
+  <h1 class="page-title" style="text-align:center; margin-top:40px; color:#FFD700;">
     Welcome
   </h1>
 
