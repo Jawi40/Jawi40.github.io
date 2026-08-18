@@ -3,33 +3,46 @@
    =========================== */
 * { box-sizing: border-box; }
 
+:root {
+    --jamaica-green: #009B3A;
+    --jamaica-yellow: #FED100;
+    --jamaica-red: #DA291C;
+    --jamaica-black: #000000;
+
+    /* Spacing scale */
+    --space-xs: 8px;
+    --space-sm: 16px;
+    --space-md: 24px;
+    --space-lg: 40px;
+    --space-xl: 60px;
+}
+
 body {
     margin: 0;
     padding: 0;
     background: #050505;
-    color: #fdda24;
+    color: var(--jamaica-yellow);
     font-family: Arial, sans-serif;
     line-height: 1.7;
 }
 
 /* ===========================
    PAGE WRAPPER
-   =========================== */ 
+   =========================== */
 .page-wrapper {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 var(--space-md);
 }
 
 /* ===========================
-   HEADER — JAMAICAN GLOW (FIXED)
+   HEADER
    =========================== */
 header {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 15px 0;
-    width: 100%;
+    padding: var(--space-sm) 0;
 }
 
 .site-logo {
@@ -38,408 +51,178 @@ header {
 }
 
 /* ===========================
-   NAVIGATION — REGGAE VIBES
+   NAVIGATION — DESKTOP
    =========================== */
-nav {
+nav.desktop-nav {
     display: flex;
     justify-content: center;
     gap: 35px;
-    padding: 20px 0;
+    padding: var(--space-md) 0;
     background: #0b0b0b;
-    border-bottom: 3px solid #009b3a;
-    box-shadow: 0 0 15px #009b3a;
+    border-bottom: 3px solid var(--jamaica-green);
+    box-shadow: 0 0 15px var(--jamaica-green);
 }
 
-nav a {
-    color: #fdda24;
+nav.desktop-nav a {
+    color: var(--jamaica-yellow);
     text-decoration: none;
     font-size: 20px;
     font-weight: bold;
-    text-shadow: 0 0 8px #009b3a;
+    text-shadow: 0 0 8px var(--jamaica-green);
     transition: 0.25s ease;
 }
 
-nav a:hover {
-    color: #da291c;
-    text-shadow: 0 0 15px #da291c;
+nav.desktop-nav a:hover {
+    color: var(--jamaica-red);
+    text-shadow: 0 0 15px var(--jamaica-red);
     transform: translateY(-2px);
 }
 
 /* ===========================
-   SECTIONS — CLEAN + CENTERED
+   MOBILE NAVIGATION
    =========================== */
-section {
-    max-width: 900px;
-    margin: 10px auto;
-    padding: 0 25px;
+.hamburger {
+    display: none;
+    background: var(--jamaica-black);
+    color: var(--jamaica-yellow);
+    padding: 14px 18px;
+    cursor: pointer;
+    font-size: 22px;
+    font-weight: bold;
+    border: 2px solid var(--jamaica-green);
+    border-left-width: 6px;
+    border-right-width: 6px;
+    border-radius: 4px;
+    box-shadow: 0 0 4px var(--jamaica-green);
+    transition: 0.3s;
 }
 
-@media (min-width: 900px) {
-    section {
-        padding: 0 10px;
-    }
+.hamburger:hover {
+    background: var(--jamaica-green);
+    color: var(--jamaica-black);
+    transform: scale(1.05);
 }
 
-/* Page Titles (H1) */
-.page-title {
+#mobile-nav {
+    display: none;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: var(--jamaica-black);
+    border-top: 4px solid var(--jamaica-yellow);
+    border-bottom: 4px solid var(--jamaica-green);
+    padding: 10px;
+    border-radius: 6px;
+}
+
+#mobile-nav.show {
+    display: flex;
+}
+
+#mobile-nav a {
+    flex: 1 1 45%;
+    background: var(--jamaica-yellow);
+    color: var(--jamaica-black);
+    padding: 14px;
+    text-decoration: none;
+    font-weight: bold;
     text-align: center;
-    font-size: 36px;
-    margin: 20px 0 30px;
-    color: #fdda24;
-    text-shadow: 0 0 12px #fdda24, 0 0 15px #009b3a;
+    border-radius: 4px;
+    transition: 0.2s;
 }
 
-/* Section Titles (H2) */
-section h2 {
-    text-align: center;
-    font-size: 36px;
-    margin-bottom: 20px;
-    color: #fdda24;
-    text-shadow: 0 0 12px #fdda24, 0 0 15px #009b3a;
+#mobile-nav a:hover {
+    background: var(--jamaica-green);
+    color: var(--jamaica-black);
 }
 
 /* ===========================
-   SECTION DIVIDER — RASTA STRIPE
+   SECTIONS — CLEAN SPACING
+   =========================== */
+section {
+    max-width: 900px;
+    margin: var(--space-lg) auto;
+    padding: var(--space-lg) var(--space-md);
+}
+
+.page-title,
+section h2 {
+    text-align: center;
+    font-size: 36px;
+    margin: var(--space-xl) 0 var(--space-lg);
+    color: var(--jamaica-yellow);
+    text-shadow: 0 0 12px var(--jamaica-yellow), 0 0 15px var(--jamaica-green);
+}
+
+/* ===========================
+   SECTION DIVIDER
    =========================== */
 .section-divider {
     width: 100%;
     height: 5px;
-    background: linear-gradient(90deg, #009b3a, #fdda24, #da291c);
-    box-shadow: 0 0 20px #009b3a, 0 0 20px #da291c;
-    margin: 10px 0;
+    background: linear-gradient(90deg, var(--jamaica-green), var(--jamaica-yellow), var(--jamaica-red));
+    box-shadow: 0 0 20px var(--jamaica-green), 0 0 20px var(--jamaica-red);
+    margin: var(--space-md) 0;
 }
 
 /* ===========================
-   FLEX ROW (PLAYER + CHAT)
+   FLEX ROW — PLAYER + CHAT
    =========================== */
 .flex-row {
     display: flex;
     justify-content: center;
-    gap: 35px;
-    flex-wrap: nowrap;
+    gap: var(--space-lg);
+    margin: var(--space-lg) 0;
+    flex-wrap: wrap;
 }
 
-/* ===========================
-   PLAYER + CHAT WIDTH
-   =========================== */
 .player-box,
 .chat-box {
     width: 460px;
     max-width: 100%;
-}
-
-/* ===========================
-   CHAT BOX
-   =========================== */
-.chat-box {
     background: #0d0d0d;
-    padding: 15px;
+    padding: var(--space-md);
     border-radius: 14px;
-    border: 2px solid #009b3a;
-    box-shadow: 0 0 18px #009b3a;
 }
 
-/* ===========================
-   PLAYER BOX
-   =========================== */
 .player-box {
-    background: #0d0d0d;
-    padding: 15px;
-    border-radius: 14px;
-    border: 2px solid #da291c;
-    box-shadow: 0 0 18px #da291c;
+    border: 2px solid var(--jamaica-red);
+    box-shadow: 0 0 18px var(--jamaica-red);
     text-align: center;
 }
 
-/* ===========================
-   CHAT EMBED
-   =========================== */
-.minnit-chat-sembed {
-    display: block !important;
+.chat-box {
+    border: 2px solid var(--jamaica-green);
+    box-shadow: 0 0 18px var(--jamaica-green);
 }
 
 /* ===========================
-   INFIN8RADIO — POLISHED
-   =========================== */
-#infin8-console {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 10px 0;
-    font-family: system-ui, sans-serif;
-}
-
-.console-wrapper {
-    width: 100%;
-    max-width: 450px;
-    background: rgba(10,10,10,0.95);
-    border-radius: 14px;
-    border: 2px solid #009b3a;
-    box-shadow: 0 0 25px #009b3a;
-    padding: 12px;
-    color: #eee;
-}
-
-/* HEADER */
-.console-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 12px;
-    border-bottom: 1px solid #004d00;
-    background: linear-gradient(90deg, #000, #004d00);
-    border-radius: 10px 10px 0 0;
-}
-
-.console-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #fdda24;
-}
-
-/* FLAGS */
-.flag {
-    display: inline-block;
-    width: 18px;
-    height: 12px;
-    background-size: cover;
-    background-position: center;
-    border-radius: 2px;
-    margin-right: 3px;
-}
-
-.flag-jm { background-image: url('https://flagcdn.com/w20/jm.png'); }
-.flag-mx { background-image: url('https://flagcdn.com/w20/mx.png'); }
-.flag-us { background-image: url('https://flagcdn.com/w20/us.png'); }
-
-/* LIVE INDICATOR */
-.live-indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 3px;
-    background: #da291c;
-    box-shadow: 0 0 8px rgba(218,41,28,0.7);
-}
-
-.live-ok { background: #009b3a !important; }
-.live-warn { background: #fdda24 !important; }
-
-/* ===========================
-   CONTROLS — iOS FIX
-   =========================== */
-.controls-row {
-    display: flex;
-    align-items: center;
-    height: 42px;
-    gap: 10px;
-    margin-top: 12px;
-}
-
-.btn {
-    width: 42px;
-    height: 42px;
-    border-radius: 8px;
-    border: none;
-    background: #fdda24;
-    color: #000;
-    font-size: 18px;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-.btn:hover {
-    background: #ffe55c;
-}
-
-/* ===========================
-   EQUALIZER — FIXED + ALIGNED
-   =========================== */
-.equalizer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 4px;
-    height: 42px;
-    margin-top: 0;
-    -webkit-transform: translateZ(0);
-}
-
-.eq-bar {
-    width: 6px;
-    background: #f4d400;
-    border-radius: 3px;
-    height: 6px;
-    animation: eqBounce 0.6s infinite ease-in-out;
-}
-
-.eq-bar:nth-child(1) { animation-delay: 0s; }
-.eq-bar:nth-child(2) { animation-delay: 0.1s; }
-.eq-bar:nth-child(3) { animation-delay: 0.2s; }
-.eq-bar:nth-child(4) { animation-delay: 0.3s; }
-.eq-bar:nth-child(5) { animation-delay: 0.4s; }
-
-@keyframes eqBounce {
-    0%   { height: 6px; }
-    50%  { height: 32px; }
-    100% { height: 6px; }
-}
-
-.eq-paused .eq-bar {
-    animation-play-state: paused;
-    height: 6px !important;
-}
-
-/* ===========================
-   VOLUME — iOS slider fix
-   =========================== */
-.volume-row {
-    margin-top: 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.volume-row input[type="range"] {
-    width: 100%;
-    -webkit-appearance: none;
-}
-
-.volume-row input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
-    background: #fdda24;
-    border-radius: 50%;
-}
-
-/* ===========================
-   DIAGNOSTICS
-   =========================== */
-.diag-toggle {
-    margin-top: 12px;
-    cursor: pointer;
-    color: #fdda24;
-    font-size: 13px;
-    text-align: center;
-}
-
-.diagnostics {
-    margin-top: 8px;
-    padding: 10px;
-    background: #0d0d0d;
-    border: 1px solid #222;
-    border-radius: 8px;
-    font-size: 12px;
-    line-height: 1.4;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.35s ease;
-}
-
-.diagnostics.open {
-    max-height: 260px;
-}
-
-/* ===========================
-   FOOTER
-   =========================== */
-.console-footer {
-    margin-top: 16px;
-    padding: 10px 12px;
-    background: linear-gradient(90deg, #009b3a, #000);
-    border-top: 2px solid #004d00;
-    font-size: 12px;
-    color: #fdda24;
-    display: flex;
-    justify-content: space-between;
-    border-radius: 0 0 10px 10px;
-}
-
-/* ===========================
-   RSS BUTTON
-   =========================== */
-.rss-wrapper {
-    text-align: center;
-    margin-top: 18px;
-}
-
-.rss-button {
-    display: inline-block;
-    background-color: #da291c;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 1rem;
-    transition: 0.2s ease-in-out;
-}
-
-.rss-button:hover {
-    background-color: #b51f1f;
-    transform: scale(1.05);
-}
-
-/* ===========================
-   MOBILE FIX — ANDROID SAFE
-   =========================== */
-@media (max-width: 768px) {
-
-    nav.desktop-nav {
-        flex-wrap: wrap;
-        gap: 12px;
-        padding: 10px 0;
-    }
-
-    nav a {
-        font-size: 17px;
-    }
-
-    .flex-row {
-        flex-direction: column;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 25px;
-    }
-
-    .player-box,
-    .chat-box {
-        width: 100%;
-        max-width: 500px;
-    }
-}
-
-/* ===========================
-   SERVICES PAGE — JAMAICAN THEME
+   DROPDOWN — SERVICES PAGE
    =========================== */
 .dropdown-btn {
     width: 100%;
     background: #0b0b0b;
-    color: #fdda24;
-    padding: 14px;
-    text-align: left;
-    border: 2px solid #009b3a;
-    outline: none;
+    color: var(--jamaica-yellow);
+    padding: var(--space-md);
+    border: 2px solid var(--jamaica-green);
     font-size: 20px;
     cursor: pointer;
-    margin-top: 12px;
+    margin-top: var(--space-sm);
+    border-radius: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-radius: 8px;
-    transition: 0.25s ease;
-    text-shadow: 0 0 8px #009b3a;
+    text-shadow: 0 0 8px var(--jamaica-green);
+    transition: 0.25s;
 }
 
 .dropdown-btn:hover {
     background: #111;
-    box-shadow: 0 0 12px #009b3a;
+    box-shadow: 0 0 12px var(--jamaica-green);
     transform: translateY(-2px);
 }
 
 .arrow {
-    transition: transform 0.3s ease;
-    color: #fdda24;
+    transition: 0.3s;
 }
 
 .arrow.rotate {
@@ -449,128 +232,87 @@ section h2 {
 .dropdown-content {
     display: none;
     background: #0d0d0d;
-    padding: 18px 22px;
-    color: #eee;
-    border-left: 5px solid #009b3a;
+    padding: var(--space-lg);
+    border-left: 5px solid var(--jamaica-green);
     border-radius: 0 0 8px 8px;
     margin-top: 5px;
-    box-shadow: 0 0 18px #009b3a;
+    box-shadow: 0 0 18px var(--jamaica-green);
+    line-height: 1.8;
 }
 
 .dropdown-content p {
-    margin: 12px 0;
-    line-height: 1.6;
-    color: #fdda24;
-}
-
-.dropdown-content hr {
-    border: none;
-    height: 4px;
-    background: linear-gradient(90deg, #009b3a, #fdda24, #da291c);
-    box-shadow: 0 0 12px #009b3a;
-    margin: 18px 0;
+    margin: var(--space-md) 0;
+    color: var(--jamaica-yellow);
 }
 
 /* ===========================
-   EVENT PAGE — JAMAICAN THEME
+   GALLERY — EVENTS PAGE
    =========================== */
 .gallery {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 25px;
-    margin: 25px auto;
-    padding-bottom: 20px;
+    gap: var(--space-md);
+    margin: var(--space-md) auto;
 }
 
 .gallery img {
     width: 100%;
     border-radius: 10px;
-    border: 2px solid #009b3a;
-    box-shadow: 0 0 18px #009b3a;
-    transition: 0.25s ease;
+    border: 2px solid var(--jamaica-green);
+    box-shadow: 0 0 18px var(--jamaica-green);
+    transition: 0.25s;
 }
 
 .gallery img:hover {
     transform: scale(1.03);
-    box-shadow: 0 0 25px #da291c;
+    box-shadow: 0 0 25px var(--jamaica-red);
 }
 
-.event-submit-btn {
-    display: inline-block;
-    background-color: #da291c;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 6px;
+/* ===========================
+   FOOTER
+   =========================== */
+.footer-wrapper {
+    width: 100%;
+    padding: 0 var(--space-md);
+}
+
+.footer-wrapper footer {
+    text-align: center;
+    padding: var(--space-lg) 0;
+    color: cyan;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.footer-wrapper footer nav {
+    margin-top: var(--space-sm);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-sm);
+}
+
+.footer-wrapper footer nav a {
+    color: cyan;
     text-decoration: none;
     font-weight: bold;
-    font-size: 1rem;
-    transition: 0.2s ease-in-out;
-    text-shadow: 0 0 8px #000;
-}
-
-.event-submit-btn:hover {
-    background-color: #b51f1f;
-    transform: scale(1.05);
-}
-
-.event-wrapper {
-    max-width: 900px;
-    margin: 20px auto;
-    padding: 0 25px;
 }
 
 /* ===========================
-   TABLET FIX — iPad spacing (FINAL FIX)
+   MOBILE — UNIVERSAL FIXES
    =========================== */
-@media (max-width: 1200px) and (min-width: 601px) {
+@media (max-width: 768px) {
 
-    /* HEADER */
-    header {
-        padding-left: 24px;
-        padding-right: 24px;
+    .hamburger {
+        display: block;
     }
 
-    /* DESKTOP NAV */
     nav.desktop-nav {
-        padding-left: 24px;
-        padding-right: 24px;
-        gap: 28px;
+        display: none;
     }
-
-    /* FOOTER */
-    footer {
-        padding-left: 24px !important;
-        padding-right: 24px !important;
-    }
-
-    /* FOOTER NAV */
-    footer nav {
-        display: flex;
-        justify-content: center;
-        gap: 24px;
-        padding-left: 12px;
-        padding-right: 12px;
-        flex-wrap: wrap;
-    }
-
-    footer nav a {
-        font-size: 18px;
-        text-shadow: 0 0 8px #009b3a;
-    }
-}
-
-
-/* ===========================
-   UNIVERSAL MOBILE FIXES
-   =========================== */
-@media (max-width: 600px) {
 
     .page-wrapper {
-        padding: 0 12px;
-    }
-
-    nav a {
-        font-size: clamp(14px, 4vw, 18px);
+        padding: 0 var(--space-sm);
     }
 
     .page-title,
@@ -580,17 +322,17 @@ section h2 {
 
     .dropdown-btn {
         font-size: clamp(16px, 5vw, 20px);
-        padding: 12px;
+        padding: var(--space-sm);
     }
 
     .dropdown-content {
-        padding: 14px 16px;
+        padding: var(--space-md);
         font-size: clamp(14px, 4vw, 17px);
     }
 
     .gallery {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 15px;
+        gap: var(--space-sm);
     }
 
     .site-logo {
@@ -598,204 +340,6 @@ section h2 {
     }
 
     header {
-        padding: 10px 0;
-    }
-}
-
-/* Base reset */
-#mobile-nav {
-    display: none;
-    flex-direction: column;
-    background: #222;
-    padding: 10px;
-}
-
-#mobile-nav a {
-    color: white;
-    padding: 12px;
-    text-decoration: none;
-    border-bottom: 1px solid #444;
-}
-
-#mobile-nav a:last-child {
-    border-bottom: none;
-}
-
-/* Hamburger button */
-.hamburger {
-    display: none;
-    background: #222;
-    color: white;
-    padding: 12px;
-    cursor: pointer;
-    font-size: 20px;
-}
-
-/* Desktop nav */
-.desktop-nav {
-    display: flex;
-    gap: 20px;
-}
-
-/* MOBILE RULES */
-@media (max-width: 768px) {
-    .hamburger {
-        display: block;
-    }
-
-    .desktop-nav {
-        display: none;
-    }
-
-    #mobile-nav.show {
-        display: flex;
-    }
-}
-
-/* JAMAICAN THEME COLORS */
-:root {
-    --jamaica-green: #009B3A;
-    --jamaica-yellow: #FED100;
-    --jamaica-black: #000000;
-}
-
-/* Hamburger button – Jamaican style */
-.hamburger {
-    display: none;
-    background: var(--jamaica-black);
-    color: var(--jamaica-yellow);
-    padding: 14px 18px;
-    cursor: pointer;
-    font-size: 22px;
-    font-weight: bold;
-
-    /* Thin green border around entire hamburger */
-    border: 2px solid var(--jamaica-green);
-
-    /* Thicker Jamaican accent bars */
-    border-left-width: 6px;
-    border-right-width: 6px;
-
-    text-align: left;
-    letter-spacing: 1px;
-    border-radius: 4px;
-
-    /* Always-on low glow */
-    box-shadow: 0 0 4px var(--jamaica-green);
-
-    transition: background 0.3s, transform 0.2s;
-}
-
-/* Right‑aligned option */
-.hamburger.right {
-    margin-left: auto;
-}
-
-/* Hover / tap effect — NO stronger glow */
-.hamburger:hover {
-    background: var(--jamaica-green);
-    color: var(--jamaica-black);
-    transform: scale(1.05);
-
-    /* Keep the same low glow */
-    box-shadow: 0 0 4px var(--jamaica-green);
-}
-
-/* Mobile nav menu – Jamaican theme */
-#mobile-nav {
-    display: none;
-    flex-wrap: wrap;          /* allows two rows */
-    gap: 10px;                /* spacing between items */
-    background: var(--jamaica-black);
-    border-top: 4px solid var(--jamaica-yellow);
-    border-bottom: 4px solid var(--jamaica-green);
-    padding: 10px;
-    border-radius: 6px;
-}
-
-/* Mobile nav links – two per row */
-#mobile-nav a {
-    flex: 1 1 45%;            /* two items per row */
-    background: var(--jamaica-yellow);
-    color: var(--jamaica-black);
-    padding: 14px;
-    text-decoration: none;
-    font-weight: bold;
-    text-align: center;
-    border-radius: 4px;
-    transition: background 0.2s ease;
-}
-
-/* Hover effect */
-#mobile-nav a:hover {
-    background: var(--jamaica-green);
-    color: var(--jamaica-black);
-}
-
-/* Desktop nav stays normal */
-.desktop-nav {
-    display: flex;
-    gap: 20px;
-}
-
-/* MOBILE RULES */
-@media (max-width: 768px) {
-    .hamburger {
-        display: block;
-    }
-
-    .desktop-nav {
-        display: none;
-    }
-
-    #mobile-nav.show {
-        display: flex;
-    }
-}
-
-.footer-wrapper {
-    width: 100%;
-    max-width: 100%;
-    overflow-wrap: break-word;
-    padding: 0 15px; /* adds safe spacing on mobile */
-    box-sizing: border-box;
-}
-
-.footer-wrapper footer {
-    text-align: center;
-    padding: 15px 0;
-    color: #0ff;
-    font-size: 14px; /* slightly smaller for mobile */
-    line-height: 1.4;
-}
-
-/* Footer nav links */
-.footer-wrapper footer nav {
-    margin-top: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
-}
-
-.footer-wrapper footer nav a {
-    color: #0ff;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-/* MOBILE FIX */
-@media (max-width: 768px) {
-    .footer-wrapper footer {
-        padding: 20px 10px;
-    }
-
-    .footer-wrapper footer nav {
-        gap: 10px;
-    }
-
-    .footer-wrapper footer nav a {
-        font-size: 13px;
+        padding: var(--space-sm) 0;
     }
 }
