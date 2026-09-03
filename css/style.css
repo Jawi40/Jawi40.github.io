@@ -805,5 +805,17 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed; /* optional smooth parallax */
+  background-attachment: fixed;
+
+  /* transparency effect */
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: inherit;
+  opacity: 0.35; /* <-- adjust transparency here */
+  z-index: -1;
 }
