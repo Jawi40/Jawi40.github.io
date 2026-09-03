@@ -799,3 +799,11 @@ section h2 {
         font-size: 13px;
     }
 }
+
+body {
+  background-image: url('/images/Jamexus 26.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* optional smooth parallax */
+}
