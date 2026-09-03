@@ -806,16 +806,13 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-
-  /* transparency effect */
-  position: relative;
 }
 
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: inherit;
-  opacity: 0.5; /* <-- adjust transparency here */
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: brightness(0.7); /* optional extra darkening */
   z-index: -1;
 }
