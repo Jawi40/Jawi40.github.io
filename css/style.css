@@ -816,6 +816,6 @@ body::before {
   position: fixed;
   inset: 0;
   background: inherit;
-  opacity: 0.15; /* <-- adjust transparency here */
+  opacity: 0.5; /* <-- adjust transparency here */
   z-index: -1;
 }
