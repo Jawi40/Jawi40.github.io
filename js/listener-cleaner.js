@@ -1,23 +1,31 @@
-import { onSchedule } from "firebase-functions/v2/scheduler";
-import { initializeApp } from "firebase-admin/app";
-import { getDatabase } from "firebase-admin/database";
+const admin = require("firebase-admin");
 
-initializeApp();
-
-export const cleanGhostListeners = onSchedule("every 1 minutes", async () => {
-  const db = getDatabase();
-  const ref = db.ref("listeners");
-  const snapshot = await ref.get();
-  const data = snapshot.val() || {};
-  const now = Date.now();
-
-  Object.entries(data).forEach(([id, info]) => {
-    if (!info?.timestamp) return;
-
-    const ageMinutes = (now - info.timestamp) / 60000;
-
-    if (info.mode === "passive" && ageMinutes > 30) {
-      ref.child(id).remove();
-    }
-  });
+admin.initializeApp({
+  credential: admin.credential.cert({
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n")
+  }),
+  databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}.firebaseio.com`
 });
+
+const db = admin.database();
+
+async function cleanup() {
+  const ref = db.ref("users");
+  const snapshot = await ref.once("value");
+  const users = snapshot.val() || {};
+
+  for (const uid in users) {
+    const user = users[uid];
+
+    if (user.listening === false) {
+      console.log(`Removing user: ${uid}`);
+      await ref.child(uid).remove();
+    }
+  }
+
+  console.log("Cleanup complete.");
+}
+
+cleanup().then(() => process.exit(0));
