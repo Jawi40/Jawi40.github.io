@@ -1,21 +1,8 @@
-// player.js – FINAL CORRECTED VERSION (Diagnostics + Dropdown FIXED)
+// player.js – OPTIMIZED VERSION
 
-import { startListening, stopListening, onListenerCount } from "./listener-counter.js";
+import { startListening, stopListening, onListenerCount, listenerId } from "./listener-counter.js";
 import { db } from "./firebase-init.js";
-import { listenerId } from "./listener-counter.js";
 import { set, ref } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
-
-// Detect passive listeners (screen off, minimized, background)
-document.addEventListener("visibilitychange", () => {
-    if (document.hidden && listenerId) {
-        const listenerRef = ref(db, "listeners/" + listenerId);
-        set(listenerRef, {
-            mode: "passive",
-            timestamp: Date.now()
-        });
-    }
-});
-
 
 const PRIMARY_STREAM = "https://stream.zeno.fm/axipqkdhsiitv.mp3";
 const BACKUP_STREAM  = "https://stream.zeno.fm/axipqkdhsiitv.aac";
@@ -32,7 +19,6 @@ const liveIndicator = document.getElementById("liveIndicator");
 const statusLabel = document.getElementById("statusLabel");
 const statusDetail = document.getElementById("statusDetail");
 
-// DIAGNOSTICS PANEL IDs (NEW — FIXES DUPLICATE ID PROBLEM)
 const diagStatusLabel = document.getElementById("diagStatusLabel");
 const diagStatusDetail = document.getElementById("diagStatusDetail");
 
@@ -55,15 +41,16 @@ let reconnectTimer = null;
 let errorCount = 0;
 let uptimeTimer = null;
 let startTime = null;
+let visTimer = null;
+let backupTester = null;
 
 // ===============================
-// STATUS SYSTEM (Corrected)
+// STATUS SYSTEM
 // ===============================
 function setStatus(label, detail, type = "user") {
     statusLabel.textContent = label;
     statusDetail.textContent = detail;
 
-    // UPDATE DIAGNOSTICS PANEL (THIS FIXES THE DROPDOWN HEIGHT)
     diagStatusLabel.textContent = label;
     diagStatusDetail.textContent = detail;
 
@@ -79,7 +66,7 @@ function startUptime() {
     startTime = Date.now();
     clearInterval(uptimeTimer);
     uptimeTimer = setInterval(() => {
-        const seconds = Math.floor((Date.now() - startTime) / 1000);
+        const seconds = ((Date.now() - startTime) / 1000) | 0;
         uptimeEl.textContent = seconds + "s";
     }, 1000);
 }
@@ -98,26 +85,31 @@ function eqStop()  { equalizer.classList.add("eq-paused"); }
 function initEqualizer() {
     const bars = equalizer.querySelectorAll(".eq-bar");
     bars.forEach((bar, i) => {
+        if (!bar.dataset.duration) {
+            bar.dataset.duration = `${0.8 + Math.random() * 0.7}s`;
+        }
         bar.style.animationDelay = `${i * 0.1}s`;
-        bar.style.animationDuration = `${0.8 + Math.random() * 0.7}s`;
+        bar.style.animationDuration = bar.dataset.duration;
     });
 }
 
 // ===============================
-// STREAM HEALTH CHECK
+// STREAM HEALTH CHECK (more robust)
 // ===============================
 function streamHealthy() {
-    return audio.readyState >= 2 && audio.buffered.length > 0;
+    return audio.networkState !== 3 && audio.currentTime > 0;
 }
 
 // ===============================
-// BACKUP STREAM TEST
+// BACKUP STREAM TEST (reuses element)
 // ===============================
 async function testBackup() {
-    const test = new Audio(BACKUP_STREAM);
+    if (!backupTester) backupTester = new Audio();
+    backupTester.src = BACKUP_STREAM;
+
     try {
-        await test.play();
-        test.pause();
+        await backupTester.play();
+        backupTester.pause();
         return true;
     } catch {
         return false;
@@ -164,7 +156,7 @@ export async function startStream() {
         startUptime();
         eqStart();
 
-    } catch (err) {
+    } catch {
         handleError();
     }
 }
@@ -221,12 +213,13 @@ function handleError() {
     connectionStateEl.textContent = "Error";
 
     eqStop();
-
     scheduleReconnect();
 }
 
 async function scheduleReconnect() {
     if (manualStop || mediaOverride) return;
+
+    clearTimeout(reconnectTimer);
 
     setStatus(
         "Reconnecting",
@@ -249,9 +242,11 @@ async function scheduleReconnect() {
 }
 
 // ===============================
-// MEDIA INTERRUPTION
+// MEDIA INTERRUPTION (ignore buffer pauses)
 // ===============================
 audio.addEventListener("pause", () => {
+    if (audio.readyState === 0) return;
+
     if (!manualStop && !mediaOverride) {
         mediaOverride = true;
         stopStreamInternal(true);
@@ -263,7 +258,6 @@ audio.addEventListener("pause", () => {
 // ===============================
 onListenerCount((count) => {
     listenerCountEl.textContent = count;
-
     listenerCountEl.classList.add("pop");
     setTimeout(() => listenerCountEl.classList.remove("pop"), 350);
 });
@@ -299,6 +293,22 @@ volumeSlider.addEventListener("input", () => {
 });
 
 // ===============================
+// VISIBILITY (debounced passive mode)
+// ===============================
+document.addEventListener("visibilitychange", () => {
+    clearTimeout(visTimer);
+    visTimer = setTimeout(() => {
+        if (document.hidden && listenerId) {
+            const listenerRef = ref(db, "listeners/" + listenerId);
+            set(listenerRef, {
+                mode: "passive",
+                timestamp: Date.now()
+            });
+        }
+    }, 150);
+});
+
+// ===============================
 // INIT
 // ===============================
 const savedVol = localStorage.getItem("consoleVolume");
@@ -318,5 +328,3 @@ setStatus(
 
 audio.preload = "auto";
 audio.src = PRIMARY_STREAM;
-audio.load();
-
