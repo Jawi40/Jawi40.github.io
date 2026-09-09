@@ -1,4 +1,4 @@
-// player.js – OPTIMIZED VERSION
+// player.js – OPTIMIZED + SELF-HEALING VERSION
 
 import { startListening, stopListening, onListenerCount, listenerId } from "./listener-counter.js";
 import { db } from "./firebase-init.js";
@@ -43,6 +43,11 @@ let uptimeTimer = null;
 let startTime = null;
 let visTimer = null;
 let backupTester = null;
+
+// self-healing
+let healthTimer = null;
+let lastTime = 0;
+let standbyMode = false;
 
 // ===============================
 // STATUS SYSTEM
@@ -94,7 +99,7 @@ function initEqualizer() {
 }
 
 // ===============================
-// STREAM HEALTH CHECK (more robust)
+// STREAM HEALTH CHECK
 // ===============================
 function streamHealthy() {
     return audio.networkState !== 3 && audio.currentTime > 0;
@@ -117,11 +122,41 @@ async function testBackup() {
 }
 
 // ===============================
+// SELF-HEALING WATCHDOG (battery-aware)
+// ===============================
+function startHealthWatchdog() {
+    clearInterval(healthTimer);
+    if (!isPlaying) return;
+
+    healthTimer = setInterval(() => {
+        if (!isPlaying || manualStop || standbyMode) return;
+
+        // frozen playback
+        if (audio.currentTime === lastTime && audio.networkState !== 3) {
+            // micro reset without full pipeline rebuild
+            audio.pause();
+            audio.play().catch(() => {});
+        }
+        lastTime = audio.currentTime;
+
+        // stalled network
+        if (audio.networkState === 3) {
+            scheduleReconnect();
+        }
+    }, 2000); // low frequency to protect battery
+}
+
+function stopHealthWatchdog() {
+    clearInterval(healthTimer);
+}
+
+// ===============================
 // STREAM ENGINE
 // ===============================
 export async function startStream() {
     manualStop = false;
     mediaOverride = false;
+    standbyMode = false;
     clearTimeout(reconnectTimer);
 
     audio.src = usingBackup ? BACKUP_STREAM : PRIMARY_STREAM;
@@ -155,6 +190,7 @@ export async function startStream() {
 
         startUptime();
         eqStart();
+        startHealthWatchdog();
 
     } catch {
         handleError();
@@ -165,10 +201,12 @@ function stopStreamInternal(setManual = true) {
     if (setManual) {
         manualStop = true;
         mediaOverride = true;
+        standbyMode = false;
     }
 
     clearTimeout(reconnectTimer);
     stopListening();
+    stopHealthWatchdog();
 
     audio.pause();
     audio.muted = true;
@@ -198,7 +236,7 @@ export function stopStream() {
 // ERROR HANDLING + FAILOVER
 // ===============================
 function handleError() {
-    if (manualStop || mediaOverride) return;
+    if (manualStop || mediaOverride || standbyMode) return;
 
     errorCount++;
     errorCountEl.textContent = errorCount;
@@ -217,7 +255,7 @@ function handleError() {
 }
 
 async function scheduleReconnect() {
-    if (manualStop || mediaOverride) return;
+    if (manualStop || mediaOverride || standbyMode) return;
 
     clearTimeout(reconnectTimer);
 
@@ -242,15 +280,54 @@ async function scheduleReconnect() {
 }
 
 // ===============================
-// MEDIA INTERRUPTION (ignore buffer pauses)
+// MEDIA INTERRUPTION + STANDBY
 // ===============================
 audio.addEventListener("pause", () => {
-    if (audio.readyState === 0) return;
+    if (manualStop) return;
 
-    if (!manualStop && !mediaOverride) {
-        mediaOverride = true;
-        stopStreamInternal(true);
+    // if tab hidden or other media likely took focus → standby, not full stop
+    if (document.hidden || audio.readyState === 0) {
+        standbyMode = true;
+        isPlaying = false;
+        stopHealthWatchdog();
+        eqStop();
+
+        setStatus(
+            "Standby",
+            "Another media source is active — waiting to resume",
+            "warn"
+        );
+        connectionStateEl.textContent = "Standby";
+        playBtn.textContent = "▶";
+        playBtn.classList.remove("pulse");
+        stopUptime();
+        return;
     }
+
+    // real error case
+    if (!mediaOverride) {
+        handleError();
+    }
+});
+
+// auto-resume when user returns and we were in standby
+document.addEventListener("visibilitychange", () => {
+    clearTimeout(visTimer);
+    visTimer = setTimeout(() => {
+        if (!document.hidden && standbyMode && !manualStop) {
+            standbyMode = false;
+            startStream();
+        }
+
+        // passive mode logging for analytics
+        if (document.hidden && listenerId) {
+            const listenerRef = ref(db, "listeners/" + listenerId);
+            set(listenerRef, {
+                mode: "passive",
+                timestamp: Date.now()
+            });
+        }
+    }, 150);
 });
 
 // ===============================
@@ -266,13 +343,14 @@ onListenerCount((count) => {
 // BUTTONS
 // ===============================
 playBtn.addEventListener("click", () => {
-    if (!isPlaying) startStream();
+    if (!isPlaying && !standbyMode) startStream();
     else stopStream();
 });
 
 retryBtn.addEventListener("click", () => {
     stopStream();
     usingBackup = false;
+    standbyMode = false;
     startStream();
 });
 
@@ -290,22 +368,6 @@ volumeSlider.addEventListener("input", () => {
     audio.volume = v;
     volumeValue.textContent = Math.round(v * 100) + "%";
     localStorage.setItem("consoleVolume", v);
-});
-
-// ===============================
-// VISIBILITY (debounced passive mode)
-// ===============================
-document.addEventListener("visibilitychange", () => {
-    clearTimeout(visTimer);
-    visTimer = setTimeout(() => {
-        if (document.hidden && listenerId) {
-            const listenerRef = ref(db, "listeners/" + listenerId);
-            set(listenerRef, {
-                mode: "passive",
-                timestamp: Date.now()
-            });
-        }
-    }, 150);
 });
 
 // ===============================
