@@ -2,8 +2,8 @@ name: Firebase Listener Cleanup
 
 on:
   schedule:
-    - cron: "*/1 * * * *"   # runs every 1 minute
-  workflow_dispatch:        # allows manual run
+    - cron: "*/1 * * * *"
+  workflow_dispatch:
 
 jobs:
   cleanup:
@@ -11,15 +11,15 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install firebase-admin
+        run: npm install firebase-admin
 
       - name: Run cleanup script
         env:
