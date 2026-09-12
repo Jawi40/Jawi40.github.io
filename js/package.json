@@ -1,0 +1,9 @@
+{
+  "name": "listener-cleanup",
+  "version": "1.0.0",
+  "main": "cleanup.js",
+  "license": "MIT",
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  }
+}
