@@ -1,4 +1,4 @@
-// player.js – OPTIMIZED + SELF-HEALING VERSION
+// player.js – OPTIMIZED + SELF-HEALING + LIVE STREAM STABILIZER
 
 import { startListening, stopListening, onListenerCount, listenerId } from "./listener-counter.js";
 import { db } from "./firebase-init.js";
@@ -44,10 +44,13 @@ let startTime = null;
 let visTimer = null;
 let backupTester = null;
 
-// self-healing
+// self-healing / stabilizer
 let healthTimer = null;
 let lastTime = 0;
 let standbyMode = false;
+let lastStableTime = 0;
+let stallScore = 0;
+let silentScore = 0;
 
 // ===============================
 // STATUS SYSTEM
@@ -122,27 +125,70 @@ async function testBackup() {
 }
 
 // ===============================
-// SELF-HEALING WATCHDOG (battery-aware)
+// LIVE STREAM STABILIZER HELPERS
+// ===============================
+function softPipelineRefresh() {
+    // try to refresh without full stop
+    audio.pause();
+    audio.play().catch(() => {});
+}
+
+function microSeekForward() {
+    try {
+        audio.currentTime += 0.5;
+    } catch {
+        // ignore if not seekable
+    }
+}
+
+function applyLocalFallbackIfNeeded() {
+    // optional: could play a local “reconnecting” clip here
+    // for now, we just keep pipeline alive via soft refresh
+    softPipelineRefresh();
+}
+
+// ===============================
+// SELF-HEALING WATCHDOG (battery-aware + live stabilizer)
 // ===============================
 function startHealthWatchdog() {
     clearInterval(healthTimer);
     if (!isPlaying) return;
 
+    lastStableTime = Date.now();
+    stallScore = 0;
+    silentScore = 0;
+
     healthTimer = setInterval(() => {
         if (!isPlaying || manualStop || standbyMode) return;
 
-        // frozen playback
+        const now = Date.now();
+
+        // frozen playback (currentTime not moving, but network not fully dead)
         if (audio.currentTime === lastTime && audio.networkState !== 3) {
-            // micro reset without full pipeline rebuild
-            audio.pause();
-            audio.play().catch(() => {});
+            stallScore++;
+            softPipelineRefresh();
+        } else {
+            stallScore = Math.max(0, stallScore - 1);
+            lastStableTime = now;
         }
+
         lastTime = audio.currentTime;
 
-        // stalled network
+        // stalled network (Zeno live ingest hiccup)
         if (audio.networkState === 3) {
-            scheduleReconnect();
+            silentScore++;
+            applyLocalFallbackIfNeeded();
+        } else {
+            silentScore = Math.max(0, silentScore - 1);
         }
+
+        // if instability persists, escalate to reconnect
+        if (stallScore >= 3 || silentScore >= 3) {
+            scheduleReconnect();
+            stallScore = 0;
+            silentScore = 0;
+        }
+
     }, 2000); // low frequency to protect battery
 }
 
