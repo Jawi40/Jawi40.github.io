@@ -109,7 +109,7 @@ function streamHealthy() {
 }
 
 // ===============================
-// BACKUP STREAM TEST (reuses element)
+// BACKUP STREAM TEST
 // ===============================
 async function testBackup() {
     if (!backupTester) backupTester = new Audio();
@@ -128,7 +128,6 @@ async function testBackup() {
 // LIVE STREAM STABILIZER HELPERS
 // ===============================
 function softPipelineRefresh() {
-    // try to refresh without full stop
     audio.pause();
     audio.play().catch(() => {});
 }
@@ -136,19 +135,15 @@ function softPipelineRefresh() {
 function microSeekForward() {
     try {
         audio.currentTime += 0.5;
-    } catch {
-        // ignore if not seekable
-    }
+    } catch {}
 }
 
 function applyLocalFallbackIfNeeded() {
-    // optional: could play a local “reconnecting” clip here
-    // for now, we just keep pipeline alive via soft refresh
     softPipelineRefresh();
 }
 
 // ===============================
-// SELF-HEALING WATCHDOG (battery-aware + live stabilizer)
+// SELF-HEALING WATCHDOG
 // ===============================
 function startHealthWatchdog() {
     clearInterval(healthTimer);
@@ -163,7 +158,6 @@ function startHealthWatchdog() {
 
         const now = Date.now();
 
-        // frozen playback (currentTime not moving, but network not fully dead)
         if (audio.currentTime === lastTime && audio.networkState !== 3) {
             stallScore++;
             softPipelineRefresh();
@@ -174,7 +168,6 @@ function startHealthWatchdog() {
 
         lastTime = audio.currentTime;
 
-        // stalled network (Zeno live ingest hiccup)
         if (audio.networkState === 3) {
             silentScore++;
             applyLocalFallbackIfNeeded();
@@ -182,14 +175,13 @@ function startHealthWatchdog() {
             silentScore = Math.max(0, silentScore - 1);
         }
 
-        // if instability persists, escalate to reconnect
         if (stallScore >= 3 || silentScore >= 3) {
             scheduleReconnect();
             stallScore = 0;
             silentScore = 0;
         }
 
-    }, 2000); // low frequency to protect battery
+    }, 2000);
 }
 
 function stopHealthWatchdog() {
@@ -331,7 +323,6 @@ async function scheduleReconnect() {
 audio.addEventListener("pause", () => {
     if (manualStop) return;
 
-    // if tab hidden or other media likely took focus → standby, not full stop
     if (document.hidden || audio.readyState === 0) {
         standbyMode = true;
         isPlaying = false;
@@ -350,7 +341,6 @@ audio.addEventListener("pause", () => {
         return;
     }
 
-    // real error case
     if (!mediaOverride) {
         handleError();
     }
@@ -367,7 +357,7 @@ document.addEventListener("visibilitychange", () => {
 
         // passive mode logging for analytics
         if (document.hidden && listenerId) {
-            const listenerRef = ref(db, "listeners/" + listenerId);
+            const listenerRef = ref(db, "3@R5/" + listenerId);
             set(listenerRef, {
                 mode: "passive",
                 timestamp: Date.now()
