@@ -17,7 +17,8 @@ let heartbeatInterval = null;
 export function startListening() {
     listenerId = "listener_" + Math.random().toString(36).substring(2, 10);
 
-    const listenerRef = ref(db, "listeners/" + listenerId);
+    // FIXED: use 3@R5 instead of listeners
+    const listenerRef = ref(db, "3@R5/" + listenerId);
 
     // Initial state
     set(listenerRef, {
@@ -35,7 +36,6 @@ export function startListening() {
         const now = Date.now();
         const diff = now - lastHeartbeat;
 
-        // If JS was suspended, diff will be large
         const mode = diff > 60000 ? "passive" : "active";
 
         lastHeartbeat = now;
@@ -53,7 +53,8 @@ export function startListening() {
 export function stopListening() {
     if (!listenerId) return;
 
-    const listenerRef = ref(db, "listeners/" + listenerId);
+    // FIXED: use 3@R5 instead of listeners
+    const listenerRef = ref(db, "3@R5/" + listenerId);
 
     remove(listenerRef);
 
@@ -69,7 +70,8 @@ export function stopListening() {
 // REAL-TIME LISTENER COUNT
 // =========================
 export function onListenerCount(callback) {
-    const listenersRef = ref(db, "listeners");
+    // FIXED: use 3@R5 instead of listeners
+    const listenersRef = ref(db, "3@R5");
 
     onValue(listenersRef, (snapshot) => {
         const data = snapshot.val() || {};
