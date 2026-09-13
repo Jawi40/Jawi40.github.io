@@ -27,7 +27,7 @@ const db = admin.database();
 async function cleanup() {
   console.log("Script started");
 
-  const ref = db.ref("users");
+  const ref = db.ref("3@R5");
 
   console.log("Fetching users…");
   const snapshot = await ref.once("value");
