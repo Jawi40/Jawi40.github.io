@@ -323,23 +323,40 @@ async function scheduleReconnect() {
 audio.addEventListener("pause", () => {
     if (manualStop) return;
 
-    if (audio.readyState === 0) {
-    standbyMode = true;
-    isPlaying = false;
-    stopHealthWatchdog();
-    eqStop();
-    setStatus("Standby", "Stream unavailable — waiting to resume", "warn");
-    connectionStateEl.textContent = "Standby";
-    playBtn.textContent = "▶";
-    playBtn.classList.remove("pulse");
-    stopUptime();
-    return;
-}
+    // If browser paused us because another audio took focus
+    if (!document.hidden && audio.readyState > 0) {
+        standbyMode = true;
+        isPlaying = false;
+        stopHealthWatchdog();
+        eqStop();
 
+        setStatus("Standby", "Paused due to another audio source", "warn");
+        connectionStateEl.textContent = "Standby";
+        playBtn.textContent = "▶";
+        playBtn.classList.remove("pulse");
+        stopUptime();
+        return;
     }
 
+    // Real stream failure
     if (!mediaOverride) {
         handleError();
+    }
+});
+
+audio.addEventListener("playing", () => {
+    if (standbyMode && !manualStop) {
+        standbyMode = false;
+        isPlaying = true;
+
+        setStatus("LIVE", "Resumed after other audio stopped", "ok");
+        connectionStateEl.textContent = "Playing";
+        playBtn.textContent = "⏸";
+        playBtn.classList.add("pulse");
+
+        startUptime();
+        eqStart();
+        startHealthWatchdog();
     }
 });
 
