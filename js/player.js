@@ -1,4 +1,4 @@
-// player.js – OPTIMIZED + SELF-HEALING + LIVE STREAM STABILIZER
+// player.js – IMPROVED + AUDIO-FOCUS AWARE + STABLE STREAM
 
 import { startListening, stopListening, onListenerCount, listenerId } from "./listener-counter.js";
 import { db } from "./firebase-init.js";
@@ -44,11 +44,10 @@ let startTime = null;
 let visTimer = null;
 let backupTester = null;
 
-// self-healing / stabilizer
+// stabilizer
 let healthTimer = null;
 let lastTime = 0;
 let standbyMode = false;
-let lastStableTime = 0;
 let stallScore = 0;
 let silentScore = 0;
 
@@ -132,12 +131,6 @@ function softPipelineRefresh() {
     audio.play().catch(() => {});
 }
 
-function microSeekForward() {
-    try {
-        audio.currentTime += 0.5;
-    } catch {}
-}
-
 function applyLocalFallbackIfNeeded() {
     softPipelineRefresh();
 }
@@ -149,21 +142,17 @@ function startHealthWatchdog() {
     clearInterval(healthTimer);
     if (!isPlaying) return;
 
-    lastStableTime = Date.now();
     stallScore = 0;
     silentScore = 0;
 
     healthTimer = setInterval(() => {
         if (!isPlaying || manualStop || standbyMode) return;
 
-        const now = Date.now();
-
         if (audio.currentTime === lastTime && audio.networkState !== 3) {
             stallScore++;
             softPipelineRefresh();
         } else {
             stallScore = Math.max(0, stallScore - 1);
-            lastStableTime = now;
         }
 
         lastTime = audio.currentTime;
@@ -318,13 +307,13 @@ async function scheduleReconnect() {
 }
 
 // ===============================
-// MEDIA INTERRUPTION + STANDBY
+// AUDIO-FOCUS PAUSE HANDLER
 // ===============================
 audio.addEventListener("pause", () => {
     if (manualStop) return;
 
-    // If browser paused us because another audio took focus
-    if (!document.hidden && audio.readyState > 0) {
+    // Pause caused by another audio source
+    if (!document.hidden && audio.readyState > 0 && audio.currentTime > 0) {
         standbyMode = true;
         isPlaying = false;
         stopHealthWatchdog();
@@ -344,40 +333,23 @@ audio.addEventListener("pause", () => {
     }
 });
 
+// ===============================
+// AUTO-RESUME WHEN OTHER AUDIO STOPS
+// ===============================
 audio.addEventListener("playing", () => {
-    if (standbyMode && !manualStop) {
-        standbyMode = false;
-        isPlaying = true;
+    if (!standbyMode || manualStop) return;
 
-        setStatus("LIVE", "Resumed after other audio stopped", "ok");
-        connectionStateEl.textContent = "Playing";
-        playBtn.textContent = "⏸";
-        playBtn.classList.add("pulse");
+    standbyMode = false;
+    isPlaying = true;
 
-        startUptime();
-        eqStart();
-        startHealthWatchdog();
-    }
-});
+    setStatus("LIVE", "Resumed after other audio stopped", "ok");
+    connectionStateEl.textContent = "Playing";
+    playBtn.textContent = "⏸";
+    playBtn.classList.add("pulse");
 
-// auto-resume when user returns and we were in standby
-document.addEventListener("visibilitychange", () => {
-    clearTimeout(visTimer);
-    visTimer = setTimeout(() => {
-        if (!document.hidden && standbyMode && !manualStop) {
-            standbyMode = false;
-            startStream();
-        }
-
-        // passive mode logging for analytics
-        if (document.hidden && listenerId) {
-            const listenerRef = ref(db, "3@R5/" + listenerId);
-            set(listenerRef, {
-                mode: "passive",
-                timestamp: Date.now()
-            });
-        }
-    }, 150);
+    startUptime();
+    eqStart();
+    startHealthWatchdog();
 });
 
 // ===============================
