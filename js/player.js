@@ -323,22 +323,19 @@ async function scheduleReconnect() {
 audio.addEventListener("pause", () => {
     if (manualStop) return;
 
-    if (document.hidden || audio.readyState === 0) {
-        standbyMode = true;
-        isPlaying = false;
-        stopHealthWatchdog();
-        eqStop();
+    if (audio.readyState === 0) {
+    standbyMode = true;
+    isPlaying = false;
+    stopHealthWatchdog();
+    eqStop();
+    setStatus("Standby", "Stream unavailable — waiting to resume", "warn");
+    connectionStateEl.textContent = "Standby";
+    playBtn.textContent = "▶";
+    playBtn.classList.remove("pulse");
+    stopUptime();
+    return;
+}
 
-        setStatus(
-            "Standby",
-            "Another media source is active — waiting to resume",
-            "warn"
-        );
-        connectionStateEl.textContent = "Standby";
-        playBtn.textContent = "▶";
-        playBtn.classList.remove("pulse");
-        stopUptime();
-        return;
     }
 
     if (!mediaOverride) {
