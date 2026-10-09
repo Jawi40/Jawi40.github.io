@@ -51,6 +51,12 @@ let standbyMode = false;
 let stallScore = 0;
 let silentScore = 0;
 
+// NEW: wake lock + audio engine
+let wakeLock = null;
+let ctx = null;
+let srcNode = null;
+let heartbeatTimer = null;
+
 // ===============================
 // STATUS SYSTEM
 // ===============================
@@ -178,6 +184,62 @@ function stopHealthWatchdog() {
 }
 
 // ===============================
+// WAKE LOCK (ANDROID-FRIENDLY)
+// ===============================
+async function requestWakeLock() {
+    if (!("wakeLock" in navigator)) return;
+
+    try {
+        wakeLock = await navigator.wakeLock.request("screen");
+        wakeLock.addEventListener("release", () => {
+            // Try to reacquire if we’re still playing
+            if (isPlaying && !manualStop) {
+                requestWakeLock().catch(() => {});
+            }
+        });
+    } catch (err) {
+        console.warn("WakeLock error:", err);
+    }
+}
+
+function releaseWakeLock() {
+    if (wakeLock) {
+        wakeLock.release().catch(() => {});
+        wakeLock = null;
+    }
+}
+
+// ===============================
+// AUDIO ENGINE (AudioContext heartbeat)
+// ===============================
+function initAudioEngine() {
+    if (ctx || !audio) return;
+
+    try {
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+        srcNode = ctx.createMediaElementSource(audio);
+        srcNode.connect(ctx.destination);
+
+        // Heartbeat to prevent throttling/suspension
+        heartbeatTimer = setInterval(() => {
+            if (ctx.state === "suspended") {
+                ctx.resume().catch(() => {});
+            }
+        }, 5000);
+    } catch (err) {
+        console.warn("AudioContext init error:", err);
+    }
+}
+
+function stopAudioEngine() {
+    if (heartbeatTimer) {
+        clearInterval(heartbeatTimer);
+        heartbeatTimer = null;
+    }
+    // We keep ctx alive; destroying it can cause issues if recreated often
+}
+
+// ===============================
 // STREAM ENGINE
 // ===============================
 export async function startStream() {
@@ -185,6 +247,9 @@ export async function startStream() {
     mediaOverride = false;
     standbyMode = false;
     clearTimeout(reconnectTimer);
+
+    initAudioEngine();
+    requestWakeLock().catch(() => {});
 
     audio.src = usingBackup ? BACKUP_STREAM : PRIMARY_STREAM;
     audio.muted = false;
@@ -201,6 +266,10 @@ export async function startStream() {
     try {
         await audio.play();
         isPlaying = true;
+
+        if (ctx && ctx.state === "suspended") {
+            ctx.resume().catch(() => {});
+        }
 
         startListening();
         playBtn.textContent = "⏸";
@@ -234,6 +303,8 @@ function stopStreamInternal(setManual = true) {
     clearTimeout(reconnectTimer);
     stopListening();
     stopHealthWatchdog();
+    stopAudioEngine();
+    releaseWakeLock();
 
     audio.pause();
     audio.muted = true;
@@ -312,7 +383,7 @@ async function scheduleReconnect() {
 audio.addEventListener("pause", () => {
     if (manualStop) return;
 
-    // Pause caused by another audio source
+    // Pause caused by another audio source while tab visible
     if (!document.hidden && audio.readyState > 0 && audio.currentTime > 0) {
         standbyMode = true;
         isPlaying = false;
@@ -351,6 +422,66 @@ audio.addEventListener("playing", () => {
     eqStart();
     startHealthWatchdog();
 });
+
+// ===============================
+// VISIBILITY RECOVERY (tab back in view)
+// ===============================
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) return;
+
+    // When user returns to tab, ensure audio pipeline is alive
+    if (isPlaying && !manualStop) {
+        audio.play().catch(() => {});
+        if (ctx && ctx.state === "suspended") {
+            ctx.resume().catch(() => {});
+        }
+        requestWakeLock().catch(() => {});
+    }
+});
+
+// ===============================
+// MEDIA SESSION (audio focus, calls, ducking)
+// ===============================
+if ("mediaSession" in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+        title: "Live Stream",
+        artist: "Your Station",
+        album: "Live",
+        artwork: []
+    });
+
+    navigator.mediaSession.setActionHandler("play", () => {
+        if (!isPlaying && !standbyMode) {
+            startStream();
+        } else if (standbyMode && !manualStop) {
+            standbyMode = false;
+            audio.play().catch(() => {});
+        }
+    });
+
+    navigator.mediaSession.setActionHandler("pause", () => {
+        standbyMode = true;
+        audio.pause();
+    });
+
+    navigator.mediaSession.setActionHandler("stop", () => {
+        stopStream();
+    });
+
+    // Ducking for phone calls / notifications
+    navigator.mediaSession.setActionHandler("duck", () => {
+        if (!isIOS) {
+            audio.volume = Math.max(0.1, parseFloat(volumeSlider.value) * 0.3);
+        }
+    });
+
+    navigator.mediaSession.setActionHandler("unduck", () => {
+        if (!isIOS) {
+            const v = parseFloat(localStorage.getItem("consoleVolume") || volumeSlider.value || "0.8");
+            audio.volume = v;
+        }
+    });
+}
 
 // ===============================
 // LISTENER COUNT
