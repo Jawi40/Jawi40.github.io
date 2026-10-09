@@ -192,7 +192,6 @@ async function requestWakeLock() {
     try {
         wakeLock = await navigator.wakeLock.request("screen");
         wakeLock.addEventListener("release", () => {
-            // Try to reacquire if we’re still playing
             if (isPlaying && !manualStop) {
                 requestWakeLock().catch(() => {});
             }
@@ -213,14 +212,14 @@ function releaseWakeLock() {
 // AUDIO ENGINE (AudioContext heartbeat)
 // ===============================
 function initAudioEngine() {
-    if (ctx || !audio) return;
+    // Only initialize once
+    if (ctx) return;
 
     try {
         ctx = new (window.AudioContext || window.webkitAudioContext)();
         srcNode = ctx.createMediaElementSource(audio);
         srcNode.connect(ctx.destination);
 
-        // Heartbeat to prevent throttling/suspension
         heartbeatTimer = setInterval(() => {
             if (ctx.state === "suspended") {
                 ctx.resume().catch(() => {});
@@ -236,7 +235,7 @@ function stopAudioEngine() {
         clearInterval(heartbeatTimer);
         heartbeatTimer = null;
     }
-    // We keep ctx alive; destroying it can cause issues if recreated often
+    // ctx and srcNode persist for page lifetime
 }
 
 // ===============================
@@ -248,7 +247,7 @@ export async function startStream() {
     standbyMode = false;
     clearTimeout(reconnectTimer);
 
-    initAudioEngine();
+    if (!ctx) initAudioEngine();
     requestWakeLock().catch(() => {});
 
     audio.src = usingBackup ? BACKUP_STREAM : PRIMARY_STREAM;
@@ -383,7 +382,6 @@ async function scheduleReconnect() {
 audio.addEventListener("pause", () => {
     if (manualStop) return;
 
-    // Pause caused by another audio source while tab visible
     if (!document.hidden && audio.readyState > 0 && audio.currentTime > 0) {
         standbyMode = true;
         isPlaying = false;
@@ -398,7 +396,6 @@ audio.addEventListener("pause", () => {
         return;
     }
 
-    // Real stream failure
     if (!mediaOverride) {
         handleError();
     }
@@ -429,7 +426,6 @@ audio.addEventListener("playing", () => {
 document.addEventListener("visibilitychange", () => {
     if (document.hidden) return;
 
-    // When user returns to tab, ensure audio pipeline is alive
     if (isPlaying && !manualStop) {
         audio.play().catch(() => {});
         if (ctx && ctx.state === "suspended") {
@@ -468,7 +464,6 @@ if ("mediaSession" in navigator) {
         stopStream();
     });
 
-    // Ducking for phone calls / notifications
     navigator.mediaSession.setActionHandler("duck", () => {
         if (!isIOS) {
             audio.volume = Math.max(0.1, parseFloat(volumeSlider.value) * 0.3);
