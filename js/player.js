@@ -464,18 +464,25 @@ if ("mediaSession" in navigator) {
         stopStream();
     });
 
-    navigator.mediaSession.setActionHandler("duck", () => {
-        if (!isIOS) {
-            audio.volume = Math.max(0.1, parseFloat(volumeSlider.value) * 0.3);
-        }
-    });
+    // ✔ Only add duck/unduck if supported
+    const supportedActions = navigator.mediaSession.actions || [];
 
-    navigator.mediaSession.setActionHandler("unduck", () => {
-        if (!isIOS) {
-            const v = parseFloat(localStorage.getItem("consoleVolume") || volumeSlider.value || "0.8");
-            audio.volume = v;
-        }
-    });
+    if (supportedActions.includes("duck")) {
+        navigator.mediaSession.setActionHandler("duck", () => {
+            if (!isIOS) {
+                audio.volume = Math.max(0.1, parseFloat(volumeSlider.value) * 0.3);
+            }
+        });
+    }
+
+    if (supportedActions.includes("unduck")) {
+        navigator.mediaSession.setActionHandler("unduck", () => {
+            if (!isIOS) {
+                const v = parseFloat(localStorage.getItem("consoleVolume") || volumeSlider.value || "0.8");
+                audio.volume = v;
+            }
+        });
+    }
 }
 
 // ===============================
