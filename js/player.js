@@ -1,4 +1,4 @@
-// player.js – OPTIMIZED + SELF-HEALING + LIVE STREAM STABILIZER
+// player.js – OPTIMIZED + SELF-HEALING + LIVE STREAM STABILIZER (Pandora/Spotify-style audio focus)
 
 import { startListening, stopListening, onListenerCount, listenerId } from "./listener-counter.js";
 import { db } from "./firebase-init.js";
@@ -56,7 +56,7 @@ let lastStableTime = 0;
 let stallScore = 0;
 let silentScore = 0;
 
-// audio focus
+// audio focus (Pandora/Spotify-style)
 let hasAudioFocus = true;
 
 // ===============================
@@ -135,6 +135,7 @@ async function testBackup() {
 // LIVE STREAM STABILIZER HELPERS
 // ===============================
 function softPipelineRefresh() {
+    if (!hasAudioFocus) return; // do not restart pipeline during interruption
     audio.pause();
     audio.play().catch(() => {});
 }
@@ -161,7 +162,7 @@ function startHealthWatchdog() {
     silentScore = 0;
 
     healthTimer = setInterval(() => {
-        if (!isPlaying || manualStop || standbyMode) return;
+        if (!isPlaying || manualStop || standbyMode || !hasAudioFocus) return;
 
         const now = Date.now();
 
@@ -281,7 +282,7 @@ export function stopStream() {
 // ERROR HANDLING + FAILOVER
 // ===============================
 function handleError() {
-    if (manualStop || mediaOverride || standbyMode) return;
+    if (manualStop || mediaOverride || standbyMode || !hasAudioFocus) return;
 
     errorCount++;
     errorCountEl.textContent = errorCount;
@@ -300,7 +301,7 @@ function handleError() {
 }
 
 async function scheduleReconnect() {
-    if (manualStop || mediaOverride || standbyMode) return;
+    if (manualStop || mediaOverride || standbyMode || !hasAudioFocus) return;
 
     clearTimeout(reconnectTimer);
 
@@ -330,14 +331,14 @@ async function scheduleReconnect() {
 audio.addEventListener("pause", () => {
     if (manualStop) return;
 
-    // If page visible and audio had focus, treat as interruption by other media
+    // If page visible and we had focus, treat as interruption by other media / call
     if (!document.hidden && audio.readyState > 0 && hasAudioFocus) {
         standbyMode = true;
         isPlaying = false;
         stopHealthWatchdog();
         eqStop();
 
-        setStatus("Standby", "Paused due to another audio source", "warn");
+        setStatus("Standby", "Paused due to another audio source or system", "warn");
         connectionStateEl.textContent = "Standby";
         playBtn.textContent = "▶";
         playBtn.classList.remove("pulse");
@@ -356,10 +357,10 @@ audio.addEventListener("pause", () => {
     }
 });
 
+// IMPORTANT: do NOT auto-resume from internal 'playing' events.
+// Only resume when OS returns audio focus (audioSession/mediaSession).
 audio.addEventListener("playing", () => {
-    // Only resume if we actually have audio focus
     if (!hasAudioFocus) return;
-
     if (standbyMode && !manualStop) {
         standbyMode = false;
         isPlaying = true;
@@ -375,16 +376,10 @@ audio.addEventListener("playing", () => {
     }
 });
 
-// auto-resume when user returns and we were in standby
+// Do NOT resume on screen unlock; only log passive mode.
 document.addEventListener("visibilitychange", () => {
     clearTimeout(visTimer);
     visTimer = setTimeout(() => {
-        // Screen unlock / tab visible again: resume only if we have focus
-        if (!document.hidden && standbyMode && !manualStop && hasAudioFocus) {
-            standbyMode = false;
-            startStream();
-        }
-
         // passive mode logging for analytics
         if (document.hidden && listenerId) {
             const listenerRef = ref(db, "3@R5/" + listenerId);
@@ -397,7 +392,7 @@ document.addEventListener("visibilitychange", () => {
 });
 
 // ===============================
-// BACKGROUND AUDIO + AUDIO FOCUS
+// BACKGROUND AUDIO + AUDIO FOCUS (Pandora/Spotify-style)
 // ===============================
 
 // iOS Safari: Audio Session API
@@ -417,7 +412,7 @@ if (navigator.audioSession) {
         }
 
         if (state === "active") {
-            // Audio focus returned
+            // Audio focus returned (other media/call ended)
             hasAudioFocus = true;
             if (standbyMode && !manualStop) {
                 standbyMode = false;
@@ -432,11 +427,18 @@ if ("mediaSession" in navigator) {
     navigator.mediaSession.playbackState = "playing";
 
     navigator.mediaSession.setActionHandler("play", () => {
+        // OS / system says "you now have audio focus"
         hasAudioFocus = true;
-        if (!isPlaying && !manualStop) startStream();
+        if (standbyMode && !manualStop) {
+            standbyMode = false;
+            startStream();
+        } else if (!isPlaying && !manualStop) {
+            startStream();
+        }
     });
 
     navigator.mediaSession.setActionHandler("pause", () => {
+        // OS / system or other media took focus
         hasAudioFocus = false;
         if (isPlaying) {
             stopStreamInternal(false);
