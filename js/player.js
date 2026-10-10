@@ -32,6 +32,10 @@ const equalizer = document.getElementById("equalizer");
 
 streamUrlText.textContent = PRIMARY_STREAM;
 
+// ensure inline playback for mobile background audio
+audio.setAttribute("playsinline", "");
+audio.setAttribute("webkit-playsinline", "");
+
 // STATE
 let isPlaying = false;
 let manualStop = false;
@@ -323,7 +327,7 @@ async function scheduleReconnect() {
 audio.addEventListener("pause", () => {
     if (manualStop) return;
 
-    // If browser paused us because another audio took focus
+    // Only treat pause as interruption if the page is visible
     if (!document.hidden && audio.readyState > 0) {
         standbyMode = true;
         isPlaying = false;
@@ -335,6 +339,11 @@ audio.addEventListener("pause", () => {
         playBtn.textContent = "▶";
         playBtn.classList.remove("pulse");
         stopUptime();
+        return;
+    }
+
+    // If hidden, allow background audio behavior and ignore pause as error
+    if (document.hidden) {
         return;
     }
 
@@ -364,6 +373,7 @@ audio.addEventListener("playing", () => {
 document.addEventListener("visibilitychange", () => {
     clearTimeout(visTimer);
     visTimer = setTimeout(() => {
+        // Do NOT pause when hidden — allow background playback
         if (!document.hidden && standbyMode && !manualStop) {
             standbyMode = false;
             startStream();
@@ -379,6 +389,48 @@ document.addEventListener("visibilitychange", () => {
         }
     }, 150);
 });
+
+// ===============================
+// BACKGROUND AUDIO SUPPORT
+// ===============================
+
+// iOS Safari: Audio Session API
+if (navigator.audioSession) {
+    navigator.audioSession.type = "playback"; // critical for background audio
+
+    navigator.audioSession.addEventListener("statechange", () => {
+        const state = navigator.audioSession.state;
+
+        if (state === "interrupted") {
+            // Phone call or Siri interruption
+            stopStreamInternal(false);
+            standbyMode = true;
+            setStatus("Standby", "Audio interrupted by system", "warn");
+        }
+
+        if (state === "active" && standbyMode && !manualStop) {
+            // Resume after interruption ends
+            startStream();
+        }
+    });
+}
+
+// Android Chrome: Media Session API
+if ("mediaSession" in navigator) {
+    navigator.mediaSession.playbackState = "playing";
+
+    navigator.mediaSession.setActionHandler("play", () => {
+        if (!isPlaying) startStream();
+    });
+
+    navigator.mediaSession.setActionHandler("pause", () => {
+        if (isPlaying) stopStream();
+    });
+
+    navigator.mediaSession.setActionHandler("stop", () => {
+        stopStream();
+    });
+}
 
 // ===============================
 // LISTENER COUNT
