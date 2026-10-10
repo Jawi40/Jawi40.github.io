@@ -56,6 +56,9 @@ let lastStableTime = 0;
 let stallScore = 0;
 let silentScore = 0;
 
+// audio focus
+let hasAudioFocus = true;
+
 // ===============================
 // STATUS SYSTEM
 // ===============================
@@ -327,8 +330,8 @@ async function scheduleReconnect() {
 audio.addEventListener("pause", () => {
     if (manualStop) return;
 
-    // Only treat pause as interruption if the page is visible
-    if (!document.hidden && audio.readyState > 0) {
+    // If page visible and audio had focus, treat as interruption by other media
+    if (!document.hidden && audio.readyState > 0 && hasAudioFocus) {
         standbyMode = true;
         isPlaying = false;
         stopHealthWatchdog();
@@ -342,7 +345,7 @@ audio.addEventListener("pause", () => {
         return;
     }
 
-    // If hidden, allow background audio behavior and ignore pause as error
+    // If hidden, ignore pause as error (screen off / background)
     if (document.hidden) {
         return;
     }
@@ -354,11 +357,14 @@ audio.addEventListener("pause", () => {
 });
 
 audio.addEventListener("playing", () => {
+    // Only resume if we actually have audio focus
+    if (!hasAudioFocus) return;
+
     if (standbyMode && !manualStop) {
         standbyMode = false;
         isPlaying = true;
 
-        setStatus("LIVE", "Resumed after other audio stopped", "ok");
+        setStatus("LIVE", "Resumed after interruption ended", "ok");
         connectionStateEl.textContent = "Playing";
         playBtn.textContent = "⏸";
         playBtn.classList.add("pulse");
@@ -373,8 +379,8 @@ audio.addEventListener("playing", () => {
 document.addEventListener("visibilitychange", () => {
     clearTimeout(visTimer);
     visTimer = setTimeout(() => {
-        // Do NOT pause when hidden — allow background playback
-        if (!document.hidden && standbyMode && !manualStop) {
+        // Screen unlock / tab visible again: resume only if we have focus
+        if (!document.hidden && standbyMode && !manualStop && hasAudioFocus) {
             standbyMode = false;
             startStream();
         }
@@ -391,26 +397,32 @@ document.addEventListener("visibilitychange", () => {
 });
 
 // ===============================
-// BACKGROUND AUDIO SUPPORT
+// BACKGROUND AUDIO + AUDIO FOCUS
 // ===============================
 
 // iOS Safari: Audio Session API
 if (navigator.audioSession) {
-    navigator.audioSession.type = "playback"; // critical for background audio
+    navigator.audioSession.type = "playback";
 
     navigator.audioSession.addEventListener("statechange", () => {
         const state = navigator.audioSession.state;
 
         if (state === "interrupted") {
-            // Phone call or Siri interruption
+            // Phone call / Siri / other app took audio focus
+            hasAudioFocus = false;
             stopStreamInternal(false);
             standbyMode = true;
             setStatus("Standby", "Audio interrupted by system", "warn");
+            connectionStateEl.textContent = "Standby";
         }
 
-        if (state === "active" && standbyMode && !manualStop) {
-            // Resume after interruption ends
-            startStream();
+        if (state === "active") {
+            // Audio focus returned
+            hasAudioFocus = true;
+            if (standbyMode && !manualStop) {
+                standbyMode = false;
+                startStream();
+            }
         }
     });
 }
@@ -420,14 +432,22 @@ if ("mediaSession" in navigator) {
     navigator.mediaSession.playbackState = "playing";
 
     navigator.mediaSession.setActionHandler("play", () => {
-        if (!isPlaying) startStream();
+        hasAudioFocus = true;
+        if (!isPlaying && !manualStop) startStream();
     });
 
     navigator.mediaSession.setActionHandler("pause", () => {
-        if (isPlaying) stopStream();
+        hasAudioFocus = false;
+        if (isPlaying) {
+            stopStreamInternal(false);
+            standbyMode = true;
+            setStatus("Standby", "Audio paused by system or other media", "warn");
+            connectionStateEl.textContent = "Standby";
+        }
     });
 
     navigator.mediaSession.setActionHandler("stop", () => {
+        hasAudioFocus = false;
         stopStream();
     });
 }
