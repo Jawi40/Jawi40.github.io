@@ -1,26 +1,31 @@
 // ======================================================
-// INFIN8 RADIO — CLEAN, STABLE PLAYER ENGINE
+// INFIN8 RADIO — CLEAN, STABLE PLAYER ENGINE (FULL FILE)
 // ======================================================
 
 // STREAMS
 const PRIMARY_STREAM = "https://stream.zeno.fm/axipqkdhsiitv.mp3";
 const BACKUP_STREAM  = "https://stream.zeno.fm/axipqkdhsiitv.aac";
 
-// DOM ELEMENTS (same UI you already have)
+// DOM ELEMENTS — MATCHING YOUR ORIGINAL UI
 const audio = document.getElementById("radioAudio");
 const playBtn = document.getElementById("playBtn");
 const retryBtn = document.getElementById("retryBtn");
+
 const volumeSlider = document.getElementById("volumeSlider");
 const volumeValue = document.getElementById("volumeValue");
 
-const statusLabel = document.getElementById("statusLabel");
-const statusDetail = document.getElementById("statusDetail");
-const liveIndicator = document.getElementById("liveIndicator");
+// STATUS DROPDOWN (YOUR ORIGINAL IDs)
+const statusLabel  = document.getElementById("consoleStatusLabel");
+const statusDetail = document.getElementById("consoleStatusDetail");
+const liveIndicator = document.getElementById("consoleLiveIndicator");
 
-const errorCountEl = document.getElementById("errorCount");
-const lastReconnectEl = document.getElementById("lastReconnect");
-const connectionStateEl = document.getElementById("connectionState");
-const uptimeEl = document.getElementById("uptime");
+// DIAGNOSTICS (YOUR ORIGINAL IDs)
+const errorCountEl = document.getElementById("consoleErrorCount");
+const lastReconnectEl = document.getElementById("consoleLastReconnect");
+const connectionStateEl = document.getElementById("consoleConnectionState");
+const uptimeEl = document.getElementById("consoleUptime");
+
+// EQUALIZER (YOUR ORIGINAL ID)
 const equalizer = document.getElementById("equalizer");
 
 // STATE
@@ -39,9 +44,11 @@ function setStatus(label, detail, type = "user") {
     statusLabel.textContent = label;
     statusDetail.textContent = detail;
 
-    liveIndicator.className = "live-indicator";
-    if (type === "ok") liveIndicator.classList.add("live-ok");
+    liveIndicator.className = "console-live-indicator";
+
+    if (type === "ok")   liveIndicator.classList.add("live-ok");
     if (type === "warn") liveIndicator.classList.add("live-warn");
+    if (type === "error") liveIndicator.classList.add("live-error");
 }
 
 // ======================================================
@@ -78,13 +85,11 @@ function startWatchdog() {
     watchdogTimer = setInterval(() => {
         if (!isPlaying || manualStop) return;
 
-        // If audio stops advancing, refresh pipeline
         if (audio.currentTime === lastTime) {
             audio.play().catch(() => {});
         }
         lastTime = audio.currentTime;
 
-        // If network fails, reconnect
         if (audio.networkState === 3) {
             scheduleReconnect();
         }
@@ -153,7 +158,7 @@ function handleError() {
     errorCount++;
     errorCountEl.textContent = errorCount;
 
-    setStatus("Error", "Stream failure — scheduling reconnect");
+    setStatus("Error", "Stream failure — scheduling reconnect", "error");
     connectionStateEl.textContent = "Error";
 
     eqStop();
@@ -165,7 +170,7 @@ function scheduleReconnect() {
 
     clearTimeout(reconnectTimer);
 
-    setStatus("Reconnecting", "Attempting recovery…");
+    setStatus("Reconnecting", "Attempting recovery…", "warn");
     connectionStateEl.textContent = "Reconnecting";
 
     reconnectTimer = setTimeout(() => {
