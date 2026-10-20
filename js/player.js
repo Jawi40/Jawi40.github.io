@@ -1,15 +1,20 @@
-// player.js – OPTIMIZED + SELF-HEALING + LIVE STREAM STABILIZER (Pandora/Spotify-style audio focus)
+// player-wasm-webaudio.js – Stable MP3 WebAudio engine using mpg123-decoder (WASM)
 
 import { startListening, stopListening, onListenerCount, listenerId } from "./listener-counter.js";
 import { db } from "./firebase-init.js";
 import { set, ref } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
+// IMPORTANT: install decoder via:
+//   npm i mpg123-decoder
+// and bundle it, or load via <script src="mpg123-decoder.min.js" charset="UTF-8"></script>
+// Here we assume ES module import:
+import { MPEGDecoder } from "mpg123-decoder";
+
 const PRIMARY_STREAM = "https://stream.zeno.fm/axipqkdhsiitv.mp3";
-const BACKUP_STREAM  = "https://stream.zeno.fm/axipqkdhsiitv.aac";
+const BACKUP_STREAM  = "https://stream.zeno.fm/axipqkdhsiitv.mp3"; // backup must also be MPEG
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 // DOM
-const audio = document.getElementById("radioAudio");
 const playBtn = document.getElementById("playBtn");
 const retryBtn = document.getElementById("retryBtn");
 const volumeSlider = document.getElementById("volumeSlider");
@@ -32,35 +37,31 @@ const equalizer = document.getElementById("equalizer");
 
 streamUrlText.textContent = PRIMARY_STREAM;
 
-// ensure inline playback for mobile background audio
-audio.setAttribute("playsinline", "");
-audio.setAttribute("webkit-playsinline", "");
-
-// STATE
+// STATE – engine
+let audioCtx = null;
+let gainNode = null;
+let sourceNode = null;
 let isPlaying = false;
 let manualStop = false;
-let mediaOverride = false;
 let usingBackup = false;
 let reconnectTimer = null;
 let errorCount = 0;
 let uptimeTimer = null;
 let startTime = null;
-let visTimer = null;
-let backupTester = null;
+let interruptionActive = false;
+let lastChunkTime = 0;
+let currentStreamUrl = PRIMARY_STREAM;
+let readerAbortController = null;
 
-// self-healing / stabilizer
-let healthTimer = null;
-let lastTime = 0;
-let standbyMode = false;
-let lastStableTime = 0;
-let stallScore = 0;
-let silentScore = 0;
+// WASM decoder
+let decoder = null;
+let decoderReady = false;
 
-// audio focus (Pandora/Spotify-style)
+// audio focus
 let hasAudioFocus = true;
 
 // ===============================
-// STATUS SYSTEM
+// STATUS
 // ===============================
 function setStatus(label, detail, type = "user") {
     statusLabel.textContent = label;
@@ -109,169 +110,162 @@ function initEqualizer() {
 }
 
 // ===============================
-// STREAM HEALTH CHECK
+// AUDIO ENGINE INIT
 // ===============================
-function streamHealthy() {
-    return audio.networkState !== 3 && audio.currentTime > 0;
-}
+async function initAudioEngine() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        gainNode = audioCtx.createGain();
+        gainNode.connect(audioCtx.destination);
 
-// ===============================
-// BACKUP STREAM TEST
-// ===============================
-async function testBackup() {
-    if (!backupTester) backupTester = new Audio();
-    backupTester.src = BACKUP_STREAM;
+        const v = parseFloat(volumeSlider.value || "0.8");
+        if (!isIOS) gainNode.gain.value = v;
+    }
 
-    try {
-        await backupTester.play();
-        backupTester.pause();
-        return true;
-    } catch {
-        return false;
+    if (!decoder) {
+        decoder = new MPEGDecoder();
+        await decoder.ready; // wait for WASM compile
+        decoderReady = true;
     }
 }
 
 // ===============================
-// LIVE STREAM STABILIZER HELPERS
+// STREAM FETCH + DECODE (WASM)
 // ===============================
-function softPipelineRefresh() {
-    if (!hasAudioFocus) return; // do not restart pipeline during interruption
-    audio.pause();
-    audio.play().catch(() => {});
-}
+async function fetchStream(url) {
+    if (readerAbortController && typeof readerAbortController.abort === "function") {
+        readerAbortController.abort();
+    }
+    readerAbortController = typeof AbortController !== "undefined" ? new AbortController() : null;
 
-function microSeekForward() {
-    try {
-        audio.currentTime += 0.5;
-    } catch {}
-}
+    const response = await fetch(url, readerAbortController ? { signal: readerAbortController.signal } : {});
+    const reader = response.body.getReader();
 
-function applyLocalFallbackIfNeeded() {
-    softPipelineRefresh();
-}
+    // reset decoder state for new stream
+    if (decoderReady) {
+        await decoder.reset();
+    }
 
-// ===============================
-// SELF-HEALING WATCHDOG
-// ===============================
-function startHealthWatchdog() {
-    clearInterval(healthTimer);
-    if (!isPlaying) return;
+    while (true) {
+        const { value, done } = await reader.read();
+        if (done || !isPlaying || interruptionActive || manualStop) break;
+        lastChunkTime = Date.now();
 
-    lastStableTime = Date.now();
-    stallScore = 0;
-    silentScore = 0;
-
-    healthTimer = setInterval(() => {
-        if (!isPlaying || manualStop || standbyMode || !hasAudioFocus) return;
-
-        const now = Date.now();
-
-        if (audio.currentTime === lastTime && audio.networkState !== 3) {
-            stallScore++;
-            softPipelineRefresh();
-        } else {
-            stallScore = Math.max(0, stallScore - 1);
-            lastStableTime = now;
+        // value is Uint8Array of MPEG data
+        try {
+            const { channelData, samplesDecoded, sampleRate } = decoder.decode(value);
+            if (samplesDecoded > 0) {
+                playPcm(channelData, sampleRate);
+            }
+        } catch (e) {
+            handleError();
+            break;
         }
-
-        lastTime = audio.currentTime;
-
-        if (audio.networkState === 3) {
-            silentScore++;
-            applyLocalFallbackIfNeeded();
-        } else {
-            silentScore = Math.max(0, silentScore - 1);
-        }
-
-        if (stallScore >= 3 || silentScore >= 3) {
-            scheduleReconnect();
-            stallScore = 0;
-            silentScore = 0;
-        }
-
-    }, 2000);
+    }
 }
 
-function stopHealthWatchdog() {
-    clearInterval(healthTimer);
+// push PCM into WebAudio
+function playPcm(channelData, sampleRate) {
+    if (!audioCtx || !gainNode || !decoderReady) return;
+    if (!isPlaying || interruptionActive || manualStop) return;
+
+    const channels = channelData.length;
+    const length = channelData[0].length;
+
+    const buffer = audioCtx.createBuffer(channels, length, sampleRate);
+    for (let ch = 0; ch < channels; ch++) {
+        buffer.getChannelData(ch).set(channelData[ch]);
+    }
+
+    sourceNode = audioCtx.createBufferSource();
+    sourceNode.buffer = buffer;
+    sourceNode.connect(gainNode);
+    sourceNode.start();
 }
 
 // ===============================
-// STREAM ENGINE
+// STALL DETECTION
+// ===============================
+setInterval(() => {
+    if (!isPlaying || interruptionActive || manualStop) return;
+    if (Date.now() - lastChunkTime > 3000) {
+        scheduleReconnect();
+    }
+}, 1000);
+
+// ===============================
+// STREAM ENGINE – START/STOP
 // ===============================
 export async function startStream() {
+    if (interruptionActive || !hasAudioFocus) return;
+
+    await initAudioEngine();
     manualStop = false;
-    mediaOverride = false;
-    standbyMode = false;
     clearTimeout(reconnectTimer);
 
-    audio.src = usingBackup ? BACKUP_STREAM : PRIMARY_STREAM;
-    audio.muted = false;
+    currentStreamUrl = usingBackup ? BACKUP_STREAM : PRIMARY_STREAM;
+    streamUrlText.textContent = currentStreamUrl;
 
     setStatus(
         "Connecting",
-        usingBackup
-            ? "Initializing backup stream — checking stability"
-            : "Initializing primary stream — preparing audio pipeline",
+        usingBackup ? "Initializing backup stream" : "Initializing primary stream",
         "user"
     );
     connectionStateEl.textContent = "Connecting";
 
     try {
-        await audio.play();
         isPlaying = true;
-
         startListening();
         playBtn.textContent = "⏸";
         playBtn.classList.add("pulse");
+        startUptime();
+        eqStart();
+
+        await fetchStream(currentStreamUrl);
+
+        if (!isPlaying || manualStop || interruptionActive) return;
 
         setStatus(
             "LIVE",
-            usingBackup
-                ? "Backup stream active — monitoring stability"
-                : "Primary stream active — monitoring stability",
-            "user"
+            usingBackup ? "Backup stream active" : "Primary stream active",
+            "ok"
         );
         connectionStateEl.textContent = usingBackup ? "Backup" : "Playing";
 
-        startUptime();
-        eqStart();
-        startHealthWatchdog();
-
-    } catch {
+    } catch (e) {
         handleError();
     }
 }
 
 function stopStreamInternal(setManual = true) {
-    if (setManual) {
-        manualStop = true;
-        mediaOverride = true;
-        standbyMode = false;
-    }
-
-    clearTimeout(reconnectTimer);
-    stopListening();
-    stopHealthWatchdog();
-
-    audio.pause();
-    audio.muted = true;
+    if (setManual) manualStop = true;
 
     isPlaying = false;
+    clearTimeout(reconnectTimer);
+
+    if (readerAbortController && typeof readerAbortController.abort === "function") {
+        readerAbortController.abort();
+        readerAbortController = null;
+    }
+
+    if (sourceNode) {
+        try { sourceNode.stop(); } catch {}
+        sourceNode = null;
+    }
+
+    stopListening();
+    stopUptime();
+    eqStop();
+
     playBtn.textContent = "▶";
     playBtn.classList.remove("pulse");
 
     setStatus(
         "Stopped",
-        setManual
-            ? "Stopped by user — audio pipeline closed"
-            : "Reconnecting — attempting recovery",
+        setManual ? "Stopped by user" : "Stopped by system / interruption",
         "user"
     );
-    connectionStateEl.textContent = setManual ? "Stopped" : "Reconnecting";
-
-    stopUptime();
-    eqStop();
+    connectionStateEl.textContent = "Stopped";
 }
 
 export function stopStream() {
@@ -279,20 +273,18 @@ export function stopStream() {
 }
 
 // ===============================
-// ERROR HANDLING + FAILOVER
+// ERROR + RECONNECT
 // ===============================
 function handleError() {
-    if (manualStop || mediaOverride || standbyMode || !hasAudioFocus) return;
+    if (manualStop || interruptionActive) return;
 
     errorCount++;
     errorCountEl.textContent = errorCount;
 
     setStatus(
         "Error",
-        usingBackup
-            ? "Backup stream failure — retry scheduled"
-            : "Primary stream failure — retry scheduled",
-        "user"
+        usingBackup ? "Backup stream failure" : "Primary stream failure",
+        "warn"
     );
     connectionStateEl.textContent = "Error";
 
@@ -301,15 +293,13 @@ function handleError() {
 }
 
 async function scheduleReconnect() {
-    if (manualStop || mediaOverride || standbyMode || !hasAudioFocus) return;
+    if (manualStop || interruptionActive) return;
 
     clearTimeout(reconnectTimer);
 
     setStatus(
         "Reconnecting",
-        usingBackup
-            ? "Attempting backup recovery — checking stream health"
-            : "Attempting primary recovery — checking stream health",
+        usingBackup ? "Attempting backup recovery" : "Attempting primary recovery",
         "user"
     );
     connectionStateEl.textContent = "Reconnecting";
@@ -317,8 +307,13 @@ async function scheduleReconnect() {
     reconnectTimer = setTimeout(async () => {
         lastReconnectEl.textContent = new Date().toLocaleTimeString();
 
-        if (!usingBackup && !streamHealthy()) {
-            if (await testBackup()) usingBackup = true;
+        if (!usingBackup) {
+            try {
+                const testResp = await fetch(BACKUP_STREAM, { method: "HEAD" });
+                if (testResp.ok) usingBackup = true;
+            } catch {
+                // ignore backup test errors
+            }
         }
 
         startStream();
@@ -326,133 +321,74 @@ async function scheduleReconnect() {
 }
 
 // ===============================
-// MEDIA INTERRUPTION + STANDBY
+// INTERRUPTION + AUDIO FOCUS
 // ===============================
-audio.addEventListener("pause", () => {
-    if (manualStop) return;
+function onInterruptionStart(reason = "system") {
+    interruptionActive = true;
+    hasAudioFocus = false;
+    if (isPlaying) stopStreamInternal(false);
+    setStatus("Standby", `Audio interrupted by ${reason}`, "warn");
+    connectionStateEl.textContent = "Standby";
+}
 
-    // If page visible and we had focus, treat as interruption by other media / call
-    if (!document.hidden && audio.readyState > 0 && hasAudioFocus) {
-        standbyMode = true;
-        isPlaying = false;
-        stopHealthWatchdog();
-        eqStop();
+function onInterruptionEnd() {
+    interruptionActive = false;
+    hasAudioFocus = true;
+    if (!manualStop) startStream();
+}
 
-        setStatus("Standby", "Paused due to another audio source or system", "warn");
-        connectionStateEl.textContent = "Standby";
-        playBtn.textContent = "▶";
-        playBtn.classList.remove("pulse");
-        stopUptime();
-        return;
-    }
-
-    // If hidden, ignore pause as error (screen off / background)
-    if (document.hidden) {
-        return;
-    }
-
-    // Real stream failure
-    if (!mediaOverride) {
-        handleError();
-    }
-});
-
-// IMPORTANT: do NOT auto-resume from internal 'playing' events.
-// Only resume when OS returns audio focus (audioSession/mediaSession).
-audio.addEventListener("playing", () => {
-    if (!hasAudioFocus) return;
-    if (standbyMode && !manualStop) {
-        standbyMode = false;
-        isPlaying = true;
-
-        setStatus("LIVE", "Resumed after interruption ended", "ok");
-        connectionStateEl.textContent = "Playing";
-        playBtn.textContent = "⏸";
-        playBtn.classList.add("pulse");
-
-        startUptime();
-        eqStart();
-        startHealthWatchdog();
-    }
-});
-
-// Do NOT resume on screen unlock; only log passive mode.
-document.addEventListener("visibilitychange", () => {
-    clearTimeout(visTimer);
-    visTimer = setTimeout(() => {
-        // passive mode logging for analytics
-        if (document.hidden && listenerId) {
-            const listenerRef = ref(db, "3@R5/" + listenerId);
-            set(listenerRef, {
-                mode: "passive",
-                timestamp: Date.now()
-            });
-        }
-    }, 150);
-});
-
-// ===============================
-// BACKGROUND AUDIO + AUDIO FOCUS (Pandora/Spotify-style)
-// ===============================
-
-// iOS Safari: Audio Session API
+// iOS AudioSession
 if (navigator.audioSession) {
     navigator.audioSession.type = "playback";
 
     navigator.audioSession.addEventListener("statechange", () => {
         const state = navigator.audioSession.state;
-
         if (state === "interrupted") {
-            // Phone call / Siri / other app took audio focus
-            hasAudioFocus = false;
-            stopStreamInternal(false);
-            standbyMode = true;
-            setStatus("Standby", "Audio interrupted by system", "warn");
-            connectionStateEl.textContent = "Standby";
+            onInterruptionStart("system");
         }
-
         if (state === "active") {
-            // Audio focus returned (other media/call ended)
-            hasAudioFocus = true;
-            if (standbyMode && !manualStop) {
-                standbyMode = false;
-                startStream();
-            }
+            onInterruptionEnd();
         }
     });
 }
 
-// Android Chrome: Media Session API
+// Android MediaSession
 if ("mediaSession" in navigator) {
-    navigator.mediaSession.playbackState = "playing";
+    navigator.mediaSession.playbackState = "none";
 
     navigator.mediaSession.setActionHandler("play", () => {
-        // OS / system says "you now have audio focus"
         hasAudioFocus = true;
-        if (standbyMode && !manualStop) {
-            standbyMode = false;
-            startStream();
-        } else if (!isPlaying && !manualStop) {
-            startStream();
-        }
+        navigator.mediaSession.playbackState = "playing";
+        if (!manualStop) startStream();
     });
 
     navigator.mediaSession.setActionHandler("pause", () => {
-        // OS / system or other media took focus
         hasAudioFocus = false;
-        if (isPlaying) {
-            stopStreamInternal(false);
-            standbyMode = true;
-            setStatus("Standby", "Audio paused by system or other media", "warn");
-            connectionStateEl.textContent = "Standby";
-        }
+        navigator.mediaSession.playbackState = "paused";
+        if (isPlaying) stopStreamInternal(false);
+        setStatus("Standby", "Audio paused by system or other media", "warn");
+        connectionStateEl.textContent = "Standby";
     });
 
     navigator.mediaSession.setActionHandler("stop", () => {
         hasAudioFocus = false;
+        navigator.mediaSession.playbackState = "none";
         stopStream();
     });
 }
+
+// ===============================
+// VISIBILITY (analytics only)
+// ===============================
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden && listenerId) {
+        const listenerRef = ref(db, "3@R5/" + listenerId);
+        set(listenerRef, {
+            mode: "passive",
+            timestamp: Date.now()
+        });
+    }
+});
 
 // ===============================
 // LISTENER COUNT
@@ -467,19 +403,18 @@ onListenerCount((count) => {
 // BUTTONS
 // ===============================
 playBtn.addEventListener("click", () => {
-    if (!isPlaying && !standbyMode) startStream();
+    if (!isPlaying) startStream();
     else stopStream();
 });
 
 retryBtn.addEventListener("click", () => {
     stopStream();
     usingBackup = false;
-    standbyMode = false;
     startStream();
 });
 
 // ===============================
-// VOLUME
+// VOLUME (WebAudio gain)
 // ===============================
 volumeSlider.addEventListener("input", () => {
     const v = parseFloat(volumeSlider.value);
@@ -489,7 +424,7 @@ volumeSlider.addEventListener("input", () => {
         return;
     }
 
-    audio.volume = v;
+    if (gainNode) gainNode.gain.value = v;
     volumeValue.textContent = Math.round(v * 100) + "%";
     localStorage.setItem("consoleVolume", v);
 });
@@ -502,15 +437,10 @@ const initVol = savedVol ? parseFloat(savedVol) : 0.8;
 volumeSlider.value = initVol;
 volumeValue.textContent = isIOS ? "Use device volume" : Math.round(initVol * 100) + "%";
 
-if (!isIOS) audio.volume = initVol;
-
 initEqualizer();
 
 setStatus(
     "Idle",
-    "Ready — waiting for stream initialization",
+    "Ready — WASM MP3 engine initialized",
     "user"
 );
-
-audio.preload = "auto";
-audio.src = PRIMARY_STREAM;
