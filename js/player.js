@@ -1,20 +1,15 @@
-// player-wasm-webaudio.js – Stable MP3 WebAudio engine using mpg123-decoder (WASM)
+// player.js – OPTIMIZED + SELF-HEALING + LIVE STREAM STABILIZER
 
 import { startListening, stopListening, onListenerCount, listenerId } from "./listener-counter.js";
 import { db } from "./firebase-init.js";
 import { set, ref } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
-// IMPORTANT: install decoder via:
-//   npm i mpg123-decoder
-// and bundle it, or load via <script src="mpg123-decoder.min.js" charset="UTF-8"></script>
-// Here we assume ES module import:
-import { MPEGDecoder } from "mpg123-decoder";
-
 const PRIMARY_STREAM = "https://stream.zeno.fm/axipqkdhsiitv.mp3";
-const BACKUP_STREAM  = "https://stream.zeno.fm/axipqkdhsiitv.mp3"; // backup must also be MPEG
+const BACKUP_STREAM  = "https://stream.zeno.fm/axipqkdhsiitv.aac";
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 // DOM
+const audio = document.getElementById("radioAudio");
 const playBtn = document.getElementById("playBtn");
 const retryBtn = document.getElementById("retryBtn");
 const volumeSlider = document.getElementById("volumeSlider");
@@ -37,31 +32,28 @@ const equalizer = document.getElementById("equalizer");
 
 streamUrlText.textContent = PRIMARY_STREAM;
 
-// STATE – engine
-let audioCtx = null;
-let gainNode = null;
-let sourceNode = null;
+// STATE
 let isPlaying = false;
 let manualStop = false;
+let mediaOverride = false;
 let usingBackup = false;
 let reconnectTimer = null;
 let errorCount = 0;
 let uptimeTimer = null;
 let startTime = null;
-let interruptionActive = false;
-let lastChunkTime = 0;
-let currentStreamUrl = PRIMARY_STREAM;
-let readerAbortController = null;
+let visTimer = null;
+let backupTester = null;
 
-// WASM decoder
-let decoder = null;
-let decoderReady = false;
-
-// audio focus
-let hasAudioFocus = true;
+// self-healing / stabilizer
+let healthTimer = null;
+let lastTime = 0;
+let standbyMode = false;
+let lastStableTime = 0;
+let stallScore = 0;
+let silentScore = 0;
 
 // ===============================
-// STATUS
+// STATUS SYSTEM
 // ===============================
 function setStatus(label, detail, type = "user") {
     statusLabel.textContent = label;
@@ -110,162 +102,168 @@ function initEqualizer() {
 }
 
 // ===============================
-// AUDIO ENGINE INIT
+// STREAM HEALTH CHECK
 // ===============================
-async function initAudioEngine() {
-    if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        gainNode = audioCtx.createGain();
-        gainNode.connect(audioCtx.destination);
+function streamHealthy() {
+    return audio.networkState !== 3 && audio.currentTime > 0;
+}
 
-        const v = parseFloat(volumeSlider.value || "0.8");
-        if (!isIOS) gainNode.gain.value = v;
-    }
+// ===============================
+// BACKUP STREAM TEST
+// ===============================
+async function testBackup() {
+    if (!backupTester) backupTester = new Audio();
+    backupTester.src = BACKUP_STREAM;
 
-    if (!decoder) {
-        decoder = new MPEGDecoder();
-        await decoder.ready; // wait for WASM compile
-        decoderReady = true;
+    try {
+        await backupTester.play();
+        backupTester.pause();
+        return true;
+    } catch {
+        return false;
     }
 }
 
 // ===============================
-// STREAM FETCH + DECODE (WASM)
+// LIVE STREAM STABILIZER HELPERS
 // ===============================
-async function fetchStream(url) {
-    if (readerAbortController && typeof readerAbortController.abort === "function") {
-        readerAbortController.abort();
-    }
-    readerAbortController = typeof AbortController !== "undefined" ? new AbortController() : null;
+function softPipelineRefresh() {
+    audio.pause();
+    audio.play().catch(() => {});
+}
 
-    const response = await fetch(url, readerAbortController ? { signal: readerAbortController.signal } : {});
-    const reader = response.body.getReader();
+function microSeekForward() {
+    try {
+        audio.currentTime += 0.5;
+    } catch {}
+}
 
-    // reset decoder state for new stream
-    if (decoderReady) {
-        await decoder.reset();
-    }
+function applyLocalFallbackIfNeeded() {
+    softPipelineRefresh();
+}
 
-    while (true) {
-        const { value, done } = await reader.read();
-        if (done || !isPlaying || interruptionActive || manualStop) break;
-        lastChunkTime = Date.now();
+// ===============================
+// SELF-HEALING WATCHDOG
+// ===============================
+function startHealthWatchdog() {
+    clearInterval(healthTimer);
+    if (!isPlaying) return;
 
-        // value is Uint8Array of MPEG data
-        try {
-            const { channelData, samplesDecoded, sampleRate } = decoder.decode(value);
-            if (samplesDecoded > 0) {
-                playPcm(channelData, sampleRate);
-            }
-        } catch (e) {
-            handleError();
-            break;
+    lastStableTime = Date.now();
+    stallScore = 0;
+    silentScore = 0;
+
+    healthTimer = setInterval(() => {
+        if (!isPlaying || manualStop || standbyMode) return;
+
+        const now = Date.now();
+
+        if (audio.currentTime === lastTime && audio.networkState !== 3) {
+            stallScore++;
+            softPipelineRefresh();
+        } else {
+            stallScore = Math.max(0, stallScore - 1);
+            lastStableTime = now;
         }
-    }
+
+        lastTime = audio.currentTime;
+
+        if (audio.networkState === 3) {
+            silentScore++;
+            applyLocalFallbackIfNeeded();
+        } else {
+            silentScore = Math.max(0, silentScore - 1);
+        }
+
+        if (stallScore >= 3 || silentScore >= 3) {
+            scheduleReconnect();
+            stallScore = 0;
+            silentScore = 0;
+        }
+
+    }, 2000);
 }
 
-// push PCM into WebAudio
-function playPcm(channelData, sampleRate) {
-    if (!audioCtx || !gainNode || !decoderReady) return;
-    if (!isPlaying || interruptionActive || manualStop) return;
-
-    const channels = channelData.length;
-    const length = channelData[0].length;
-
-    const buffer = audioCtx.createBuffer(channels, length, sampleRate);
-    for (let ch = 0; ch < channels; ch++) {
-        buffer.getChannelData(ch).set(channelData[ch]);
-    }
-
-    sourceNode = audioCtx.createBufferSource();
-    sourceNode.buffer = buffer;
-    sourceNode.connect(gainNode);
-    sourceNode.start();
+function stopHealthWatchdog() {
+    clearInterval(healthTimer);
 }
 
 // ===============================
-// STALL DETECTION
-// ===============================
-setInterval(() => {
-    if (!isPlaying || interruptionActive || manualStop) return;
-    if (Date.now() - lastChunkTime > 3000) {
-        scheduleReconnect();
-    }
-}, 1000);
-
-// ===============================
-// STREAM ENGINE – START/STOP
+// STREAM ENGINE
 // ===============================
 export async function startStream() {
-    if (interruptionActive || !hasAudioFocus) return;
-
-    await initAudioEngine();
     manualStop = false;
+    mediaOverride = false;
+    standbyMode = false;
     clearTimeout(reconnectTimer);
 
-    currentStreamUrl = usingBackup ? BACKUP_STREAM : PRIMARY_STREAM;
-    streamUrlText.textContent = currentStreamUrl;
+    audio.src = usingBackup ? BACKUP_STREAM : PRIMARY_STREAM;
+    audio.muted = false;
 
     setStatus(
         "Connecting",
-        usingBackup ? "Initializing backup stream" : "Initializing primary stream",
+        usingBackup
+            ? "Initializing backup stream — checking stability"
+            : "Initializing primary stream — preparing audio pipeline",
         "user"
     );
     connectionStateEl.textContent = "Connecting";
 
     try {
+        await audio.play();
         isPlaying = true;
+
         startListening();
         playBtn.textContent = "⏸";
         playBtn.classList.add("pulse");
-        startUptime();
-        eqStart();
-
-        await fetchStream(currentStreamUrl);
-
-        if (!isPlaying || manualStop || interruptionActive) return;
 
         setStatus(
             "LIVE",
-            usingBackup ? "Backup stream active" : "Primary stream active",
-            "ok"
+            usingBackup
+                ? "Backup stream active — monitoring stability"
+                : "Primary stream active — monitoring stability",
+            "user"
         );
         connectionStateEl.textContent = usingBackup ? "Backup" : "Playing";
 
-    } catch (e) {
+        startUptime();
+        eqStart();
+        startHealthWatchdog();
+
+    } catch {
         handleError();
     }
 }
 
 function stopStreamInternal(setManual = true) {
-    if (setManual) manualStop = true;
+    if (setManual) {
+        manualStop = true;
+        mediaOverride = true;
+        standbyMode = false;
+    }
+
+    clearTimeout(reconnectTimer);
+    stopListening();
+    stopHealthWatchdog();
+
+    audio.pause();
+    audio.muted = true;
 
     isPlaying = false;
-    clearTimeout(reconnectTimer);
-
-    if (readerAbortController && typeof readerAbortController.abort === "function") {
-        readerAbortController.abort();
-        readerAbortController = null;
-    }
-
-    if (sourceNode) {
-        try { sourceNode.stop(); } catch {}
-        sourceNode = null;
-    }
-
-    stopListening();
-    stopUptime();
-    eqStop();
-
     playBtn.textContent = "▶";
     playBtn.classList.remove("pulse");
 
     setStatus(
         "Stopped",
-        setManual ? "Stopped by user" : "Stopped by system / interruption",
+        setManual
+            ? "Stopped by user — audio pipeline closed"
+            : "Reconnecting — attempting recovery",
         "user"
     );
-    connectionStateEl.textContent = "Stopped";
+    connectionStateEl.textContent = setManual ? "Stopped" : "Reconnecting";
+
+    stopUptime();
+    eqStop();
 }
 
 export function stopStream() {
@@ -273,18 +271,20 @@ export function stopStream() {
 }
 
 // ===============================
-// ERROR + RECONNECT
+// ERROR HANDLING + FAILOVER
 // ===============================
 function handleError() {
-    if (manualStop || interruptionActive) return;
+    if (manualStop || mediaOverride || standbyMode) return;
 
     errorCount++;
     errorCountEl.textContent = errorCount;
 
     setStatus(
         "Error",
-        usingBackup ? "Backup stream failure" : "Primary stream failure",
-        "warn"
+        usingBackup
+            ? "Backup stream failure — retry scheduled"
+            : "Primary stream failure — retry scheduled",
+        "user"
     );
     connectionStateEl.textContent = "Error";
 
@@ -293,13 +293,15 @@ function handleError() {
 }
 
 async function scheduleReconnect() {
-    if (manualStop || interruptionActive) return;
+    if (manualStop || mediaOverride || standbyMode) return;
 
     clearTimeout(reconnectTimer);
 
     setStatus(
         "Reconnecting",
-        usingBackup ? "Attempting backup recovery" : "Attempting primary recovery",
+        usingBackup
+            ? "Attempting backup recovery — checking stream health"
+            : "Attempting primary recovery — checking stream health",
         "user"
     );
     connectionStateEl.textContent = "Reconnecting";
@@ -307,13 +309,8 @@ async function scheduleReconnect() {
     reconnectTimer = setTimeout(async () => {
         lastReconnectEl.textContent = new Date().toLocaleTimeString();
 
-        if (!usingBackup) {
-            try {
-                const testResp = await fetch(BACKUP_STREAM, { method: "HEAD" });
-                if (testResp.ok) usingBackup = true;
-            } catch {
-                // ignore backup test errors
-            }
+        if (!usingBackup && !streamHealthy()) {
+            if (await testBackup()) usingBackup = true;
         }
 
         startStream();
@@ -321,73 +318,66 @@ async function scheduleReconnect() {
 }
 
 // ===============================
-// INTERRUPTION + AUDIO FOCUS
+// MEDIA INTERRUPTION + STANDBY
 // ===============================
-function onInterruptionStart(reason = "system") {
-    interruptionActive = true;
-    hasAudioFocus = false;
-    if (isPlaying) stopStreamInternal(false);
-    setStatus("Standby", `Audio interrupted by ${reason}`, "warn");
-    connectionStateEl.textContent = "Standby";
-}
+audio.addEventListener("pause", () => {
+    if (manualStop) return;
 
-function onInterruptionEnd() {
-    interruptionActive = false;
-    hasAudioFocus = true;
-    if (!manualStop) startStream();
-}
+    // If browser paused us because another audio took focus
+    if (!document.hidden && audio.readyState > 0) {
+        standbyMode = true;
+        isPlaying = false;
+        stopHealthWatchdog();
+        eqStop();
 
-// iOS AudioSession
-if (navigator.audioSession) {
-    navigator.audioSession.type = "playback";
-
-    navigator.audioSession.addEventListener("statechange", () => {
-        const state = navigator.audioSession.state;
-        if (state === "interrupted") {
-            onInterruptionStart("system");
-        }
-        if (state === "active") {
-            onInterruptionEnd();
-        }
-    });
-}
-
-// Android MediaSession
-if ("mediaSession" in navigator) {
-    navigator.mediaSession.playbackState = "none";
-
-    navigator.mediaSession.setActionHandler("play", () => {
-        hasAudioFocus = true;
-        navigator.mediaSession.playbackState = "playing";
-        if (!manualStop) startStream();
-    });
-
-    navigator.mediaSession.setActionHandler("pause", () => {
-        hasAudioFocus = false;
-        navigator.mediaSession.playbackState = "paused";
-        if (isPlaying) stopStreamInternal(false);
-        setStatus("Standby", "Audio paused by system or other media", "warn");
+        setStatus("Standby", "Paused due to another audio source", "warn");
         connectionStateEl.textContent = "Standby";
-    });
-
-    navigator.mediaSession.setActionHandler("stop", () => {
-        hasAudioFocus = false;
-        navigator.mediaSession.playbackState = "none";
-        stopStream();
-    });
-}
-
-// ===============================
-// VISIBILITY (analytics only)
-// ===============================
-document.addEventListener("visibilitychange", () => {
-    if (document.hidden && listenerId) {
-        const listenerRef = ref(db, "3@R5/" + listenerId);
-        set(listenerRef, {
-            mode: "passive",
-            timestamp: Date.now()
-        });
+        playBtn.textContent = "▶";
+        playBtn.classList.remove("pulse");
+        stopUptime();
+        return;
     }
+
+    // Real stream failure
+    if (!mediaOverride) {
+        handleError();
+    }
+});
+
+audio.addEventListener("playing", () => {
+    if (standbyMode && !manualStop) {
+        standbyMode = false;
+        isPlaying = true;
+
+        setStatus("LIVE", "Resumed after other audio stopped", "ok");
+        connectionStateEl.textContent = "Playing";
+        playBtn.textContent = "⏸";
+        playBtn.classList.add("pulse");
+
+        startUptime();
+        eqStart();
+        startHealthWatchdog();
+    }
+});
+
+// auto-resume when user returns and we were in standby
+document.addEventListener("visibilitychange", () => {
+    clearTimeout(visTimer);
+    visTimer = setTimeout(() => {
+        if (!document.hidden && standbyMode && !manualStop) {
+            standbyMode = false;
+            startStream();
+        }
+
+        // passive mode logging for analytics
+        if (document.hidden && listenerId) {
+            const listenerRef = ref(db, "3@R5/" + listenerId);
+            set(listenerRef, {
+                mode: "passive",
+                timestamp: Date.now()
+            });
+        }
+    }, 150);
 });
 
 // ===============================
@@ -403,18 +393,19 @@ onListenerCount((count) => {
 // BUTTONS
 // ===============================
 playBtn.addEventListener("click", () => {
-    if (!isPlaying) startStream();
+    if (!isPlaying && !standbyMode) startStream();
     else stopStream();
 });
 
 retryBtn.addEventListener("click", () => {
     stopStream();
     usingBackup = false;
+    standbyMode = false;
     startStream();
 });
 
 // ===============================
-// VOLUME (WebAudio gain)
+// VOLUME
 // ===============================
 volumeSlider.addEventListener("input", () => {
     const v = parseFloat(volumeSlider.value);
@@ -424,7 +415,7 @@ volumeSlider.addEventListener("input", () => {
         return;
     }
 
-    if (gainNode) gainNode.gain.value = v;
+    audio.volume = v;
     volumeValue.textContent = Math.round(v * 100) + "%";
     localStorage.setItem("consoleVolume", v);
 });
@@ -437,10 +428,15 @@ const initVol = savedVol ? parseFloat(savedVol) : 0.8;
 volumeSlider.value = initVol;
 volumeValue.textContent = isIOS ? "Use device volume" : Math.round(initVol * 100) + "%";
 
+if (!isIOS) audio.volume = initVol;
+
 initEqualizer();
 
 setStatus(
     "Idle",
-    "Ready — WASM MP3 engine initialized",
+    "Ready — waiting for stream initialization",
     "user"
 );
+
+audio.preload = "auto";
+audio.src = PRIMARY_STREAM;
