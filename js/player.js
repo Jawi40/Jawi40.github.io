@@ -130,7 +130,7 @@ export async function startStream() {
         playBtn.textContent = "⏸";
         playBtn.classList.add("pulse");
 
-        setStatus("ACTIVE", usingBackup ? "Backup stream active" : "Primary stream active", "ok");
+        setStatus("Active", usingBackup ? "Backup stream active" : "Primary stream active", "ok");
         connectionStateEl.textContent = usingBackup ? "Backup" : "Playing";
 
         startUptime();
