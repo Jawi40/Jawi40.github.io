@@ -1,9 +1,12 @@
-// player.js – OPTIMIZED + SELF-HEALING + LIVE STREAM STABILIZER
+// =========================================================
+// Infin8Radio – Stable HTML5 Audio Player
+// =========================================================
 
 import { startListening, stopListening, onListenerCount, listenerId } from "./listener-counter.js";
 import { db } from "./firebase-init.js";
 import { set, ref } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
+// STREAMS
 const PRIMARY_STREAM = "https://stream.zeno.fm/axipqkdhsiitv.mp3";
 const BACKUP_STREAM  = "https://stream.zeno.fm/axipqkdhsiitv.aac";
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -35,26 +38,16 @@ streamUrlText.textContent = PRIMARY_STREAM;
 // STATE
 let isPlaying = false;
 let manualStop = false;
-let mediaOverride = false;
 let usingBackup = false;
 let reconnectTimer = null;
 let errorCount = 0;
 let uptimeTimer = null;
 let startTime = null;
-let visTimer = null;
-let backupTester = null;
+let stallTimer = null;
 
-// self-healing / stabilizer
-let healthTimer = null;
-let lastTime = 0;
-let standbyMode = false;
-let lastStableTime = 0;
-let stallScore = 0;
-let silentScore = 0;
-
-// ===============================
-// STATUS SYSTEM
-// ===============================
+// =========================================================
+// STATUS
+// =========================================================
 function setStatus(label, detail, type = "user") {
     statusLabel.textContent = label;
     statusDetail.textContent = detail;
@@ -63,13 +56,13 @@ function setStatus(label, detail, type = "user") {
     diagStatusDetail.textContent = detail;
 
     liveIndicator.className = "live-indicator";
-    if (type === "ok")   liveIndicator.classList.add("live-ok");
+    if (type === "ok") liveIndicator.classList.add("live-ok");
     if (type === "warn") liveIndicator.classList.add("live-warn");
 }
 
-// ===============================
+// =========================================================
 // UPTIME
-// ===============================
+// =========================================================
 function startUptime() {
     startTime = Date.now();
     clearInterval(uptimeTimer);
@@ -84,129 +77,49 @@ function stopUptime() {
     uptimeEl.textContent = "0s";
 }
 
-// ===============================
+// =========================================================
 // EQUALIZER
-// ===============================
+// =========================================================
 function eqStart() { equalizer.classList.remove("eq-paused"); }
 function eqStop()  { equalizer.classList.add("eq-paused"); }
 
 function initEqualizer() {
     const bars = equalizer.querySelectorAll(".eq-bar");
     bars.forEach((bar, i) => {
-        if (!bar.dataset.duration) {
-            bar.dataset.duration = `${0.8 + Math.random() * 0.7}s`;
-        }
         bar.style.animationDelay = `${i * 0.1}s`;
-        bar.style.animationDuration = bar.dataset.duration;
+        bar.style.animationDuration = `${0.8 + Math.random() * 0.7}s`;
     });
 }
 
-// ===============================
-// STREAM HEALTH CHECK
-// ===============================
-function streamHealthy() {
-    return audio.networkState !== 3 && audio.currentTime > 0;
-}
+// =========================================================
+// STALL DETECTION
+// =========================================================
+function startStallWatchdog() {
+    clearInterval(stallTimer);
+    stallTimer = setInterval(() => {
+        if (!isPlaying || manualStop) return;
 
-// ===============================
-// BACKUP STREAM TEST
-// ===============================
-async function testBackup() {
-    if (!backupTester) backupTester = new Audio();
-    backupTester.src = BACKUP_STREAM;
-
-    try {
-        await backupTester.play();
-        backupTester.pause();
-        return true;
-    } catch {
-        return false;
-    }
-}
-
-// ===============================
-// LIVE STREAM STABILIZER HELPERS
-// ===============================
-function softPipelineRefresh() {
-    audio.pause();
-    audio.play().catch(() => {});
-}
-
-function microSeekForward() {
-    try {
-        audio.currentTime += 0.5;
-    } catch {}
-}
-
-function applyLocalFallbackIfNeeded() {
-    softPipelineRefresh();
-}
-
-// ===============================
-// SELF-HEALING WATCHDOG
-// ===============================
-function startHealthWatchdog() {
-    clearInterval(healthTimer);
-    if (!isPlaying) return;
-
-    lastStableTime = Date.now();
-    stallScore = 0;
-    silentScore = 0;
-
-    healthTimer = setInterval(() => {
-        if (!isPlaying || manualStop || standbyMode) return;
-
-        const now = Date.now();
-
-        if (audio.currentTime === lastTime && audio.networkState !== 3) {
-            stallScore++;
-            softPipelineRefresh();
-        } else {
-            stallScore = Math.max(0, stallScore - 1);
-            lastStableTime = now;
-        }
-
-        lastTime = audio.currentTime;
-
-        if (audio.networkState === 3) {
-            silentScore++;
-            applyLocalFallbackIfNeeded();
-        } else {
-            silentScore = Math.max(0, silentScore - 1);
-        }
-
-        if (stallScore >= 3 || silentScore >= 3) {
+        if (audio.networkState === 3 || audio.readyState < 2) {
             scheduleReconnect();
-            stallScore = 0;
-            silentScore = 0;
         }
-
-    }, 2000);
+    }, 3000);
 }
 
-function stopHealthWatchdog() {
-    clearInterval(healthTimer);
+function stopStallWatchdog() {
+    clearInterval(stallTimer);
 }
 
-// ===============================
+// =========================================================
 // STREAM ENGINE
-// ===============================
+// =========================================================
 export async function startStream() {
     manualStop = false;
-    mediaOverride = false;
-    standbyMode = false;
     clearTimeout(reconnectTimer);
 
     audio.src = usingBackup ? BACKUP_STREAM : PRIMARY_STREAM;
     audio.muted = false;
 
-    setStatus(
-        "Connecting",
-        usingBackup
-            ? "Initializing backup stream — checking stability"
-            : "Initializing primary stream — preparing audio pipeline",
-        "user"
-    );
+    setStatus("Connecting", "Preparing audio pipeline", "user");
     connectionStateEl.textContent = "Connecting";
 
     try {
@@ -217,18 +130,12 @@ export async function startStream() {
         playBtn.textContent = "⏸";
         playBtn.classList.add("pulse");
 
-        setStatus(
-            "LIVE",
-            usingBackup
-                ? "Backup stream active — monitoring stability"
-                : "Primary stream active — monitoring stability",
-            "user"
-        );
+        setStatus("LIVE", usingBackup ? "Backup stream active" : "Primary stream active", "ok");
         connectionStateEl.textContent = usingBackup ? "Backup" : "Playing";
 
         startUptime();
         eqStart();
-        startHealthWatchdog();
+        startStallWatchdog();
 
     } catch {
         handleError();
@@ -236,15 +143,11 @@ export async function startStream() {
 }
 
 function stopStreamInternal(setManual = true) {
-    if (setManual) {
-        manualStop = true;
-        mediaOverride = true;
-        standbyMode = false;
-    }
+    if (setManual) manualStop = true;
 
     clearTimeout(reconnectTimer);
     stopListening();
-    stopHealthWatchdog();
+    stopStallWatchdog();
 
     audio.pause();
     audio.muted = true;
@@ -253,13 +156,7 @@ function stopStreamInternal(setManual = true) {
     playBtn.textContent = "▶";
     playBtn.classList.remove("pulse");
 
-    setStatus(
-        "Stopped",
-        setManual
-            ? "Stopped by user — audio pipeline closed"
-            : "Reconnecting — attempting recovery",
-        "user"
-    );
+    setStatus("Stopped", setManual ? "Stopped by user" : "Reconnecting", "warn");
     connectionStateEl.textContent = setManual ? "Stopped" : "Reconnecting";
 
     stopUptime();
@@ -270,22 +167,16 @@ export function stopStream() {
     stopStreamInternal(true);
 }
 
-// ===============================
-// ERROR HANDLING + FAILOVER
-// ===============================
+// =========================================================
+// ERROR + FAILOVER
+// =========================================================
 function handleError() {
-    if (manualStop || mediaOverride || standbyMode) return;
+    if (manualStop) return;
 
     errorCount++;
     errorCountEl.textContent = errorCount;
 
-    setStatus(
-        "Error",
-        usingBackup
-            ? "Backup stream failure — retry scheduled"
-            : "Primary stream failure — retry scheduled",
-        "user"
-    );
+    setStatus("Error", "Stream failure — retry scheduled", "warn");
     connectionStateEl.textContent = "Error";
 
     eqStop();
@@ -293,120 +184,64 @@ function handleError() {
 }
 
 async function scheduleReconnect() {
-    if (manualStop || mediaOverride || standbyMode) return;
+    if (manualStop) return;
 
     clearTimeout(reconnectTimer);
 
-    setStatus(
-        "Reconnecting",
-        usingBackup
-            ? "Attempting backup recovery — checking stream health"
-            : "Attempting primary recovery — checking stream health",
-        "user"
-    );
+    setStatus("Reconnecting", "Attempting recovery", "warn");
     connectionStateEl.textContent = "Reconnecting";
 
     reconnectTimer = setTimeout(async () => {
         lastReconnectEl.textContent = new Date().toLocaleTimeString();
 
-        if (!usingBackup && !streamHealthy()) {
-            if (await testBackup()) usingBackup = true;
+        if (!usingBackup) {
+            const test = new Audio();
+            test.src = BACKUP_STREAM;
+            try {
+                await test.play();
+                usingBackup = true;
+            } catch {}
         }
 
         startStream();
     }, 2000);
 }
 
-// ===============================
-// MEDIA INTERRUPTION + STANDBY
-// ===============================
+// =========================================================
+// MEDIA INTERRUPTION
+// =========================================================
 audio.addEventListener("pause", () => {
-    if (manualStop) return;
-
-    // If browser paused us because another audio took focus
-    if (!document.hidden && audio.readyState > 0) {
-        standbyMode = true;
-        isPlaying = false;
-        stopHealthWatchdog();
-        eqStop();
-
-        setStatus("Standby", "Paused due to another audio source", "warn");
-        connectionStateEl.textContent = "Standby";
-        playBtn.textContent = "▶";
-        playBtn.classList.remove("pulse");
-        stopUptime();
-        return;
-    }
-
-    // Real stream failure
-    if (!mediaOverride) {
-        handleError();
+    if (!manualStop && audio.readyState > 0) {
+        stopStreamInternal(false);
     }
 });
 
-audio.addEventListener("playing", () => {
-    if (standbyMode && !manualStop) {
-        standbyMode = false;
-        isPlaying = true;
-
-        setStatus("LIVE", "Resumed after other audio stopped", "ok");
-        connectionStateEl.textContent = "Playing";
-        playBtn.textContent = "⏸";
-        playBtn.classList.add("pulse");
-
-        startUptime();
-        eqStart();
-        startHealthWatchdog();
-    }
-});
-
-// auto-resume when user returns and we were in standby
-document.addEventListener("visibilitychange", () => {
-    clearTimeout(visTimer);
-    visTimer = setTimeout(() => {
-        if (!document.hidden && standbyMode && !manualStop) {
-            standbyMode = false;
-            startStream();
-        }
-
-        // passive mode logging for analytics
-        if (document.hidden && listenerId) {
-            const listenerRef = ref(db, "3@R5/" + listenerId);
-            set(listenerRef, {
-                mode: "passive",
-                timestamp: Date.now()
-            });
-        }
-    }, 150);
-});
-
-// ===============================
+// =========================================================
 // LISTENER COUNT
-// ===============================
+// =========================================================
 onListenerCount((count) => {
     listenerCountEl.textContent = count;
     listenerCountEl.classList.add("pop");
     setTimeout(() => listenerCountEl.classList.remove("pop"), 350);
 });
 
-// ===============================
+// =========================================================
 // BUTTONS
-// ===============================
+// =========================================================
 playBtn.addEventListener("click", () => {
-    if (!isPlaying && !standbyMode) startStream();
+    if (!isPlaying) startStream();
     else stopStream();
 });
 
 retryBtn.addEventListener("click", () => {
     stopStream();
     usingBackup = false;
-    standbyMode = false;
     startStream();
 });
 
-// ===============================
+// =========================================================
 // VOLUME
-// ===============================
+// =========================================================
 volumeSlider.addEventListener("input", () => {
     const v = parseFloat(volumeSlider.value);
 
@@ -420,9 +255,9 @@ volumeSlider.addEventListener("input", () => {
     localStorage.setItem("consoleVolume", v);
 });
 
-// ===============================
+// =========================================================
 // INIT
-// ===============================
+// =========================================================
 const savedVol = localStorage.getItem("consoleVolume");
 const initVol = savedVol ? parseFloat(savedVol) : 0.8;
 volumeSlider.value = initVol;
@@ -432,11 +267,7 @@ if (!isIOS) audio.volume = initVol;
 
 initEqualizer();
 
-setStatus(
-    "Idle",
-    "Ready — waiting for stream initialization",
-    "user"
-);
+setStatus("Idle", "Ready — waiting for stream", "user");
 
 audio.preload = "auto";
 audio.src = PRIMARY_STREAM;
